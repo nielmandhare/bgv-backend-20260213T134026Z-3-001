@@ -4,6 +4,8 @@ const router = express.Router();
 const tenantRoutes = require('./tenantRoutes');
 
 router.use('/tenants', tenantRoutes);
+router.use('/auth', require('./authRoutes'));
+
 
 router.get('/health', (req, res) => {
   res.json({
