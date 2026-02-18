@@ -5,7 +5,7 @@ const cors = require('cors');
 require('dotenv').config({ path: `.env.${process.env.NODE_ENV || 'development'}` });
 
 // Import routes
-const routes = require('./routes');
+const routes = require('./routes/index');
 
 // Import middleware
 const errorMiddleware = require('./middlewares/errorMiddleware');
@@ -15,7 +15,6 @@ const requestLogger = require('./middlewares/requestLogger');
 const logger = require('./utils/logger');
 
 const app = express();
-
 // ====================================
 // 1. SECURITY MIDDLEWARE
 // ====================================
