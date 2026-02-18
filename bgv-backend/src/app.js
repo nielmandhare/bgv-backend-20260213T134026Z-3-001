@@ -2,7 +2,11 @@ const express = require('express');
 const helmet = require('helmet');
 const compression = require('compression');
 const cors = require('cors');
-require('dotenv').config({ path: `.env.${process.env.NODE_ENV || 'development'}` });
+const rateLimit = require('express-rate-limit');
+const apiKeyAuth = require('./middlewares/apiKeyAuth');
+
+require('dotenv').config();
+
 
 // Import routes
 const routes = require('./routes/index');
@@ -15,6 +19,14 @@ const requestLogger = require('./middlewares/requestLogger');
 const logger = require('./utils/logger');
 
 const app = express();
+
+// ====================================
+// HTTPS / PROXY CONFIG (Production Ready)
+// ====================================
+if (process.env.NODE_ENV === 'production') {
+  app.set('trust proxy', 1);
+}
+
 // ====================================
 // 1. SECURITY MIDDLEWARE
 // ====================================
@@ -33,6 +45,18 @@ app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 // ====================================
 app.use(requestLogger);              // Log requests with masked sensitive data
 app.use(logger.middleware);         // Log response times and status codes
+/* ========================
+   Rate Limiter Middleware
+======================== */
+const limiter = rateLimit({
+  windowMs: Number(process.env.RATE_LIMIT_WINDOW_MS) || 900000,
+  max: Number(process.env.RATE_LIMIT_MAX_REQUESTS) || 100,
+  message: "Too many requests, please try again later."
+});
+
+app.use(limiter);   // 👈 PUT HERE
+app.use('/api', apiKeyAuth);
+
 
 // ====================================
 // 4. HEALTH CHECK (NO LOGGING)

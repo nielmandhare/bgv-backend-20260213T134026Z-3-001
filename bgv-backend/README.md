@@ -51,6 +51,117 @@ The system includes:
 * Modular scalable architecture
 
 ---
+---
+
+# 🔐 Secure Backend Foundation (BE-6)
+
+This enhancement introduces core backend security mechanisms to ensure safe configuration management, controlled API access, and protection against abuse. It also prepares the application for production deployment with HTTPS-ready configuration.
+
+The system includes:
+
+* Secure environment variable management
+* API key-based access protection
+* Global rate limiting
+* HTTPS-ready server configuration
+* Security headers integration
+* Production deployment readiness
+
+---
+
+## Security Features
+
+### Environment Variable Security
+
+Sensitive configuration values such as database credentials, JWT secrets, and API keys are stored securely using environment variables via dotenv.
+
+Benefits:
+
+* Prevents exposure of secrets in source code
+* Supports environment-based configuration
+* Improves deployment flexibility
+
+---
+
+### API Key Protection Middleware
+
+All `/api` routes are protected using a custom API key authentication middleware.
+
+Request Header:
+
+x-api-key: <API_KEY>
+
+
+Unauthorized requests return a **403 Forbidden** response.
+
+---
+
+### Global Rate Limiting
+
+Implemented using **express-rate-limit** to prevent abuse and excessive requests.
+
+Configuration is environment-driven:
+
+RATE_LIMIT_WINDOW_MS
+RATE_LIMIT_MAX_REQUESTS
+
+
+Protects against:
+
+* Brute-force attempts
+* API abuse
+* Denial-of-service attacks
+
+---
+
+### HTTPS-Ready Configuration
+
+The backend is prepared for secure deployment using:
+
+* Helmet security headers
+* Proxy trust configuration for production environments
+
+Example:
+
+app.use(helmet());
+
+if (process.env.NODE_ENV === 'production') {
+app.set('trust proxy', 1);
+}
+
+This ensures compatibility with:
+
+* Reverse proxies
+* Load balancers
+* Cloud hosting platforms
+
+---
+
+## Security Middleware Flow
+
+Helmet → CORS → Compression
+→ Body Parsing
+→ Logging
+→ Rate Limiting
+→ API Key Authentication
+→ Routes
+→ Error Handling
+
+This layered architecture provides defense-in-depth security.
+
+---
+
+## Security Testing
+
+### Unauthorized Access
+
+
+This layered architecture provides defense-in-depth security.
+
+---
+
+## Security Testing
+
+### Unauthorized Access
 
 # 🏗️ Tech Stack
 
