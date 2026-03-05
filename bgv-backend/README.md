@@ -163,6 +163,27 @@ This layered architecture provides defense-in-depth security.
 
 ### Unauthorized Access
 
+curl http://localhost:5001/api/upload
+
+
+Response:
+Unauthorized: Invalid API Key
+
+
+### Authorized Access
+curl -H "x-api-key: <API_KEY>" http://localhost:5001/api/upload
+
+
+### Rate Limit Trigger
+
+Multiple rapid requests result in:
+
+
+
+Too many requests, please try again later.
+
+
+---
 # 🏗️ Tech Stack
 
 Backend: Node.js, Express.js
@@ -171,7 +192,7 @@ File Handling: Multer
 Validation: Joi
 Authentication: JWT (jsonwebtoken), bcrypt
 Utilities: UUID, dotenv
-Security: Helmet, CORS, Compression
+Security: Helmet, CORS, Compression,API Key Middleware, Rate Limiting
 
 ---
 
@@ -547,6 +568,7 @@ Backend Developer Intern
 
 # ✅ Status
 
-File upload infrastructure and authentication system successfully implemented and tested.
+
+File upload infrastructure, authentication system, and secure backend foundation successfully implemented and tested.
 
 ---

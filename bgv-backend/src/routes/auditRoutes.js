@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { AuditLog } = require('../models');
-const authMiddleware = require('../middlewares/authMiddleware');
+const authMiddleware = require('../middlewares/authmiddleware');
 
 // All audit routes require admin access
 router.use(authMiddleware.authenticate);
