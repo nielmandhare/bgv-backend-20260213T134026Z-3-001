@@ -1,5 +1,9 @@
-📂 BE-5: Base File Upload Infrastructure + Authentication System
+## Backend Modules Implemented
 
+- **BE-5** – File Upload Infrastructure & Authentication
+- **BE-6** – Secure Backend Foundation
+- **BE-7** – Verification Intake APIs
+- **BE-8** – Verification Retry Mechanism
 ---
 
 # 📌 Overview
@@ -150,10 +154,6 @@ This layered architecture provides defense-in-depth security.
 
 ---
 
-## Security Testing
-
-### Unauthorized Access
-
 
 This layered architecture provides defense-in-depth security.
 
@@ -193,6 +193,121 @@ This module introduces intake APIs for collecting verification requests for **PA
 These APIs accept verification details, validate mandatory fields, and store requests in the database for further verification processing.
 
 ---
+# 🔁 Verification Retry Mechanism (BE-8)
+
+This module introduces a retry mechanism for verification requests, enabling administrators to manually retry failed or pending verifications while maintaining a full retry history for auditing and monitoring.
+
+The retry system prepares the backend architecture for future automatic retry workflows and external verification integrations.
+
+## 🚀 Features
+### Retry Tracking
+
+Verification requests now include two additional fields:
+
+```
+retry_count
+last_retry_at
+```
+These fields track:
+
+The number of retry attempts made for a verification request
+
+The timestamp of the most recent retry attempt
+
+This allows the system to monitor retry frequency and manage verification workflows more effectively.
+
+## Retry History Logging
+
+Every retry attempt is recorded in a dedicated audit table.
+
+Table:
+
+verification_retry_history
+
+Each retry record stores:
+
+verification_id
+
+retry_number
+
+retry_status
+
+retry_reason
+
+created_at timestamp
+
+This ensures that every retry action is traceable and provides transparency for debugging and monitoring.
+
+## 🔁 Manual Retry API
+
+Administrators can manually trigger a retry for a verification request using a secure API endpoint.
+
+Endpoint:
+```
+POST /api/verification/retry/:id
+```
+Headers required:
+
+x-api-key: <API_KEY>
+Authorization: Bearer <JWT_TOKEN>
+
+Example request:
+
+POST /api/verification/retry/5e98e1ca-164a-46d5-92de-30a70fa57c5d
+
+Example response:
+
+{
+  "success": true,
+  "message": "Retry triggered successfully",
+  "data": {
+    "retry_count": 1,
+    "status": "retrying"
+  }
+}
+## 🔄 Retry Processing Flow
+Admin → Retry API
+       → Increment retry_count
+       → Update last_retry_at
+       → Insert retry history record
+       → Update verification status to "retrying"
+
+This architecture ensures that retry actions are tracked and controlled within the verification lifecycle.
+
+## 🗄️ Database Changes
+Updated verification_requests Table
+```sql
+ALTER TABLE verification_requests
+ADD COLUMN retry_count INT DEFAULT 0,
+ADD COLUMN last_retry_at TIMESTAMP;
+Retry History Table
+
+CREATE TABLE verification_retry_history (
+ id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+ verification_id UUID REFERENCES verification_requests(id),
+ retry_number INT,
+ retry_status VARCHAR(50),
+ retry_reason TEXT,
+ created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+🧠 Future Enhancements
+
+This retry system prepares the backend for future improvements including:
+
+Automatic retry workers
+
+Scheduled retry jobs
+
+Retry attempt limits
+
+Integration with third-party verification providers (IDfy)
+
+Retry monitoring dashboards
+
+✅ Status
+
+Retry-ready backend logic successfully implemented and tested.
 
 # 🚀 Implemented APIs
 
@@ -335,12 +450,14 @@ src/
 │── controllers/
 │   ├── uploadController.js
 │   ├── authController.js
-│   └── tenantController.js
+│   ├── tenantController.js
+│   └── verificationController.js
 │
 │── routes/
 │   ├── uploadRoutes.js
 │   ├── authRoutes.js
 │   ├── tenantRoutes.js
+│   ├── verificationRoutes.js
 │   └── index.js
 │
 │── middlewares/
@@ -351,7 +468,8 @@ src/
 │
 │── validator/
 │   ├── authValidator.js
-│   └── userValidator.js
+│   ├── userValidator.js
+│   └── verificationValidator.js
 │
 │── utils/
 │   └── apiResponse.js
@@ -467,7 +585,38 @@ Request:
 Logout removes refresh token from database and invalidates session.
 
 ---
+# Verification APIs
+PAN Verification
+POST /api/verification/pan
 
+Request:
+
+{
+  "pan_number": "ABCDE1234F",
+  "full_name": "Rahul Sharma",
+  "dob": "1998-05-10",
+  "client_id": "tenant_uuid"
+}
+Aadhaar Verification
+POST /api/verification/aadhaar
+
+Request:
+
+{
+  "masked_aadhaar": "XXXX-XXXX-1234",
+  "full_name": "Rahul Sharma",
+  "client_id": "tenant_uuid"
+}
+GSTIN Verification
+POST /api/verification/gstin
+
+Request:
+
+{
+  "gstin": "27ABCDE1234F1Z5",
+  "business_name": "ABC Traders",
+  "client_id": "tenant_uuid"
+}
 # 🏢 Protected APIs Example
 
 Authorization Header:
@@ -697,7 +846,5 @@ Backend Developer Intern
 
 # ✅ Status
 
-
-File upload infrastructure, authentication system, and secure backend foundation successfully implemented and tested.
-
+File upload infrastructure, authentication system, secure backend foundation, verification intake APIs, and retry mechanism successfully implemented and tested.
 ---

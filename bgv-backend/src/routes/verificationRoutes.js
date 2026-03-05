@@ -3,48 +3,20 @@ console.log("✅ VERIFICATION ROUTES LOADED");
 const express = require("express");
 const router = express.Router();
 
-const {
-  createPanVerification,
-  createAadhaarVerification,
-  createGstinVerification
-} = require("../controllers/verificationController");
+const verificationController = require("../controllers/verificationController");
 
-const validate = require("../middlewares/validate");
+console.log("DEBUG Controller:", verificationController);
 
-const {
-  panSchema,
-  aadhaarSchema,
-  gstinSchema
-} = require("../validator/verificationValidator");
+/* PAN Verification */
+router.post("/pan", verificationController.createPanVerification);
 
+/* Aadhaar Verification */
+router.post("/aadhaar", verificationController.createAadhaarVerification);
 
-/*
-PAN Verification
-*/
-router.post(
-  "/pan",
-  validate(panSchema),
-  createPanVerification
-);
+/* GSTIN Verification */
+router.post("/gstin", verificationController.createGstinVerification);
 
-
-/*
-Aadhaar Verification
-*/
-router.post(
-  "/aadhaar",
-  validate(aadhaarSchema),
-  createAadhaarVerification
-);
-
-
-/*
-GSTIN Verification
-*/
-router.post(
-  "/gstin",
-  validate(gstinSchema),
-  createGstinVerification
-);
+/* Retry Verification */
+router.post("/retry/:id", verificationController.retryVerification);
 
 module.exports = router;
