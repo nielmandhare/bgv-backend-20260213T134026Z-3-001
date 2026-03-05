@@ -8,12 +8,14 @@ class BaseModel {
   async findAll(tenantId, options = {}) {
     const { limit = 100, offset = 0, orderBy = 'created_at', orderDir = 'DESC' } = options;
     
+    // FIXED: WHERE clause comes before ORDER BY
     const result = await db.tenantQuery(
       `SELECT * FROM ${this.tableName} 
+       WHERE tenant_id = $1
        ORDER BY ${orderBy} ${orderDir} 
-       LIMIT $1 OFFSET $2`,
-      [limit, offset],
-      tenantId
+       LIMIT $2 OFFSET $3`,
+      [tenantId, limit, offset],
+      tenantId  // This parameter is used by tenantQuery, not in the query itself
     );
     
     return result.rows;
@@ -57,6 +59,7 @@ class BaseModel {
   }
 
   async update(id, data, tenantId) {
+    // First verify ownership
     const exists = await this.findById(id, tenantId);
     if (!exists) {
       throw new Error('Record not found or access denied');
@@ -76,6 +79,7 @@ class BaseModel {
   }
 
   async delete(id, tenantId, softDelete = true) {
+    // First verify ownership
     const exists = await this.findById(id, tenantId);
     if (!exists) {
       throw new Error('Record not found or access denied');
