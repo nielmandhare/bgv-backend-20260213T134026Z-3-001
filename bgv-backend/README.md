@@ -184,6 +184,135 @@ Too many requests, please try again later.
 
 
 ---
+---
+
+# 📑 Verification Intake APIs (BE-7)
+
+This module introduces intake APIs for collecting verification requests for **PAN, Aadhaar (masked), and GSTIN** as part of the Background Verification Platform.
+
+These APIs accept verification details, validate mandatory fields, and store requests in the database for further verification processing.
+
+---
+
+# 🚀 Implemented APIs
+
+## PAN Verification Intake
+
+POST `/api/verification/pan`
+
+Example Request
+
+```
+{
+ "pan_number": "ABCDE1234F",
+ "full_name": "Rahul Sharma",
+ "dob": "1998-05-10",
+ "client_id": "tenant_uuid"
+}
+```
+
+---
+
+## Aadhaar Verification Intake
+
+POST `/api/verification/aadhaar`
+
+Example Request
+
+```
+{
+ "masked_aadhaar": "XXXX-XXXX-1234",
+ "full_name": "Rahul Sharma",
+ "client_id": "tenant_uuid"
+}
+```
+
+---
+
+## GSTIN Verification Intake
+
+POST `/api/verification/gstin`
+
+Example Request
+
+```
+{
+ "gstin": "27ABCDE1234F1Z5",
+ "business_name": "ABC Traders",
+ "client_id": "tenant_uuid"
+}
+```
+
+---
+
+# 🔎 Validation
+
+Input validation is implemented using **Joi schemas** to ensure:
+
+* Mandatory fields are present
+* PAN format validation
+* Aadhaar masked format validation
+* GSTIN format validation
+
+Invalid requests return standardized error responses.
+
+---
+
+# 🗄️ Database Schema
+
+Verification requests are stored in the `verification_requests` table.
+
+```
+CREATE TABLE verification_requests (
+ id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+ document_type VARCHAR(20),
+ document_number VARCHAR(50),
+ full_name VARCHAR(255),
+ dob DATE,
+ business_name VARCHAR(255),
+ client_id UUID,
+ status VARCHAR(50),
+ created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+```
+
+All records are stored with the default status:
+
+```
+pending_verification
+```
+
+---
+
+# 🏢 Multi-Tenant Support
+
+Each verification request includes a `client_id` referencing the tenant table, enabling the system to support multiple organizations using the same platform.
+
+---
+
+# 🛡️ Security
+
+Verification APIs are protected by:
+
+* API Key middleware (`x-api-key`)
+* JWT authentication (`Authorization: Bearer token`)
+* Rate limiting
+* Helmet security headers
+
+---
+
+# 📊 Verification Flow
+
+Client → Verification API → Validation → Database Storage → Status: `pending_verification`
+
+This prepares the system for future integration with external verification providers such as **IDfy**.
+
+---
+
+# ✅ Status
+
+Verification intake APIs for **PAN, Aadhaar, and GSTIN** successfully implemented and tested.
+
 # 🏗️ Tech Stack
 
 Backend: Node.js, Express.js

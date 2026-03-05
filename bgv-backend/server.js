@@ -1,3 +1,4 @@
+console.log("SERVER RUNNING FROM:", process.cwd());
 require('dotenv').config();
 
 const app = require('./src/app');
