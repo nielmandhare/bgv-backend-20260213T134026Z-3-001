@@ -1,0 +1,5 @@
+row,error,name,pan_number,dob,_row_number
+2,"column "requested_by" of relation "verification_requests" does not exist","John Doe","ABCDE1234F","1990-01-01","2"
+3,"column "requested_by" of relation "verification_requests" does not exist","Jane Smith","XYZAB5678G","1985-05-15","3"
+4,"column "requested_by" of relation "verification_requests" does not exist","Mike Johnson","PQRST9012H","invalid-pan","4"
+5,"column "requested_by" of relation "verification_requests" does not exist","Sarah Williams","LMNOP3456I","1992-12-25","5"

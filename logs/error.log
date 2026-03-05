@@ -1,0 +1,38 @@
+[2026-02-22T10:34:07.795Z] 404 - Not Found - /favicon.ico
+[2026-03-02T07:39:52.737Z] ❌ Get batch status error: error: column "metadata" does not exist
+[2026-03-02T07:39:52.738Z] GET /api/bulk-upload/batches/a9e14835-69ba-4526-86cb-c2eeb06117fb 500 - 23ms
+[2026-03-02T07:40:00.484Z] ❌ Get batch results error: error: column "metadata" does not exist
+[2026-03-02T07:40:00.485Z] GET /api/bulk-upload/batches/a9e14835-69ba-4526-86cb-c2eeb06117fb/results 500 - 13ms
+[2026-03-02T07:40:16.959Z] ❌ Get batch results error: error: column "metadata" does not exist
+[2026-03-02T07:40:16.959Z] GET /api/bulk-upload/batches/a9e14835-69ba-4526-86cb-c2eeb06117fb/results 500 - 11ms
+[2026-03-02T07:41:22.234Z] ❌ Get batch results error: error: invalid input syntax for type uuid: "YOUR_NEW_BATCH_ID"
+[2026-03-02T07:41:22.235Z] GET /api/bulk-upload/batches/YOUR_NEW_BATCH_ID/results 500 - 3ms
+[2026-03-02T07:46:30.864Z] 404 - Not Found - /favicon.ico
+[2026-03-02T07:47:03.117Z] 404 - Not Found - /api/users
+[2026-03-02T07:49:09.077Z] ❌ Get batch status error: error: invalid input syntax for type uuid: "YOUR_BATCH_ID"
+[2026-03-02T07:49:09.082Z] GET /api/bulk-upload/batches/YOUR_BATCH_ID 500 - 61ms
+[2026-03-03T07:09:06.969Z] ❌ Accept consent error: error: column "user_id" does not exist
+[2026-03-03T07:09:06.970Z] POST /api/consent/accept 500 - 24ms
+[2026-03-03T07:10:22.155Z] ❌ Accept consent error: error: null value in column "subject_name" of relation "consent_records" violates not-null constraint
+[2026-03-03T07:10:22.156Z] POST /api/consent/accept 500 - 17ms
+[2026-03-03T07:13:12.779Z] ❌ Accept consent error: error: null value in column "subject_name" of relation "consent_records" violates not-null constraint
+[2026-03-03T07:13:12.780Z] POST /api/consent/accept 500 - 14ms
+[2026-03-03T07:23:15.026Z] ❌ Accept consent error: error: null value in column "subject_name" of relation "consent_records" violates not-null constraint
+[2026-03-03T07:23:15.027Z] POST /api/consent/accept 500 - 14ms
+[2026-03-03T07:24:05.455Z] ❌ Accept consent error: error: null value in column "subject_name" of relation "consent_records" violates not-null constraint
+[2026-03-03T07:24:05.457Z] POST /api/consent/accept 500 - 24ms
+[2026-03-03T07:25:07.809Z] 💥 Uncaught Exception: Error: listen EADDRINUSE: address already in use :::5001
+[2026-03-03T07:25:52.245Z] ❌ Accept consent error: error: null value in column "subject_name" of relation "consent_records" violates not-null constraint
+[2026-03-03T07:25:52.247Z] POST /api/consent/accept 500 - 21ms
+[2026-03-03T07:28:20.893Z] ❌ Accept consent error: error: null value in column "subject_name" of relation "consent_records" violates not-null constraint
+[2026-03-03T07:28:20.895Z] POST /api/consent/accept 500 - 23ms
+[2026-03-03T07:34:02.172Z] ❌ Accept consent error: error: null value in column "subject_name" of relation "consent_records" violates not-null constraint
+[2026-03-03T07:34:02.174Z] POST /api/consent/accept 500 - 24ms
+[2026-03-03T07:49:40.142Z] 💥 Uncaught Exception: Error: listen EADDRINUSE: address already in use :::5001
+[2026-03-03T07:50:22.988Z] ❌ Accept consent error: error: null value in column "subject_name" of relation "consent_records" violates not-null constraint
+[2026-03-03T07:50:22.990Z] POST /api/consent/accept 500 - 23ms
+[2026-03-03T07:51:50.582Z] ❌ Accept consent error: error: null value in column "subject_name" of relation "consent_records" violates not-null constraint
+[2026-03-03T07:51:50.585Z] POST /api/consent/accept 500 - 38ms
+[2026-03-03T07:54:02.943Z] 💥 Uncaught Exception: Error: listen EADDRINUSE: address already in use :::5001
+[2026-03-03T07:54:23.705Z] ❌ Accept consent error: error: null value in column "subject_name" of relation "consent_records" violates not-null constraint
+[2026-03-03T07:54:23.708Z] POST /api/consent/accept 500 - 29ms
