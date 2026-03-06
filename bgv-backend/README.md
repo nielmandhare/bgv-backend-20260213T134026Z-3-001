@@ -4,6 +4,7 @@
 - **BE-6** – Secure Backend Foundation
 - **BE-7** – Verification Intake APIs
 - **BE-8** – Verification Retry Mechanism
+- **BE-9** – Verification API Status Tracking
 ---
 
 # 📌 Overview
@@ -275,12 +276,13 @@ Admin → Retry API
 This architecture ensures that retry actions are tracked and controlled within the verification lifecycle.
 
 ## 🗄️ Database Changes
-Updated verification_requests Table
+
+### Updated verification_requests Table
+
 ```sql
 ALTER TABLE verification_requests
 ADD COLUMN retry_count INT DEFAULT 0,
 ADD COLUMN last_retry_at TIMESTAMP;
-Retry History Table
 
 CREATE TABLE verification_retry_history (
  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -304,6 +306,151 @@ Retry attempt limits
 Integration with third-party verification providers (IDfy)
 
 Retry monitoring dashboards
+
+---
+
+# 🔄 Verification API Status Tracking (BE-9)
+
+This module introduces structured tracking for verification API processing and prepares the backend architecture for **Phase 5 external verification integrations**, such as **IDfy**.
+
+Previously, verification requests were stored with a simple status field.  
+This enhancement enables the system to track the lifecycle of verification processing, API attempts, and failures.
+
+---
+
+## 🎯 Purpose
+
+The goal of this module is to enable structured monitoring of verification processing so that external verification providers can be integrated without requiring major changes to the database architecture.
+
+This allows the system to:
+
+- Track verification processing states
+- Record API failure reasons
+- Monitor API call attempts
+- Support automated retry workflows
+- Enable third-party verification integrations
+
+---
+
+## 🚀 New Fields Added
+
+The `verification_requests` table now includes the following fields:
+api_status
+failure_reason
+last_api_attempt
+
+
+### Field Descriptions
+
+| Field | Description |
+|------|------|
+| api_status | Current verification processing state |
+| failure_reason | Stores error messages returned by verification APIs |
+| last_api_attempt | Timestamp of the latest API attempt |
+
+---
+
+## 📊 Verification Lifecycle
+
+Verification requests now follow a structured lifecycle:
+pending → processing → success
+pending → processing → failed
+
+
+### Status Meaning
+
+| Status | Description |
+|------|------|
+| pending | Verification request created but API not yet triggered |
+| processing | Verification API call in progress |
+| success | Verification completed successfully |
+| failed | Verification failed due to API error or validation issue |
+
+---
+
+## 🔄 Status Initialization
+
+When a verification request is created using the intake APIs:
+POST /api/verification/pan
+POST /api/verification/aadhaar
+POST /api/verification/gstin
+
+
+The system initializes:
+api_status = pending
+failure_reason = NULL
+last_api_attempt = NULL
+
+
+---
+
+## 🔁 Processing Update
+
+When verification processing begins (for example via retry or background worker), the system updates:
+
+api_status = processing
+last_api_attempt = CURRENT_TIMESTAMP
+
+
+---
+
+## ❌ Failure Handling
+
+If verification fails due to external API issues, the system records the failure reason.
+
+Example:
+api_status = failed
+failure_reason = "Verification API timeout"
+
+
+This information helps administrators diagnose verification failures and monitor API reliability.
+
+---
+
+## 🗄️ Database Changes
+
+The database schema was updated with the following migration:
+
+```sql
+ALTER TABLE verification_requests
+ADD COLUMN api_status VARCHAR(20) DEFAULT 'pending',
+ADD COLUMN failure_reason TEXT,
+ADD COLUMN last_api_attempt TIMESTAMP;
+```
+## 📈 Verification Processing Architecture
+Client Request
+      ↓
+Verification Intake API
+      ↓
+verification_requests record created
+api_status = pending
+      ↓
+Verification processing begins
+api_status = processing
+last_api_attempt updated
+      ↓
+External Verification API
+      ↓
+Verification Result
+   ↓             ↓
+Success        Failure
+   ↓             ↓
+api_status=success
+api_status=failed
+failure_reason stored
+🔮 Future Enhancements
+
+This architecture enables future improvements including:
+
+Integration with IDfy verification APIs
+
+Asynchronous verification workers
+
+Scheduled retry mechanisms
+
+Verification analytics dashboards
+
+API reliability monitoring
 
 ✅ Status
 
@@ -373,7 +520,7 @@ Invalid requests return standardized error responses.
 
 ---
 
-# 🗄️ Database Schema
+#🗄️ Database Schema
 
 Verification requests are stored in the `verification_requests` table.
 
@@ -387,6 +534,11 @@ CREATE TABLE verification_requests (
  business_name VARCHAR(255),
  client_id UUID,
  status VARCHAR(50),
+ retry_count INT DEFAULT 0,
+ last_retry_at TIMESTAMP,
+ api_status VARCHAR(20) DEFAULT 'pending',
+ failure_reason TEXT,
+ last_api_attempt TIMESTAMP,
  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 ```
@@ -400,8 +552,8 @@ pending_verification
 ---
 
 # 🏢 Multi-Tenant Support
-
-Each verification request includes a `client_id` referencing the tenant table, enabling the system to support multiple organizations using the same platform.
+Each verification request includes a `client_id` referencing the clients table
+, enabling the system to support multiple organizations using the same platform.
 
 ---
 
@@ -846,5 +998,8 @@ Backend Developer Intern
 
 # ✅ Status
 
-File upload infrastructure, authentication system, secure backend foundation, verification intake APIs, and retry mechanism successfully implemented and tested.
+
+# ✅ Status
+
+File upload infrastructure, authentication system, secure backend foundation, verification intake APIs, verification retry mechanism, and verification API status tracking successfully implemented and tested.
 ---

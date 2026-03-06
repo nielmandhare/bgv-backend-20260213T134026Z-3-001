@@ -10,8 +10,8 @@ exports.createPanVerification = async (req, res, next) => {
 
     const query = `
       INSERT INTO verification_requests
-      (document_type, document_number, full_name, dob, client_id)
-      VALUES ($1,$2,$3,$4,$5)
+      (document_type, document_number, full_name, dob, client_id, api_status)
+      VALUES ($1,$2,$3,$4,$5::uuid,'pending')
       RETURNING *
     `;
 
@@ -47,8 +47,8 @@ exports.createAadhaarVerification = async (req, res, next) => {
 
     const query = `
       INSERT INTO verification_requests
-      (document_type, document_number, full_name, client_id)
-      VALUES ($1,$2,$3,$4)
+      (document_type, document_number, full_name, client_id, api_status)
+      VALUES ($1,$2,$3,$4::uuid,'pending')
       RETURNING *
     `;
 
@@ -83,8 +83,8 @@ exports.createGstinVerification = async (req, res, next) => {
 
     const query = `
       INSERT INTO verification_requests
-      (document_type, document_number, business_name, client_id)
-      VALUES ($1,$2,$3,$4)
+      (document_type, document_number, business_name, client_id, api_status)
+      VALUES ($1,$2,$3,$4::uuid,'pending')
       RETURNING *
     `;
 
