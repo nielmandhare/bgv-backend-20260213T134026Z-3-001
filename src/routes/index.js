@@ -27,3 +27,7 @@ router.use('/consent', consentRoutes);
 router.use('/verifications', verificationRoutes);
 
 module.exports = router;
+
+// Webhook routes (public - no auth for webhooks)
+const webhookRoutes = require('./webhookRoutes');
+router.use('/webhooks', webhookRoutes);
