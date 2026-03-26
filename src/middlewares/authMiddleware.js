@@ -1,13 +1,35 @@
-// Simple auth middleware for testing
-module.exports = {
-  authenticate: (req, res, next) => {
-    // Set test user for all requests
+const jwt = require('jsonwebtoken');
+
+const authMiddleware = (req, res, next) => {
+  try {
+    const authHeader = req.headers.authorization;
+
+    if (!authHeader) {
+      return res.status(401).json({ message: 'Access token required' });
+    }
+
+    const token = authHeader.split(' ')[1];
+
+    if (!token) {
+      return res.status(401).json({ message: 'Invalid token format' });
+    }
+
+    const decoded = jwt.verify(
+      token,
+      process.env.ACCESS_TOKEN_SECRET
+    );
+
     req.user = {
-      user_id: '047d6220-fb0b-475a-a7c0-585acceb5e97',
-      tenant_id: '7e204e4c-c1f3-43b1-8671-0c8e4f82337a',
-      email: 'test@shovelsolutions.in',
-      name: 'Test User'
-    };
+  user_id: decoded.id,
+  tenant_id: decoded.tenant_id || null, // fallback if not in token
+  role: decoded.role
+}; // attach user info to request
+
     next();
+
+  } catch (err) {
+    return res.status(403).json({ message: 'Invalid or expired token' });
   }
 };
+
+module.exports = authMiddleware;

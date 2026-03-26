@@ -36,3 +36,103 @@
 [2026-03-03T07:54:02.943Z] 💥 Uncaught Exception: Error: listen EADDRINUSE: address already in use :::5001
 [2026-03-03T07:54:23.705Z] ❌ Accept consent error: error: null value in column "subject_name" of relation "consent_records" violates not-null constraint
 [2026-03-03T07:54:23.708Z] POST /api/consent/accept 500 - 29ms
+[2026-03-22T15:00:31.577Z] ❌ Query error: SASL: SCRAM-SERVER-FIRST-MESSAGE: client password must be a string
+[2026-03-22T15:00:31.581Z] POST /api/auth/login 500 - 806ms
+[2026-03-22T18:07:05.835Z] ❌ Query error: SASL: SCRAM-SERVER-FIRST-MESSAGE: client password must be a string
+[2026-03-22T18:07:05.839Z] POST /api/auth/login 500 - 166ms
+[2026-03-22T18:11:05.497Z] ❌ Query error: SASL: SCRAM-SERVER-FIRST-MESSAGE: client password must be a string
+[2026-03-22T18:11:05.501Z] POST /api/auth/login 500 - 36ms
+[2026-03-22T18:25:39.155Z] ❌ ACCESS_TOKEN_SECRET is missing in environment variables
+[2026-03-22T18:44:28.295Z] 💥 Uncaught Exception: Error: listen EADDRINUSE: address already in use :::5001
+[2026-03-24T04:58:53.613Z] 404 - Not Found - /api/verifications/pan
+[2026-03-24T04:59:49.592Z] 404 - Not Found - /api/verifications
+[2026-03-24T05:05:04.900Z] 404 - Not Found - /api/verifications/pan
+[2026-03-24T05:06:09.387Z] 404 - Not Found - /api/verifications
+[2026-03-24T05:09:04.792Z] 404 - Not Found - /api/verifications/pan
+[2026-03-24T05:09:52.607Z] 404 - Not Found - /api/verifications
+[2026-03-24T12:39:52.367Z] 404 - Route Not Found - /api/verifications/pan
+[2026-03-24T12:39:52.409Z] 404 - Route Not Found - /api/verifications/aadhaar
+[2026-03-24T12:39:52.413Z] 404 - Route Not Found - /api/verifications/gstin
+[2026-03-24T12:39:52.418Z] 404 - Route Not Found - /api/verifications/retry/
+[2026-03-24T12:53:11.334Z] 404 - Route Not Found - /api/verifications/
+[2026-03-24T13:01:42.718Z] ❌ Query error: invalid input syntax for type uuid: "tenant_uuid"
+[2026-03-24T13:01:42.719Z] 500 - invalid input syntax for type uuid: "tenant_uuid"
+[2026-03-24T13:01:42.720Z] POST /api/verifications/pan 500 - 6ms
+[2026-03-24T13:01:42.798Z] ❌ Query error: invalid input syntax for type uuid: "tenant_uuid"
+[2026-03-24T13:01:42.799Z] 500 - invalid input syntax for type uuid: "tenant_uuid"
+[2026-03-24T13:01:42.800Z] POST /api/verifications/aadhaar 500 - 40ms
+[2026-03-24T13:01:42.936Z] ❌ Query error: invalid input syntax for type uuid: "tenant_uuid"
+[2026-03-24T13:01:42.937Z] 500 - invalid input syntax for type uuid: "tenant_uuid"
+[2026-03-24T13:01:42.937Z] POST /api/verifications/gstin 500 - 134ms
+[2026-03-24T13:01:42.942Z] 404 - Route Not Found - /api/verifications/retry/
+[2026-03-24T13:02:48.696Z] ❌ Query error: insert or update on table "verification_requests" violates foreign key constraint "verification_requests_client_id_fkey"
+[2026-03-24T13:02:48.697Z] 500 - insert or update on table "verification_requests" violates foreign key constraint "verification_requests_client_id_fkey"
+[2026-03-24T13:02:48.698Z] POST /api/verifications/pan 500 - 7ms
+[2026-03-24T13:02:48.926Z] ❌ Query error: insert or update on table "verification_requests" violates foreign key constraint "verification_requests_client_id_fkey"
+[2026-03-24T13:02:48.926Z] 500 - insert or update on table "verification_requests" violates foreign key constraint "verification_requests_client_id_fkey"
+[2026-03-24T13:02:48.927Z] POST /api/verifications/aadhaar 500 - 30ms
+[2026-03-24T13:02:49.061Z] ❌ Query error: insert or update on table "verification_requests" violates foreign key constraint "verification_requests_client_id_fkey"
+[2026-03-24T13:02:49.062Z] 500 - insert or update on table "verification_requests" violates foreign key constraint "verification_requests_client_id_fkey"
+[2026-03-24T13:02:49.062Z] POST /api/verifications/gstin 500 - 30ms
+[2026-03-24T13:02:49.141Z] 404 - Route Not Found - /api/verifications/retry/
+[2026-03-26T12:49:32.384Z] 400 - "email" must be a valid email
+[2026-03-26T13:12:44.281Z] GET /api/health 500 - 2ms
+[2026-03-26T13:12:44.288Z] GET /api/health 500 - 2ms
+[2026-03-26T13:12:44.331Z] GET /api/health 500 - 1ms
+[2026-03-26T13:12:44.336Z] GET /api/health 500 - 1ms
+[2026-03-26T13:12:44.339Z] GET /api/health 500 - 0ms
+[2026-03-26T13:12:44.342Z] GET /api/health 500 - 0ms
+[2026-03-26T13:12:44.346Z] GET /api/health 500 - 1ms
+[2026-03-26T13:12:44.348Z] GET /api/health 500 - 0ms
+[2026-03-26T13:12:44.351Z] GET /api/health 500 - 0ms
+[2026-03-26T13:12:44.353Z] GET /api/health 500 - 1ms
+[2026-03-26T13:12:44.356Z] GET /api/health 500 - 1ms
+[2026-03-26T13:12:44.359Z] GET /api/health 500 - 0ms
+[2026-03-26T13:12:44.361Z] GET /api/health 500 - 1ms
+[2026-03-26T13:12:44.365Z] GET /api/health 500 - 1ms
+[2026-03-26T13:12:44.367Z] GET /api/health 500 - 1ms
+[2026-03-26T13:12:44.370Z] GET /api/health 500 - 0ms
+[2026-03-26T13:12:44.373Z] GET /api/health 500 - 0ms
+[2026-03-26T13:12:44.375Z] GET /api/health 500 - 0ms
+[2026-03-26T13:12:44.379Z] GET /api/health 500 - 0ms
+[2026-03-26T13:12:44.381Z] GET /api/health 500 - 1ms
+[2026-03-26T13:12:44.384Z] GET /api/health 500 - 1ms
+[2026-03-26T13:12:44.386Z] GET /api/health 500 - 1ms
+[2026-03-26T13:12:44.389Z] GET /api/health 500 - 1ms
+[2026-03-26T13:12:44.392Z] GET /api/health 500 - 0ms
+[2026-03-26T13:12:44.395Z] GET /api/health 500 - 0ms
+[2026-03-26T13:12:44.397Z] GET /api/health 500 - 1ms
+[2026-03-26T13:12:44.400Z] GET /api/health 500 - 1ms
+[2026-03-26T13:12:44.403Z] GET /api/health 500 - 1ms
+[2026-03-26T13:12:44.405Z] GET /api/health 500 - 0ms
+[2026-03-26T13:12:44.408Z] GET /api/health 500 - 1ms
+[2026-03-26T13:12:44.411Z] GET /api/health 500 - 1ms
+[2026-03-26T13:12:44.414Z] GET /api/health 500 - 1ms
+[2026-03-26T13:12:44.417Z] GET /api/health 500 - 1ms
+[2026-03-26T13:12:44.419Z] GET /api/health 500 - 0ms
+[2026-03-26T13:12:44.422Z] GET /api/health 500 - 1ms
+[2026-03-26T13:12:44.424Z] GET /api/health 500 - 1ms
+[2026-03-26T13:12:44.427Z] GET /api/health 500 - 1ms
+[2026-03-26T13:12:44.430Z] GET /api/health 500 - 0ms
+[2026-03-26T13:12:44.433Z] GET /api/health 500 - 1ms
+[2026-03-26T13:12:44.436Z] GET /api/health 500 - 1ms
+[2026-03-26T13:12:44.440Z] GET /api/health 500 - 1ms
+[2026-03-26T13:12:44.443Z] GET /api/health 500 - 1ms
+[2026-03-26T13:12:44.446Z] GET /api/health 500 - 1ms
+[2026-03-26T13:12:44.448Z] GET /api/health 500 - 0ms
+[2026-03-26T13:12:44.451Z] GET /api/health 500 - 1ms
+[2026-03-26T13:12:44.454Z] GET /api/health 500 - 0ms
+[2026-03-26T13:12:44.456Z] GET /api/health 500 - 1ms
+[2026-03-26T13:12:44.458Z] GET /api/health 500 - 1ms
+[2026-03-26T13:12:44.461Z] GET /api/health 500 - 0ms
+[2026-03-26T13:12:44.463Z] GET /api/health 500 - 0ms
+[2026-03-26T13:12:44.465Z] GET /api/health 500 - 0ms
+[2026-03-26T13:12:44.469Z] GET /api/health 500 - 2ms
+[2026-03-26T13:12:44.473Z] GET /api/health 500 - 0ms
+[2026-03-26T13:12:44.475Z] GET /api/health 500 - 0ms
+[2026-03-26T13:12:44.478Z] GET /api/health 500 - 0ms
+[2026-03-26T13:12:44.481Z] GET /api/health 500 - 1ms
+[2026-03-26T13:12:44.483Z] GET /api/health 500 - 0ms
+[2026-03-26T13:12:44.485Z] GET /api/health 500 - 1ms
+[2026-03-26T13:12:44.488Z] GET /api/health 500 - 0ms
+[2026-03-26T13:12:44.490Z] GET /api/health 500 - 0ms

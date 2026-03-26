@@ -2,6 +2,8 @@ const express = require('express');
 const helmet = require('helmet');
 const compression = require('compression');
 const cors = require('cors');
+const rateLimit = require('express-rate-limit');
+const apiKeyAuth = require('./middlewares/apiKeyAuth');
 require('dotenv').config({ path: `.env.${process.env.NODE_ENV || 'development'}` });
 
 // Import routes
@@ -17,26 +19,59 @@ const logger = require('./utils/logger');
 const app = express();
 
 // ====================================
+// HTTPS / PROXY CONFIG (Production Ready)
+// ====================================
+if (process.env.NODE_ENV === 'production') {
+  app.set('trust proxy', 1);
+}
+
+// ====================================
 // 1. SECURITY MIDDLEWARE
 // ====================================
-app.use(helmet());                     // Security headers
-app.use(cors());                      // CORS support
-app.use(compression());              // Gzip compression
+app.use(helmet());
+app.use(cors());
+app.use(compression());
 
 // ====================================
 // 2. PARSING MIDDLEWARE
 // ====================================
-app.use(express.json({ limit: '10mb' }));     // Parse JSON bodies
+app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
 // ====================================
-// 3. LOGGING MIDDLEWARE (NO SENSITIVE DATA)
+// 3. LOGGING MIDDLEWARE
 // ====================================
-app.use(requestLogger);              // Log requests with masked sensitive data
-app.use(logger.middleware);         // Log response times and status codes
+app.use(requestLogger);
+app.use(logger.middleware);
 
 // ====================================
-// 4. HEALTH CHECK (NO LOGGING)
+// 4. RATE LIMITERS
+// ====================================
+
+// Global limiter — loose, just protects public routes like /health
+const globalLimiter = rateLimit({
+  windowMs: Number(process.env.RATE_LIMIT_WINDOW_MS) || 900000, // 15 min
+  max: Number(process.env.RATE_LIMIT_MAX_REQUESTS) || 100,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { success: false, message: 'Too many requests, please try again later.' }
+});
+
+// API limiter — strict, applied to all /api/* routes
+const apiLimiter = rateLimit({
+  windowMs: Number(process.env.API_RATE_LIMIT_WINDOW_MS) || 60000, // 1 min
+  max: Number(process.env.API_RATE_LIMIT_MAX_REQUESTS) || 60,      // 60 req/min
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { success: false, message: 'Too many requests, please try again later.' }
+});
+
+app.use(globalLimiter);                  // applies to everything
+app.use('/api', apiLimiter);             // stricter limit on /api/*
+app.use('/api', apiKeyAuth);             // API key check on /api/*
+
+// ====================================
+// 5. HEALTH CHECK (public — no API key)
 // ====================================
 app.get('/health', (req, res) => {
   res.json({
@@ -49,7 +84,7 @@ app.get('/health', (req, res) => {
 });
 
 // ====================================
-// 5. ROOT ROUTE
+// 6. ROOT ROUTE (public — no API key)
 // ====================================
 app.get('/', (req, res) => {
   res.json({
@@ -63,37 +98,31 @@ app.get('/', (req, res) => {
 });
 
 // ====================================
-// 6. API ROUTES
+// 7. API ROUTES
 // ====================================
 app.use('/api', routes);
 
 // ====================================
-// 7. 404 HANDLER - Route not found
+// 8. 404 HANDLER
 // ====================================
 app.use(errorMiddleware.notFound);
 
 // ====================================
-// 8. GLOBAL ERROR HANDLER
+// 9. GLOBAL ERROR HANDLER
 // ====================================
 app.use(errorMiddleware.errorHandler);
 
 // ====================================
-// 9. UNCAUGHT EXCEPTION HANDLER
+// 10. UNCAUGHT EXCEPTION HANDLER
 // ====================================
 process.on('uncaughtException', (err) => {
   logger.error('💥 Uncaught Exception:', err);
-  // Gracefully shutdown
-  setTimeout(() => {
-    process.exit(1);
-  }, 1000);
+  setTimeout(() => process.exit(1), 1000);
 });
 
 process.on('unhandledRejection', (err) => {
   logger.error('💥 Unhandled Rejection:', err);
-  // Gracefully shutdown
-  setTimeout(() => {
-    process.exit(1);
-  }, 1000);
+  setTimeout(() => process.exit(1), 1000);
 });
 
 module.exports = app;

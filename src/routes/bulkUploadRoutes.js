@@ -8,8 +8,13 @@ const {
 const createBatchMiddleware = require('../middlewares/createBatchMiddleware');
 const authMiddleware = require('../middlewares/authMiddleware');
 
+console.log('DEBUG:',
+  typeof createBatchMiddleware,
+  typeof handleMultipleUpload,
+  typeof bulkUploadController.uploadFiles
+);
 // All routes require authentication
-router.use(authMiddleware.authenticate);
+
 
 // ============================================
 // IMPORTANT: MIDDLEWARE ORDER MATTERS!

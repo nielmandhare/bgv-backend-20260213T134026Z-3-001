@@ -1,0 +1,109 @@
+[2026-03-22T14:37:50.994Z] INFO: 🚀 Server running on http://localhost:5001
+[2026-03-22T14:37:50.995Z] INFO: 📦 Environment: development
+[2026-03-22T14:37:50.995Z] INFO: 📝 API: http://localhost:5001/api
+[2026-03-22T14:37:50.996Z] INFO: 💾 Database: bgv_platform
+[2026-03-22T14:51:32.654Z] INFO: 🚀 Server running on http://localhost:5001
+[2026-03-22T14:51:32.655Z] INFO: 📦 Environment: development
+[2026-03-22T14:51:32.655Z] INFO: 📝 API: http://localhost:5001/api
+[2026-03-22T14:51:32.656Z] INFO: 💾 Database: bgv_platform
+[2026-03-22T15:00:07.330Z] INFO: 🚀 Server running on http://localhost:5001
+[2026-03-22T15:00:07.337Z] INFO: 📦 Environment: development
+[2026-03-22T15:00:07.337Z] INFO: 📝 API: http://localhost:5001/api
+[2026-03-22T15:00:07.338Z] INFO: 💾 Database: bgv_platform
+[2026-03-22T15:00:30.774Z] DEBUG: 📥 POST /api/auth/login [object Object]
+[2026-03-22T15:00:30.775Z] DEBUG: 📝 SQL: SELECT * FROM users WHERE email = $1...
+[2026-03-22T15:00:31.577Z] ERROR: ❌ Query error: SASL: SCRAM-SERVER-FIRST-MESSAGE: client password must be a string
+[2026-03-22T15:00:31.581Z] ERROR: POST /api/auth/login 500 - 806ms
+[2026-03-22T18:06:59.357Z] INFO: 🚀 Server running on http://localhost:5001
+[2026-03-22T18:06:59.363Z] INFO: 📦 Environment: development
+[2026-03-22T18:06:59.364Z] INFO: 📝 API: http://localhost:5001/api
+[2026-03-22T18:06:59.364Z] INFO: 💾 Database: bgv_platform
+[2026-03-22T18:07:05.672Z] DEBUG: 📥 POST /api/auth/login [object Object]
+[2026-03-22T18:07:05.674Z] DEBUG: 📝 SQL: SELECT * FROM users WHERE email = $1...
+[2026-03-22T18:07:05.835Z] ERROR: ❌ Query error: SASL: SCRAM-SERVER-FIRST-MESSAGE: client password must be a string
+[2026-03-22T18:07:05.839Z] ERROR: POST /api/auth/login 500 - 166ms
+[2026-03-22T18:10:53.411Z] INFO: 🚀 Server running on http://localhost:5001
+[2026-03-22T18:10:53.412Z] INFO: 📦 Environment: development
+[2026-03-22T18:10:53.412Z] INFO: 📝 API: http://localhost:5001/api
+[2026-03-22T18:10:53.413Z] INFO: 💾 Database: bgv_platform
+[2026-03-22T18:11:05.464Z] DEBUG: 📥 POST /api/auth/login [object Object]
+[2026-03-22T18:11:05.466Z] DEBUG: 📝 SQL: SELECT * FROM users WHERE email = $1...
+[2026-03-22T18:11:05.497Z] ERROR: ❌ Query error: SASL: SCRAM-SERVER-FIRST-MESSAGE: client password must be a string
+[2026-03-22T18:11:05.501Z] ERROR: POST /api/auth/login 500 - 36ms
+[2026-03-22T18:13:08.674Z] INFO: 🚀 Server running on http://localhost:5001
+[2026-03-22T18:13:08.674Z] INFO: 📦 Environment: development
+[2026-03-22T18:13:08.674Z] INFO: 📝 API: http://localhost:5001/api
+[2026-03-22T18:13:08.675Z] INFO: 💾 Database: bgv_platform
+[2026-03-22T18:15:41.621Z] INFO: 🚀 Server running on http://localhost:5001
+[2026-03-22T18:15:41.622Z] INFO: 📦 Environment: development
+[2026-03-22T18:15:41.622Z] INFO: 📝 API: http://localhost:5001/api
+[2026-03-22T18:15:41.622Z] INFO: 💾 Database: bgv_platform
+[2026-03-22T18:18:22.079Z] INFO: 🚀 Server running on http://localhost:5001
+[2026-03-22T18:18:22.079Z] INFO: 📦 Environment: development
+[2026-03-22T18:18:22.079Z] INFO: 📝 API: http://localhost:5001/api
+[2026-03-22T18:18:22.080Z] INFO: 💾 Database: bgv_platform
+[2026-03-22T18:18:55.726Z] INFO: 🚀 Server running on http://localhost:5001
+[2026-03-22T18:18:55.727Z] INFO: 📦 Environment: development
+[2026-03-22T18:18:55.727Z] INFO: 📝 API: http://localhost:5001/api
+[2026-03-22T18:18:55.727Z] INFO: 💾 Database: bgv_platform
+[2026-03-22T18:22:45.698Z] INFO: 🚀 Server running on http://localhost:5001
+[2026-03-22T18:22:45.699Z] INFO: 📦 Environment: development
+[2026-03-22T18:22:45.699Z] INFO: 📝 API: http://localhost:5001/api
+[2026-03-22T18:22:45.700Z] INFO: 💾 Database: bgv_platform
+[2026-03-22T18:23:10.475Z] INFO: 🚀 Server running on http://localhost:5001
+[2026-03-22T18:23:10.475Z] INFO: 📦 Environment: development
+[2026-03-22T18:23:10.476Z] INFO: 📝 API: http://localhost:5001/api
+[2026-03-22T18:23:10.476Z] INFO: 💾 Database: bgv_platform
+[2026-03-22T18:25:39.155Z] ERROR: ❌ ACCESS_TOKEN_SECRET is missing in environment variables
+[2026-03-22T18:32:01.347Z] INFO: 🚀 Server running on http://localhost:5001
+[2026-03-22T18:32:01.347Z] INFO: 📦 Environment: development
+[2026-03-22T18:32:01.348Z] INFO: 📝 API: http://localhost:5001/api
+[2026-03-22T18:32:01.348Z] INFO: 💾 Database: bgv_platform
+[2026-03-22T18:44:28.295Z] ERROR: 💥 Uncaught Exception: Error: listen EADDRINUSE: address already in use :::5001
+[2026-03-22T18:52:06.979Z] INFO: 🚀 Server running on http://localhost:5001
+[2026-03-22T18:52:06.980Z] INFO: 📦 Environment: development
+[2026-03-22T18:52:06.980Z] INFO: 📝 API: http://localhost:5001/api
+[2026-03-22T18:52:06.980Z] INFO: 💾 Database: bgv_platform
+[2026-03-22T18:53:01.157Z] INFO: 🚀 Server running on http://localhost:5001
+[2026-03-22T18:53:01.158Z] INFO: 📦 Environment: development
+[2026-03-22T18:53:01.158Z] INFO: 📝 API: http://localhost:5001/api
+[2026-03-22T18:53:01.158Z] INFO: 💾 Database: bgv_platform
+[2026-03-22T18:53:46.883Z] INFO: 🚀 Server running on http://localhost:5001
+[2026-03-22T18:53:46.884Z] INFO: 📦 Environment: development
+[2026-03-22T18:53:46.884Z] INFO: 📝 API: http://localhost:5001/api
+[2026-03-22T18:53:46.884Z] INFO: 💾 Database: bgv_platform
+[2026-03-22T18:59:38.082Z] INFO: 🚀 Server running on http://localhost:5001
+[2026-03-22T18:59:38.082Z] INFO: 📦 Environment: development
+[2026-03-22T18:59:38.083Z] INFO: 📝 API: http://localhost:5001/api
+[2026-03-22T18:59:38.083Z] INFO: 💾 Database: bgv_platform
+[2026-03-22T19:09:36.444Z] INFO: 🚀 Server running on http://localhost:5001
+[2026-03-22T19:09:36.445Z] INFO: 📦 Environment: development
+[2026-03-22T19:09:36.445Z] INFO: 📝 API: http://localhost:5001/api
+[2026-03-22T19:09:36.446Z] INFO: 💾 Database: bgv_platform
+[2026-03-22T19:24:19.563Z] INFO: 🚀 Server running on http://localhost:5001
+[2026-03-22T19:24:19.564Z] INFO: 📦 Environment: development
+[2026-03-22T19:24:19.564Z] INFO: 📝 API Docs:    http://localhost:5001/api
+[2026-03-22T19:24:19.564Z] INFO: 💾 Database:    bgv_platform
+[2026-03-22T19:24:19.565Z] INFO: 👤 DB User:     postgres
+[2026-03-22T19:26:12.106Z] DEBUG: 📥 POST /api/auth/login [object Object]
+[2026-03-22T19:26:12.107Z] DEBUG: 📝 SQL: SELECT * FROM users WHERE email = $1...
+[2026-03-22T19:26:12.143Z] INFO: ✅ Database connected
+[2026-03-22T19:26:12.203Z] WARN: POST /api/auth/login 401 - 96ms
+[2026-03-22T19:30:12.142Z] DEBUG: 📥 POST /api/auth/login [object Object]
+[2026-03-22T19:30:12.142Z] DEBUG: 📝 SQL: SELECT * FROM users WHERE email = $1...
+[2026-03-22T19:30:12.168Z] INFO: ✅ Database connected
+[2026-03-22T19:30:12.223Z] WARN: POST /api/auth/login 401 - 80ms
+[2026-03-22T19:37:57.942Z] INFO: 🚀 Server running on http://localhost:5001
+[2026-03-22T19:37:57.942Z] INFO: 📦 Environment: development
+[2026-03-22T19:37:57.943Z] INFO: 📝 API Docs:    http://localhost:5001/api
+[2026-03-22T19:37:57.943Z] INFO: 💾 Database:    bgv_platform
+[2026-03-22T19:37:57.943Z] INFO: 👤 DB User:     postgres
+[2026-03-22T19:38:12.108Z] DEBUG: 📥 POST /api/auth/login [object Object]
+[2026-03-22T19:38:12.111Z] DEBUG: 📝 SQL: SELECT * FROM users WHERE email = $1...
+[2026-03-22T19:38:12.145Z] INFO: ✅ Database connected
+[2026-03-22T19:38:12.201Z] DEBUG: 📝 SQL: INSERT INTO refresh_tokens (user_id, token, expires_at)
+       VALUES ($1, $2, NOW() + INTERVAL '7 days')...
+[2026-03-22T19:38:12.216Z] INFO: POST /api/auth/login 200 - 108ms
+[2026-03-22T19:39:08.641Z] DEBUG: 📥 GET /api/tenants [object Object]
+[2026-03-22T19:39:08.643Z] WARN: ⚠️ No tenant found in user object
+[2026-03-22T19:39:08.644Z] WARN: GET /api/tenants 403 - 2ms

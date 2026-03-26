@@ -5,7 +5,7 @@ const authMiddleware = require('../middlewares/authMiddleware');
 const consentMiddleware = require('../middlewares/consentMiddleware');
 
 // All routes require authentication
-router.use(authMiddleware.authenticate);
+router.use(authMiddleware);
 
 // Get all consents for current user
 router.get('/my-consents', consentController.getMyConsents);

@@ -1,13 +1,17 @@
+console.log("FINAL ENV:", process.env.DB_PASSWORD);
+console.log("ENV CHECK:", {
+  DB_USER: process.env.DB_USER,
+  DB_PASSWORD: process.env.DB_PASSWORD,
+});
 const { Pool } = require('pg');
 const logger = require('./logger');
-require('dotenv').config({ path: `.env.${process.env.NODE_ENV || 'development'}` });
 
 const pool = new Pool({
-  user: process.env.DB_USER,
-  host: process.env.DB_HOST,
-  database: process.env.DB_NAME,
-  password: process.env.DB_PASSWORD,
-  port: process.env.DB_PORT,
+  user: "postgres",
+  host: "localhost",
+  database: "bgv_platform",
+  password: "mmcoe",
+  port: 5432,
 });
 
 pool.on('connect', () => {

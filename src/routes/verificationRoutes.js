@@ -1,37 +1,26 @@
-const express = require('express');
+console.log("✅ VERIFICATION ROUTES LOADED");
+
+const express = require("express");
 const router = express.Router();
-const verificationController = require('../controllers/verificationController');
-const authMiddleware = require('../middlewares/authMiddleware');
-const consentMiddleware = require('../middlewares/consentMiddleware');
 
-// All routes require authentication
-router.use(authMiddleware.authenticate);
+const verificationController = require("../controllers/verificationController");
 
-// Create verification with consent validation
-router.post(
-  '/', 
-  consentMiddleware.captureConsent,
-  verificationController.createVerification
-);
+console.log("DEBUG Controller:", verificationController);
 
-// Alternative: Using validateConsent middleware (more thorough)
-router.post(
-  '/with-consent-check',
-  consentMiddleware.validateConsent(['terms', 'privacy', 'data_processing']),
-  consentMiddleware.saveConsent('verification', 'User consented to verification process', '1.0'),
-  verificationController.createVerification
-);
+/* PAN Verification */
+router.post("/pan", verificationController.createPanVerification);
 
-// Get all verifications for tenant
-router.get('/', verificationController.getVerifications);
+/* Aadhaar Verification */
+router.post("/aadhaar", verificationController.createAadhaarVerification);
 
-// Get verification by ID
-router.get('/:id', verificationController.getVerificationById);
+/* GSTIN Verification */
+router.post("/gstin", verificationController.createGstinVerification);
 
-// Get consent for specific verification
-router.get('/:id/consent', verificationController.getVerificationConsent);
+/* Retry Verification */
+router.post("/retry/:id", verificationController.retryVerification);
 
-// Check consent status for a verification type
-router.get('/consent-status/:verification_type', verificationController.checkConsentStatus);
+router.get('/', (req, res) => {
+  res.json({ message: 'Verification routes working' });
+});
 
 module.exports = router;
