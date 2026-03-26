@@ -1,0 +1,6 @@
+[2026-03-18T11:13:59.867Z] INFO: 🔄 Processing idfy response for pan
+[2026-03-18T11:13:59.873Z] INFO: ✅ Processed idfy response with confidence 0.93
+[2026-03-18T11:15:48.600Z] INFO: 🚀 Server running on http://localhost:5001
+[2026-03-18T11:15:48.601Z] INFO: 📦 Environment: development
+[2026-03-18T11:15:48.601Z] INFO: 📝 API: http://localhost:5001/api
+[2026-03-18T11:15:48.601Z] INFO: 💾 Database: bgv_platform

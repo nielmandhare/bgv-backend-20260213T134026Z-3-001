@@ -1,0 +1,460 @@
+[2026-03-28T06:53:39.323Z] INFO: 🔄 Polling fallback and retry jobs initialized
+[2026-03-28T06:53:39.325Z] INFO: 🚀 Server running on http://localhost:5001
+[2026-03-28T06:53:39.325Z] INFO: 📦 Environment: development
+[2026-03-28T06:53:39.325Z] INFO: 📝 API: http://localhost:5001/api
+[2026-03-28T06:53:39.325Z] INFO: 💾 Database: bgv_platform
+[2026-03-28T06:53:39.325Z] INFO: 🔄 Polling fallback: Active
+[2026-03-28T06:53:39.325Z] INFO: 🔄 Retry job: Active
+[2026-03-28T06:54:04.293Z] DEBUG: 📥 GET /api/test-idfy/connection [object Object]
+[2026-03-28T06:54:04.294Z] DEBUG: 🔒 Tenant isolation: 7e204e4c-c1f3-43b1-8671-0c8e4f82337a
+[2026-03-28T06:54:04.294Z] INFO: 🔍 Verifying PAN: ABCDE1234F
+[2026-03-28T06:54:04.893Z] ERROR: ❌ PAN verification failed: [object Object]
+[2026-03-28T06:54:04.897Z] INFO: GET /api/test-idfy/connection 200 - 603ms
+[2026-03-28T06:54:49.059Z] DEBUG: 📥 POST /api/test-idfy/aadhaar [object Object]
+[2026-03-28T06:54:49.060Z] DEBUG: 🔒 Tenant isolation: 7e204e4c-c1f3-43b1-8671-0c8e4f82337a
+[2026-03-28T06:54:49.060Z] INFO: 📝 Testing Aadhaar verification: 123456789012
+[2026-03-28T06:54:49.060Z] INFO: 🔍 Verifying Aadhaar: 1234XXXXXX123456789012
+[2026-03-28T06:54:49.160Z] ERROR: ❌ Aadhaar verification failed: [object Object]
+[2026-03-28T06:54:49.162Z] INFO: POST /api/test-idfy/aadhaar 200 - 102ms
+[2026-03-28T06:56:16.729Z] DEBUG: 📥 POST /api/test-idfy/aadhaar [object Object]
+[2026-03-28T06:56:16.730Z] DEBUG: 🔒 Tenant isolation: 7e204e4c-c1f3-43b1-8671-0c8e4f82337a
+[2026-03-28T06:56:16.730Z] INFO: 📝 Testing Aadhaar verification: 609415715050
+[2026-03-28T06:56:16.730Z] INFO: 🔍 Verifying Aadhaar: 6094XXXXXX609415715050
+[2026-03-28T06:56:16.795Z] ERROR: ❌ Aadhaar verification failed: [object Object]
+[2026-03-28T06:56:16.797Z] INFO: POST /api/test-idfy/aadhaar 200 - 67ms
+[2026-03-28T06:57:36.494Z] INFO: SIGINT received, shutting down gracefully
+[2026-03-28T06:57:58.079Z] INFO: 🔄 Polling fallback and retry jobs initialized
+[2026-03-28T06:57:58.081Z] INFO: 🚀 Server running on http://localhost:5001
+[2026-03-28T06:57:58.081Z] INFO: 📦 Environment: development
+[2026-03-28T06:57:58.081Z] INFO: 📝 API: http://localhost:5001/api
+[2026-03-28T06:57:58.081Z] INFO: 💾 Database: bgv_platform
+[2026-03-28T06:57:58.081Z] INFO: 🔄 Polling fallback: Active
+[2026-03-28T06:57:58.081Z] INFO: 🔄 Retry job: Active
+[2026-03-28T06:58:04.461Z] DEBUG: 📥 GET /api/test-idfy/connection [object Object]
+[2026-03-28T06:58:04.461Z] DEBUG: 🔒 Tenant isolation: 7e204e4c-c1f3-43b1-8671-0c8e4f82337a
+[2026-03-28T06:58:04.462Z] INFO: 🔍 Verifying PAN: ABCDE1234F
+[2026-03-28T06:58:04.589Z] ERROR: ❌ PAN verification failed: [object Object]
+[2026-03-28T06:58:04.592Z] INFO: GET /api/test-idfy/connection 200 - 131ms
+[2026-03-28T06:58:25.193Z] DEBUG: 📥 GET /api/test-idfy/connection [object Object]
+[2026-03-28T06:58:25.194Z] DEBUG: 🔒 Tenant isolation: 7e204e4c-c1f3-43b1-8671-0c8e4f82337a
+[2026-03-28T06:58:25.194Z] INFO: 🔍 Verifying PAN: ABCDE1234F
+[2026-03-28T06:58:25.340Z] ERROR: ❌ PAN verification failed: [object Object]
+[2026-03-28T06:58:25.343Z] INFO: GET /api/test-idfy/connection 200 - 149ms
+[2026-03-28T07:01:01.585Z] INFO: SIGINT received, shutting down gracefully
+[2026-03-28T07:01:43.676Z] INFO: 🔄 Polling fallback and retry jobs initialized
+[2026-03-28T07:01:43.677Z] INFO: 🚀 Server running on http://localhost:5001
+[2026-03-28T07:01:43.677Z] INFO: 📦 Environment: development
+[2026-03-28T07:01:43.677Z] INFO: 📝 API: http://localhost:5001/api
+[2026-03-28T07:01:43.677Z] INFO: 💾 Database: bgv_platform
+[2026-03-28T07:01:43.677Z] INFO: 🔄 Polling fallback: Active
+[2026-03-28T07:01:43.677Z] INFO: 🔄 Retry job: Active
+[2026-03-28T07:01:59.829Z] DEBUG: 📥 GET /api/test-idfy/connection [object Object]
+[2026-03-28T07:01:59.830Z] DEBUG: 🔒 Tenant isolation: 7e204e4c-c1f3-43b1-8671-0c8e4f82337a
+[2026-03-28T07:01:59.830Z] INFO: 🔍 Verifying PAN: ABCDE1234F
+[2026-03-28T07:01:59.831Z] DEBUG: 📡 Creating PAN task...
+[2026-03-28T07:02:00.484Z] INFO: 📋 PAN task created: 3f8f5a0b-b6d3-45da-a4a5-40d4958d2c65
+[2026-03-28T07:02:00.533Z] DEBUG: Poll attempt 1: status = undefined
+[2026-03-28T07:02:03.597Z] DEBUG: Poll attempt 2: status = undefined
+[2026-03-28T07:02:06.664Z] DEBUG: Poll attempt 3: status = undefined
+[2026-03-28T07:02:09.791Z] DEBUG: Poll attempt 4: status = undefined
+[2026-03-28T07:02:12.857Z] DEBUG: Poll attempt 5: status = undefined
+[2026-03-28T07:02:16.380Z] DEBUG: Poll attempt 6: status = undefined
+[2026-03-28T07:02:19.458Z] DEBUG: Poll attempt 7: status = undefined
+[2026-03-28T07:02:22.539Z] DEBUG: Poll attempt 8: status = undefined
+[2026-03-28T07:02:25.609Z] DEBUG: Poll attempt 9: status = undefined
+[2026-03-28T07:02:28.671Z] DEBUG: Poll attempt 10: status = undefined
+[2026-03-28T07:02:31.674Z] ERROR: ❌ PAN verification failed: Timeout waiting for task completion
+[2026-03-28T07:02:31.682Z] INFO: GET /api/test-idfy/connection 200 - 31853ms
+[2026-03-28T07:03:33.274Z] INFO: SIGINT received, shutting down gracefully
+[2026-03-28T07:03:50.077Z] INFO: 🔄 Polling fallback and retry jobs initialized
+[2026-03-28T07:03:50.078Z] INFO: 🚀 Server running on http://localhost:5001
+[2026-03-28T07:03:50.078Z] INFO: 📦 Environment: development
+[2026-03-28T07:03:50.078Z] INFO: 📝 API: http://localhost:5001/api
+[2026-03-28T07:03:50.078Z] INFO: 💾 Database: bgv_platform
+[2026-03-28T07:03:50.078Z] INFO: 🔄 Polling fallback: Active
+[2026-03-28T07:03:50.078Z] INFO: 🔄 Retry job: Active
+[2026-03-28T07:03:59.053Z] DEBUG: 📥 GET /api/test-idfy/connection [object Object]
+[2026-03-28T07:03:59.053Z] DEBUG: 🔒 Tenant isolation: 7e204e4c-c1f3-43b1-8671-0c8e4f82337a
+[2026-03-28T07:03:59.054Z] INFO: 🔍 Verifying PAN: ABCDE1234F
+[2026-03-28T07:03:59.054Z] DEBUG: 📡 Creating PAN task...
+[2026-03-28T07:03:59.208Z] INFO: 📋 PAN task created: c711025d-0e5f-4b67-9a43-fa78f81df2c2
+[2026-03-28T07:03:59.264Z] DEBUG: 📦 IDfy Response structure: [
+  {
+    "action": "extract",
+    "created_at": "2026-03-28T07:03:59.216786Z",
+    "group_id": "d2fb1033-7171-4aa8-b97d-72de625508a9",
+    "request_id": "c711025d-0e5f-4b67-9a43-fa78f81df2c2",
+    "status": "in_progress",
+    "task_id": "a047398a-e878-43f9-af80-bb545a70bd03",
+    "type": "ind_pan"
+  }
+]
+[2026-03-28T07:03:59.264Z] DEBUG: Poll attempt 1: status = undefined
+[2026-03-28T07:04:01.341Z] DEBUG: Poll attempt 2: status = undefined
+[2026-03-28T07:04:03.426Z] DEBUG: Poll attempt 3: status = undefined
+[2026-03-28T07:04:05.503Z] DEBUG: Poll attempt 4: status = undefined
+[2026-03-28T07:04:07.572Z] DEBUG: Poll attempt 5: status = undefined
+[2026-03-28T07:04:09.640Z] DEBUG: Poll attempt 6: status = undefined
+[2026-03-28T07:04:11.713Z] DEBUG: Poll attempt 7: status = undefined
+[2026-03-28T07:04:13.781Z] DEBUG: Poll attempt 8: status = undefined
+[2026-03-28T07:04:15.851Z] DEBUG: Poll attempt 9: status = undefined
+[2026-03-28T07:04:17.935Z] DEBUG: Poll attempt 10: status = undefined
+[2026-03-28T07:04:20.070Z] DEBUG: Poll attempt 11: status = undefined
+[2026-03-28T07:04:22.155Z] DEBUG: Poll attempt 12: status = undefined
+[2026-03-28T07:04:24.248Z] DEBUG: Poll attempt 13: status = undefined
+[2026-03-28T07:04:26.397Z] DEBUG: Poll attempt 14: status = undefined
+[2026-03-28T07:04:28.490Z] DEBUG: Poll attempt 15: status = undefined
+[2026-03-28T07:04:30.586Z] DEBUG: Poll attempt 16: status = undefined
+[2026-03-28T07:04:32.675Z] DEBUG: Poll attempt 17: status = undefined
+[2026-03-28T07:04:34.741Z] DEBUG: Poll attempt 18: status = undefined
+[2026-03-28T07:04:36.818Z] DEBUG: Poll attempt 19: status = undefined
+[2026-03-28T07:04:38.879Z] DEBUG: Poll attempt 20: status = undefined
+[2026-03-28T07:04:38.881Z] ERROR: ❌ PAN verification failed: Timeout waiting for task completion
+[2026-03-28T07:04:38.887Z] INFO: GET /api/test-idfy/connection 200 - 39833ms
+[2026-03-28T07:10:46.690Z] INFO: SIGINT received, shutting down gracefully
+[2026-03-28T07:11:02.276Z] INFO: 🔄 Polling fallback and retry jobs initialized
+[2026-03-28T07:11:02.277Z] INFO: 🚀 Server running on http://localhost:5001
+[2026-03-28T07:11:02.277Z] INFO: 📦 Environment: development
+[2026-03-28T07:11:02.277Z] INFO: 📝 API: http://localhost:5001/api
+[2026-03-28T07:11:02.277Z] INFO: 💾 Database: bgv_platform
+[2026-03-28T07:11:02.277Z] INFO: 🔄 Polling fallback: Active
+[2026-03-28T07:11:02.277Z] INFO: 🔄 Retry job: Active
+[2026-03-28T07:11:08.553Z] DEBUG: 📥 GET /api/test-idfy/connection [object Object]
+[2026-03-28T07:11:08.554Z] DEBUG: 🔒 Tenant isolation: 7e204e4c-c1f3-43b1-8671-0c8e4f82337a
+[2026-03-28T07:11:08.555Z] INFO: 🔍 Verifying PAN: ABCDE1234F
+[2026-03-28T07:11:08.555Z] DEBUG: 📡 Creating PAN task...
+[2026-03-28T07:11:08.698Z] INFO: 📋 PAN task created: a7e4afea-1087-48f7-a6ac-abd4d22d2e11
+[2026-03-28T07:11:08.750Z] DEBUG: Poll attempt 1: status = in_progress
+[2026-03-28T07:11:10.826Z] DEBUG: Poll attempt 2: status = failed
+[2026-03-28T07:11:10.828Z] WARN: ⚠️ Task failed
+[2026-03-28T07:11:10.834Z] INFO: GET /api/test-idfy/connection 200 - 2280ms
+[2026-03-28T07:12:31.447Z] INFO: SIGINT received, shutting down gracefully
+[2026-03-28T07:12:40.671Z] INFO: 🔄 Polling fallback and retry jobs initialized
+[2026-03-28T07:12:40.672Z] INFO: 🚀 Server running on http://localhost:5001
+[2026-03-28T07:12:40.672Z] INFO: 📦 Environment: development
+[2026-03-28T07:12:40.672Z] INFO: 📝 API: http://localhost:5001/api
+[2026-03-28T07:12:40.673Z] INFO: 💾 Database: bgv_platform
+[2026-03-28T07:12:40.673Z] INFO: 🔄 Polling fallback: Active
+[2026-03-28T07:12:40.673Z] INFO: 🔄 Retry job: Active
+[2026-03-28T07:12:46.650Z] DEBUG: 📥 GET /api/test-idfy/connection [object Object]
+[2026-03-28T07:12:46.651Z] DEBUG: 🔒 Tenant isolation: 7e204e4c-c1f3-43b1-8671-0c8e4f82337a
+[2026-03-28T07:12:46.652Z] INFO: 🔍 Verifying PAN: ABCDE1234F
+[2026-03-28T07:12:46.652Z] DEBUG: 📡 Creating PAN task...
+[2026-03-28T07:12:46.855Z] INFO: 📋 PAN task created: 6ff01b05-c032-42e2-ad4f-3b6656346205
+[2026-03-28T07:12:46.901Z] DEBUG: Poll attempt 1: status = in_progress
+[2026-03-28T07:12:48.976Z] DEBUG: Poll attempt 2: status = failed
+[2026-03-28T07:12:48.978Z] INFO: 📦 Task result: {
+  "action": "extract",
+  "completed_at": "2026-03-28T12:42:46+05:30",
+  "created_at": "2026-03-28T12:42:46+05:30",
+  "error": "BAD_REQUEST",
+  "group_id": "f9a2b237-08b1-401a-8745-8c586e6bf9fc",
+  "message": "Malformed Request",
+  "request_id": "6ff01b05-c032-42e2-ad4f-3b6656346205",
+  "status": "failed",
+  "task_id": "0f38e1c3-6384-4ca4-b9a8-f3db86f0abcf",
+  "type": "ind_pan"
+}
+[2026-03-28T07:12:48.979Z] WARN: ⚠️ Task failed
+[2026-03-28T07:12:48.985Z] INFO: GET /api/test-idfy/connection 200 - 2334ms
+[2026-03-28T07:15:32.751Z] DEBUG: 📥 POST /api/test-idfy/pan [object Object]
+[2026-03-28T07:15:32.751Z] DEBUG: 🔒 Tenant isolation: 7e204e4c-c1f3-43b1-8671-0c8e4f82337a
+[2026-03-28T07:15:32.752Z] INFO: 📝 Testing PAN verification: AALPJ1646C 
+[2026-03-28T07:15:32.752Z] INFO: 🔍 Verifying PAN: AALPJ1646C 
+[2026-03-28T07:15:32.752Z] DEBUG: 📡 Creating PAN task...
+[2026-03-28T07:15:32.872Z] INFO: 📋 PAN task created: 23ab3061-3c58-4af4-9029-c980455e1f8a
+[2026-03-28T07:15:32.913Z] DEBUG: Poll attempt 1: status = in_progress
+[2026-03-28T07:15:34.985Z] DEBUG: Poll attempt 2: status = failed
+[2026-03-28T07:15:34.987Z] INFO: 📦 Task result: {
+  "action": "extract",
+  "completed_at": "2026-03-28T12:45:32+05:30",
+  "created_at": "2026-03-28T12:45:32+05:30",
+  "error": "BAD_REQUEST",
+  "group_id": "5161c941-adfe-453e-8777-fa1b3521b279",
+  "message": "Malformed Request",
+  "request_id": "23ab3061-3c58-4af4-9029-c980455e1f8a",
+  "status": "failed",
+  "task_id": "ef008d7c-55a6-444a-a19f-83f784c7429f",
+  "type": "ind_pan"
+}
+[2026-03-28T07:15:34.987Z] WARN: ⚠️ Task failed
+[2026-03-28T07:15:34.989Z] INFO: POST /api/test-idfy/pan 200 - 2238ms
+[2026-03-28T07:17:21.947Z] INFO: SIGINT received, shutting down gracefully
+[2026-03-28T07:17:38.150Z] INFO: 🔄 Polling fallback and retry jobs initialized
+[2026-03-28T07:17:38.151Z] INFO: 🚀 Server running on http://localhost:5001
+[2026-03-28T07:17:38.151Z] INFO: 📦 Environment: development
+[2026-03-28T07:17:38.151Z] INFO: 📝 API: http://localhost:5001/api
+[2026-03-28T07:17:38.151Z] INFO: 💾 Database: bgv_platform
+[2026-03-28T07:17:38.151Z] INFO: 🔄 Polling fallback: Active
+[2026-03-28T07:17:38.151Z] INFO: 🔄 Retry job: Active
+[2026-03-28T07:17:44.349Z] DEBUG: 📥 POST /api/test-idfy/pan [object Object]
+[2026-03-28T07:17:44.350Z] DEBUG: 🔒 Tenant isolation: 7e204e4c-c1f3-43b1-8671-0c8e4f82337a
+[2026-03-28T07:17:44.350Z] INFO: 📝 Testing PAN verification: AALPJ1646C
+[2026-03-28T07:17:44.350Z] INFO: 🔍 Verifying PAN: AALPJ1646C
+[2026-03-28T07:17:44.350Z] DEBUG: 📡 Creating PAN task...
+[2026-03-28T07:17:44.493Z] INFO: 📋 PAN task created: 5c02e0c7-dbe2-4e89-b8d3-b8e0b65104d1
+[2026-03-28T07:17:44.539Z] DEBUG: Poll attempt 1: status = in_progress
+[2026-03-28T07:17:46.605Z] DEBUG: Poll attempt 2: status = failed
+[2026-03-28T07:17:46.607Z] INFO: 📦 Task result: {
+  "action": "extract",
+  "completed_at": "2026-03-28T12:47:44+05:30",
+  "created_at": "2026-03-28T12:47:44+05:30",
+  "error": "BAD_REQUEST",
+  "group_id": "ac881b5e-4c9d-43ed-bddb-26a3a282e571",
+  "message": "Malformed Request",
+  "request_id": "5c02e0c7-dbe2-4e89-b8d3-b8e0b65104d1",
+  "status": "failed",
+  "task_id": "d25a809d-686e-4769-9877-967fc149382d",
+  "type": "ind_pan"
+}
+[2026-03-28T07:17:46.608Z] WARN: ⚠️ Task failed
+[2026-03-28T07:17:46.612Z] INFO: POST /api/test-idfy/pan 200 - 2263ms
+[2026-03-28T07:23:32.744Z] DEBUG: 📥 POST /api/test-idfy/pan [object Object]
+[2026-03-28T07:23:32.745Z] DEBUG: 🔒 Tenant isolation: 7e204e4c-c1f3-43b1-8671-0c8e4f82337a
+[2026-03-28T07:23:32.745Z] INFO: 📝 Testing PAN verification: ABCDE1234F
+[2026-03-28T07:23:32.745Z] INFO: 🔍 Verifying PAN: ABCDE1234F
+[2026-03-28T07:23:32.745Z] DEBUG: 📡 Creating PAN task...
+[2026-03-28T07:23:32.925Z] INFO: 📋 PAN task created: a9a327e3-299f-41b6-8ef4-7e0b43aa54bf
+[2026-03-28T07:23:32.972Z] DEBUG: Poll attempt 1: status = in_progress
+[2026-03-28T07:23:35.045Z] DEBUG: Poll attempt 2: status = failed
+[2026-03-28T07:23:35.046Z] INFO: 📦 Task result: {
+  "action": "extract",
+  "completed_at": "2026-03-28T12:53:32+05:30",
+  "created_at": "2026-03-28T12:53:32+05:30",
+  "error": "BAD_REQUEST",
+  "group_id": "e7b33acc-ac01-4bcd-a0b7-105b72dbb919",
+  "message": "Malformed Request",
+  "request_id": "a9a327e3-299f-41b6-8ef4-7e0b43aa54bf",
+  "status": "failed",
+  "task_id": "4a412a90-5c6c-4d7e-90ce-8e8683ebdbb2",
+  "type": "ind_pan"
+}
+[2026-03-28T07:23:35.046Z] WARN: ⚠️ Task failed
+[2026-03-28T07:23:35.048Z] INFO: POST /api/test-idfy/pan 200 - 2303ms
+[2026-03-28T08:38:34.695Z] INFO: SIGINT received, shutting down gracefully
+[2026-03-28T08:38:46.445Z] INFO: 🔄 Polling fallback and retry jobs initialized
+[2026-03-28T08:38:46.446Z] INFO: 🚀 Server running on http://localhost:5001
+[2026-03-28T08:38:46.446Z] INFO: 📦 Environment: development
+[2026-03-28T08:38:46.446Z] INFO: 📝 API: http://localhost:5001/api
+[2026-03-28T08:38:46.446Z] INFO: 💾 Database: bgv_platform
+[2026-03-28T08:38:46.446Z] INFO: 🔄 Polling fallback: Active
+[2026-03-28T08:38:46.446Z] INFO: 🔄 Retry job: Active
+[2026-03-28T08:38:53.330Z] DEBUG: 📥 POST /api/test-idfy/pan [object Object]
+[2026-03-28T08:38:53.331Z] DEBUG: 🔒 Tenant isolation: 7e204e4c-c1f3-43b1-8671-0c8e4f82337a
+[2026-03-28T08:38:53.331Z] INFO: 📝 Testing PAN verification: AALPJ1646C
+[2026-03-28T08:38:53.331Z] INFO: 🔍 Verifying PAN: AALPJ1646C
+[2026-03-28T08:38:53.331Z] DEBUG: 📡 Creating PAN verification task...
+[2026-03-28T08:38:53.576Z] INFO: 📋 PAN task created: 1f0b2559-34f2-4c89-94a3-048155c9c897
+[2026-03-28T08:38:53.634Z] DEBUG: Poll attempt 1: status = in_progress
+[2026-03-28T08:38:55.715Z] DEBUG: Poll attempt 2: status = failed
+[2026-03-28T08:38:55.717Z] INFO: 📦 Task result: {
+  "action": "verify_with_source",
+  "completed_at": "2026-03-28T14:08:53+05:30",
+  "created_at": "2026-03-28T14:08:53+05:30",
+  "error": "BAD_REQUEST",
+  "group_id": "daa5b68f-a843-466e-ac10-69e74978cab9",
+  "message": "Malformed request",
+  "request_id": "1f0b2559-34f2-4c89-94a3-048155c9c897",
+  "status": "failed",
+  "task_id": "31a9166f-ef4a-49d3-8e9d-0d7f9c94b6ed",
+  "type": "ind_pan"
+}
+[2026-03-28T08:38:55.718Z] WARN: ⚠️ Task failed
+[2026-03-28T08:38:55.722Z] INFO: POST /api/test-idfy/pan 200 - 2392ms
+[2026-03-28T08:40:07.757Z] DEBUG: 📥 POST /api/test-idfy/pan [object Object]
+[2026-03-28T08:40:07.758Z] DEBUG: 🔒 Tenant isolation: 7e204e4c-c1f3-43b1-8671-0c8e4f82337a
+[2026-03-28T08:40:07.758Z] INFO: 📝 Testing PAN verification: AALPJ1646C
+[2026-03-28T08:40:07.758Z] INFO: 🔍 Verifying PAN: AALPJ1646C
+[2026-03-28T08:40:07.758Z] DEBUG: 📡 Creating PAN verification task...
+[2026-03-28T08:40:07.910Z] INFO: 📋 PAN task created: 36050a03-42d2-45f2-8647-cac1f39f139b
+[2026-03-28T08:40:07.961Z] DEBUG: Poll attempt 1: status = in_progress
+[2026-03-28T08:40:10.029Z] DEBUG: Poll attempt 2: status = failed
+[2026-03-28T08:40:10.030Z] INFO: 📦 Task result: {
+  "action": "verify_with_source",
+  "completed_at": "2026-03-28T14:10:07+05:30",
+  "created_at": "2026-03-28T14:10:07+05:30",
+  "error": "BAD_REQUEST",
+  "group_id": "df3134d6-d1d8-4286-91cd-fbe4411d4952",
+  "message": "Malformed request",
+  "request_id": "36050a03-42d2-45f2-8647-cac1f39f139b",
+  "status": "failed",
+  "task_id": "2c2fdb1a-be0c-4658-a75f-69d44660659e",
+  "type": "ind_pan"
+}
+[2026-03-28T08:40:10.031Z] WARN: ⚠️ Task failed
+[2026-03-28T08:40:10.033Z] INFO: POST /api/test-idfy/pan 200 - 2274ms
+[2026-03-28T08:41:20.599Z] INFO: SIGINT received, shutting down gracefully
+[2026-03-28T08:41:32.962Z] INFO: 🔄 Polling fallback and retry jobs initialized
+[2026-03-28T08:41:32.963Z] INFO: 🚀 Server running on http://localhost:5001
+[2026-03-28T08:41:32.963Z] INFO: 📦 Environment: development
+[2026-03-28T08:41:32.963Z] INFO: 📝 API: http://localhost:5001/api
+[2026-03-28T08:41:32.964Z] INFO: 💾 Database: bgv_platform
+[2026-03-28T08:41:32.964Z] INFO: 🔄 Polling fallback: Active
+[2026-03-28T08:41:32.964Z] INFO: 🔄 Retry job: Active
+[2026-03-28T08:41:39.730Z] DEBUG: 📥 POST /api/test-idfy/pan [object Object]
+[2026-03-28T08:41:39.731Z] DEBUG: 🔒 Tenant isolation: 7e204e4c-c1f3-43b1-8671-0c8e4f82337a
+[2026-03-28T08:41:39.731Z] INFO: 📝 Testing PAN verification: AALPJ1646C
+[2026-03-28T08:41:39.731Z] INFO: 🔍 Verifying PAN: AALPJ1646C
+[2026-03-28T08:41:39.731Z] DEBUG: 📡 Creating PAN verification task...
+[2026-03-28T08:41:39.731Z] DEBUG: Payload: {
+  "task_id": "4a9348b4-27fd-4614-b3b3-6b0579b2f404",
+  "group_id": "6d1caeed-26e0-41c0-85e5-47e647a99c5e",
+  "data": {
+    "pan": "AALPJ1646C"
+  }
+}
+[2026-03-28T08:41:39.867Z] INFO: 📋 PAN task created: 7696481b-d465-4179-a5ae-fa9a1ca909e7
+[2026-03-28T08:41:39.921Z] DEBUG: Poll attempt 1: status = in_progress
+[2026-03-28T08:41:42.041Z] DEBUG: Poll attempt 2: status = failed
+[2026-03-28T08:41:42.043Z] INFO: 📦 Task result: {
+  "action": "verify_with_source",
+  "completed_at": "2026-03-28T14:11:39+05:30",
+  "created_at": "2026-03-28T14:11:39+05:30",
+  "error": "BAD_REQUEST",
+  "group_id": "6d1caeed-26e0-41c0-85e5-47e647a99c5e",
+  "message": "Malformed request",
+  "request_id": "7696481b-d465-4179-a5ae-fa9a1ca909e7",
+  "status": "failed",
+  "task_id": "4a9348b4-27fd-4614-b3b3-6b0579b2f404",
+  "type": "ind_pan"
+}
+[2026-03-28T08:41:42.043Z] WARN: ⚠️ Task failed
+[2026-03-28T08:41:42.048Z] INFO: POST /api/test-idfy/pan 200 - 2318ms
+[2026-03-28T08:48:39.327Z] INFO: SIGINT received, shutting down gracefully
+[2026-03-28T08:49:40.463Z] INFO: 🔄 Polling fallback and retry jobs initialized
+[2026-03-28T08:49:40.465Z] INFO: 🚀 Server running on http://localhost:5001
+[2026-03-28T08:49:40.465Z] INFO: 📦 Environment: development
+[2026-03-28T08:49:40.465Z] INFO: 📝 API: http://localhost:5001/api
+[2026-03-28T08:49:40.465Z] INFO: 💾 Database: bgv_platform
+[2026-03-28T08:49:40.465Z] INFO: 🔄 Polling fallback: Active
+[2026-03-28T08:49:40.465Z] INFO: 🔄 Retry job: Active
+[2026-03-28T08:50:00.980Z] ERROR: 400 - Expected double-quoted property name in JSON at position 57
+[2026-03-28T08:50:32.273Z] DEBUG: 📥 POST /api/test-idfy/pan [object Object]
+[2026-03-28T08:50:32.274Z] DEBUG: 🔒 Tenant isolation: 7e204e4c-c1f3-43b1-8671-0c8e4f82337a
+[2026-03-28T08:50:32.274Z] INFO: 📝 Testing PAN verification: AALPJ1646C
+[2026-03-28T08:50:32.274Z] INFO: Verifying PAN: AALPJ1646C
+[2026-03-28T08:50:32.275Z] DEBUG: Payload: {"task_id":"d44cf83f-a19a-47eb-a694-0a3dd9ee6f1f","group_id":"4d7b52dc-4cf9-4041-b0f5-8e024121eb07","data":{"pan":"AALPJ1646C","consent":"y","name":"Shailendra Jadhav"}}
+[2026-03-28T08:50:32.472Z] INFO: Task created: d2369625-ae8e-4eff-89b5-b0a86215f77f
+[2026-03-28T08:50:32.520Z] DEBUG: Poll 1: status = in_progress
+[2026-03-28T08:50:34.585Z] DEBUG: Poll 2: status = failed
+[2026-03-28T08:50:34.587Z] WARN: Task failed: {"action":"verify_with_source","completed_at":"2026-03-28T14:20:32+05:30","created_at":"2026-03-28T14:20:32+05:30","error":"BAD_REQUEST","group_id":"4d7b52dc-4cf9-4041-b0f5-8e024121eb07","message":"Malformed request","request_id":"d2369625-ae8e-4eff-89b5-b0a86215f77f","status":"failed","task_id":"d44cf83f-a19a-47eb-a694-0a3dd9ee6f1f","type":"ind_pan"}
+[2026-03-28T08:50:34.589Z] INFO: POST /api/test-idfy/pan 200 - 2316ms
+[2026-03-28T08:51:01.963Z] INFO: SIGINT received, shutting down gracefully
+[2026-03-28T08:51:09.111Z] INFO: 🔄 Polling fallback and retry jobs initialized
+[2026-03-28T08:51:09.112Z] INFO: 🚀 Server running on http://localhost:5001
+[2026-03-28T08:51:09.112Z] INFO: 📦 Environment: development
+[2026-03-28T08:51:09.112Z] INFO: 📝 API: http://localhost:5001/api
+[2026-03-28T08:51:09.112Z] INFO: 💾 Database: bgv_platform
+[2026-03-28T08:51:09.112Z] INFO: 🔄 Polling fallback: Active
+[2026-03-28T08:51:09.112Z] INFO: 🔄 Retry job: Active
+[2026-03-28T08:51:13.562Z] DEBUG: 📥 POST /api/test-idfy/pan [object Object]
+[2026-03-28T08:51:13.562Z] DEBUG: 🔒 Tenant isolation: 7e204e4c-c1f3-43b1-8671-0c8e4f82337a
+[2026-03-28T08:51:13.563Z] INFO: 📝 Testing PAN verification: AALPJ1646C
+[2026-03-28T08:51:13.563Z] INFO: Verifying PAN: AALPJ1646C
+[2026-03-28T08:51:13.563Z] DEBUG: Payload: {"task_id":"e411e904-790c-4bcd-ae52-0ecec8707256","group_id":"8ac7d27e-9220-4590-b88c-ba0715787145","data":{"pan":"AALPJ1646C","consent":"y","name":"Shailendra Jadhav"}}
+[2026-03-28T08:51:13.696Z] INFO: Task created: 0f509b3e-eea1-4538-941c-5ddb43b09958
+[2026-03-28T08:51:13.734Z] DEBUG: Poll 1: status = in_progress
+[2026-03-28T08:51:15.806Z] DEBUG: Poll 2: status = failed
+[2026-03-28T08:51:15.808Z] WARN: Task failed: {"action":"verify_with_source","completed_at":"2026-03-28T14:21:13+05:30","created_at":"2026-03-28T14:21:13+05:30","error":"BAD_REQUEST","group_id":"8ac7d27e-9220-4590-b88c-ba0715787145","message":"Malformed request","request_id":"0f509b3e-eea1-4538-941c-5ddb43b09958","status":"failed","task_id":"e411e904-790c-4bcd-ae52-0ecec8707256","type":"ind_pan"}
+[2026-03-28T08:51:15.813Z] INFO: POST /api/test-idfy/pan 200 - 2251ms
+[2026-03-28T08:52:19.336Z] DEBUG: 📥 POST /api/test-idfy/pan [object Object]
+[2026-03-28T08:52:19.337Z] DEBUG: 🔒 Tenant isolation: 7e204e4c-c1f3-43b1-8671-0c8e4f82337a
+[2026-03-28T08:52:19.337Z] INFO: 📝 Testing PAN verification: AALPJ1646C
+[2026-03-28T08:52:19.337Z] INFO: Verifying PAN: AALPJ1646C
+[2026-03-28T08:52:19.337Z] DEBUG: Payload: {"task_id":"aeca11a6-be74-4fb2-a9eb-c25cf470aa25","group_id":"e8f5fb62-857b-49c7-a179-f3795dda84b9","data":{"pan":"AALPJ1646C","consent":"y"}}
+[2026-03-28T08:52:19.505Z] INFO: Task created: a3ab096c-cb7c-4fd5-8f53-c6071428bcaa
+[2026-03-28T08:52:19.564Z] DEBUG: Poll 1: status = in_progress
+[2026-03-28T08:52:21.638Z] DEBUG: Poll 2: status = failed
+[2026-03-28T08:52:21.639Z] WARN: Task failed: {"action":"verify_with_source","completed_at":"2026-03-28T14:22:19+05:30","created_at":"2026-03-28T14:22:19+05:30","error":"BAD_REQUEST","group_id":"e8f5fb62-857b-49c7-a179-f3795dda84b9","message":"Malformed request","request_id":"a3ab096c-cb7c-4fd5-8f53-c6071428bcaa","status":"failed","task_id":"aeca11a6-be74-4fb2-a9eb-c25cf470aa25","type":"ind_pan"}
+[2026-03-28T08:52:21.642Z] INFO: POST /api/test-idfy/pan 200 - 2306ms
+[2026-03-28T08:54:41.888Z] INFO: SIGINT received, shutting down gracefully
+[2026-03-28T08:54:47.085Z] INFO: 🔄 Polling fallback and retry jobs initialized
+[2026-03-28T08:54:47.086Z] INFO: 🚀 Server running on http://localhost:5001
+[2026-03-28T08:54:47.086Z] INFO: 📦 Environment: development
+[2026-03-28T08:54:47.086Z] INFO: 📝 API: http://localhost:5001/api
+[2026-03-28T08:54:47.086Z] INFO: 💾 Database: bgv_platform
+[2026-03-28T08:54:47.086Z] INFO: 🔄 Polling fallback: Active
+[2026-03-28T08:54:47.087Z] INFO: 🔄 Retry job: Active
+[2026-03-28T08:56:04.385Z] INFO: SIGINT received, shutting down gracefully
+[2026-03-28T08:56:11.545Z] INFO: 🔄 Polling fallback and retry jobs initialized
+[2026-03-28T08:56:11.546Z] INFO: 🚀 Server running on http://localhost:5001
+[2026-03-28T08:56:11.546Z] INFO: 📦 Environment: development
+[2026-03-28T08:56:11.546Z] INFO: 📝 API: http://localhost:5001/api
+[2026-03-28T08:56:11.547Z] INFO: 💾 Database: bgv_platform
+[2026-03-28T08:56:11.547Z] INFO: 🔄 Polling fallback: Active
+[2026-03-28T08:56:11.547Z] INFO: 🔄 Retry job: Active
+[2026-03-28T08:56:17.162Z] DEBUG: 📥 POST /api/test-idfy/pan [object Object]
+[2026-03-28T08:56:17.163Z] DEBUG: 🔒 Tenant isolation: 7e204e4c-c1f3-43b1-8671-0c8e4f82337a
+[2026-03-28T08:56:17.163Z] INFO: 📝 Testing PAN verification: ABCDE1234F
+[2026-03-28T08:56:17.164Z] INFO: Verifying PAN: ABCDE1234F
+[2026-03-28T08:56:17.164Z] DEBUG: Payload: {"task_id":"ccdd6499-9a92-4c13-b34b-42d8c8d46be8","group_id":"12d0e31b-4806-4fee-a5a6-ce59e9b5396c","data":{"pan":"ABCDE1234F","consent":"y"}}
+[2026-03-28T08:56:17.289Z] INFO: Task created: ed014280-2562-42d6-ac81-a5efb9f843cf
+[2026-03-28T08:56:17.336Z] DEBUG: Poll 1: status = in_progress
+[2026-03-28T08:56:19.407Z] DEBUG: Poll 2: status = failed
+[2026-03-28T08:56:19.410Z] WARN: Task failed: {"action":"verify_with_source","completed_at":"2026-03-28T14:26:17+05:30","created_at":"2026-03-28T14:26:17+05:30","error":"BAD_REQUEST","group_id":"12d0e31b-4806-4fee-a5a6-ce59e9b5396c","message":"Malformed request","request_id":"ed014280-2562-42d6-ac81-a5efb9f843cf","status":"failed","task_id":"ccdd6499-9a92-4c13-b34b-42d8c8d46be8","type":"ind_pan"}
+[2026-03-28T08:56:19.415Z] INFO: POST /api/test-idfy/pan 200 - 2252ms
+[2026-03-28T08:56:54.741Z] INFO: SIGINT received, shutting down gracefully
+[2026-03-28T08:57:56.546Z] INFO: 🔄 Polling fallback and retry jobs initialized
+[2026-03-28T08:57:56.547Z] INFO: 🚀 Server running on http://localhost:5001
+[2026-03-28T08:57:56.547Z] INFO: 📦 Environment: development
+[2026-03-28T08:57:56.547Z] INFO: 📝 API: http://localhost:5001/api
+[2026-03-28T08:57:56.548Z] INFO: 💾 Database: bgv_platform
+[2026-03-28T08:57:56.548Z] INFO: 🔄 Polling fallback: Active
+[2026-03-28T08:57:56.548Z] INFO: 🔄 Retry job: Active
+[2026-03-28T08:58:09.023Z] DEBUG: 📥 POST /api/test-idfy/pan [object Object]
+[2026-03-28T08:58:09.023Z] DEBUG: 🔒 Tenant isolation: 7e204e4c-c1f3-43b1-8671-0c8e4f82337a
+[2026-03-28T08:58:09.024Z] INFO: 📝 Testing PAN verification: ABCDE1234F
+[2026-03-28T08:58:09.024Z] INFO: Verifying PAN: ABCDE1234F
+[2026-03-28T08:58:09.024Z] DEBUG: Payload: {"task_id":"e17ad881-dc4b-4460-87e4-8db860d981b8","group_id":"51461a09-ef12-457c-9230-7c2d66a09b00","data":{"pan":"ABCDE1234F","consent":"Y"}}
+[2026-03-28T08:58:09.195Z] INFO: Task created: dd8bb8f4-aa67-4b7f-8eb8-a7e6bad9c4b2
+[2026-03-28T08:58:09.244Z] DEBUG: Poll 1: status = in_progress
+[2026-03-28T08:58:11.317Z] DEBUG: Poll 2: status = failed
+[2026-03-28T08:58:11.319Z] WARN: Task failed: {"action":"verify_with_source","completed_at":"2026-03-28T14:28:09+05:30","created_at":"2026-03-28T14:28:09+05:30","error":"BAD_REQUEST","group_id":"51461a09-ef12-457c-9230-7c2d66a09b00","message":"Malformed request","request_id":"dd8bb8f4-aa67-4b7f-8eb8-a7e6bad9c4b2","status":"failed","task_id":"e17ad881-dc4b-4460-87e4-8db860d981b8","type":"ind_pan"}
+[2026-03-28T08:58:11.324Z] INFO: POST /api/test-idfy/pan 200 - 2301ms
+[2026-03-28T08:58:58.864Z] DEBUG: 📥 POST /api/test-idfy/pan [object Object]
+[2026-03-28T08:58:58.866Z] DEBUG: 🔒 Tenant isolation: 7e204e4c-c1f3-43b1-8671-0c8e4f82337a
+[2026-03-28T08:58:58.866Z] INFO: 📝 Testing PAN verification: AALPJ1646C
+[2026-03-28T08:58:58.866Z] INFO: Verifying PAN: AALPJ1646C
+[2026-03-28T08:58:58.866Z] DEBUG: Payload: {"task_id":"b19be7e1-e3d7-41c3-b850-9e6dee4d8485","group_id":"12c2f305-3394-4c41-af34-9ec05cd67e97","data":{"pan":"AALPJ1646C","consent":"Y"}}
+[2026-03-28T08:58:59.333Z] INFO: Task created: 8a1c7b7c-f683-428e-8f9e-5b6b1c6d9aaa
+[2026-03-28T08:58:59.380Z] DEBUG: Poll 1: status = in_progress
+[2026-03-28T08:59:01.470Z] DEBUG: Poll 2: status = failed
+[2026-03-28T08:59:01.472Z] WARN: Task failed: {"action":"verify_with_source","completed_at":"2026-03-28T14:28:59+05:30","created_at":"2026-03-28T14:28:59+05:30","error":"BAD_REQUEST","group_id":"12c2f305-3394-4c41-af34-9ec05cd67e97","message":"Malformed request","request_id":"8a1c7b7c-f683-428e-8f9e-5b6b1c6d9aaa","status":"failed","task_id":"b19be7e1-e3d7-41c3-b850-9e6dee4d8485","type":"ind_pan"}
+[2026-03-28T08:59:01.475Z] INFO: POST /api/test-idfy/pan 200 - 2609ms
+[2026-03-28T09:00:05.953Z] INFO: SIGINT received, shutting down gracefully
+[2026-03-28T09:14:52.440Z] INFO: 🔄 Polling fallback and retry jobs initialized
+[2026-03-28T09:14:52.443Z] INFO: 🚀 Server running on http://localhost:5001
+[2026-03-28T09:14:52.443Z] INFO: 📦 Environment: development
+[2026-03-28T09:14:52.443Z] INFO: 📝 API: http://localhost:5001/api
+[2026-03-28T09:14:52.443Z] INFO: 💾 Database: bgv_platform
+[2026-03-28T09:14:52.443Z] INFO: 🔄 Polling fallback: Active
+[2026-03-28T09:14:52.443Z] INFO: 🔄 Retry job: Active
+[2026-03-28T09:14:59.797Z] DEBUG: 📥 POST /api/test-idfy/pan [object Object]
+[2026-03-28T09:14:59.797Z] DEBUG: 🔒 Tenant isolation: 7e204e4c-c1f3-43b1-8671-0c8e4f82337a
+[2026-03-28T09:14:59.798Z] INFO: 📝 Testing PAN verification: AALPJ1646C
+[2026-03-28T09:14:59.798Z] INFO: Verifying PAN: AALPJ1646C
+[2026-03-28T09:14:59.798Z] DEBUG: Payload: {"task_id":"4cf21ecc-e68c-437c-ab05-4d4decdebf56","group_id":"de22026b-b021-4055-82c8-2a93eaefbc69","data":{"id_number":"AALPJ1646C","full_name":"Shailendra Jadhav","dob":"1900-01-01"}}
+[2026-03-28T09:14:59.966Z] INFO: Task created: 2d1fdae4-715d-4f06-a76c-46bbe8c79416
+[2026-03-28T09:15:00.017Z] DEBUG: Poll 1: status = in_progress
+[2026-03-28T09:15:02.109Z] DEBUG: Poll 2: status = completed
+[2026-03-28T09:15:02.111Z] INFO: Task completed: {"action":"verify_with_source","completed_at":"2026-03-28T14:45:00+05:30","created_at":"2026-03-28T14:44:59+05:30","group_id":"de22026b-b021-4055-82c8-2a93eaefbc69","request_id":"2d1fdae4-715d-4f06-a76c-46bbe8c79416","result":{"source_output":{"aadhaar_seeding_status":true,"dob_match":false,"input_details":{"input_dob":"1900-01-01","input_name":"Shailendra Jadhav","input_pan_number":"AALPJ1646C"},"name_match":false,"pan_status":"Existing and Valid. PAN is Operative","status":"id_found"}},"status":"completed","task_id":"4cf21ecc-e68c-437c-ab05-4d4decdebf56","type":"ind_pan"}
+[2026-03-28T09:15:02.116Z] INFO: POST /api/test-idfy/pan 200 - 2319ms
+[2026-03-28T09:16:22.472Z] INFO: SIGINT received, shutting down gracefully
+[2026-03-28T09:16:40.988Z] INFO: 🔄 Polling fallback and retry jobs initialized
+[2026-03-28T09:16:40.990Z] INFO: 🚀 Server running on http://localhost:5001
+[2026-03-28T09:16:40.990Z] INFO: 📦 Environment: development
+[2026-03-28T09:16:40.990Z] INFO: 📝 API: http://localhost:5001/api
+[2026-03-28T09:16:40.990Z] INFO: 💾 Database: bgv_platform
+[2026-03-28T09:16:40.990Z] INFO: 🔄 Polling fallback: Active
+[2026-03-28T09:16:40.990Z] INFO: 🔄 Retry job: Active
+[2026-03-28T09:16:44.372Z] DEBUG: 📥 POST /api/test-idfy/pan [object Object]
+[2026-03-28T09:16:44.373Z] DEBUG: 🔒 Tenant isolation: 7e204e4c-c1f3-43b1-8671-0c8e4f82337a
+[2026-03-28T09:16:44.373Z] INFO: 📝 Testing PAN verification: AALPJ1646C
+[2026-03-28T09:16:44.373Z] INFO: Verifying PAN: AALPJ1646C
+[2026-03-28T09:16:44.373Z] DEBUG: Payload: {"task_id":"d7246a0e-3b72-4328-ba27-926628600f0e","group_id":"d412c5ad-7ae4-4ab2-8d83-ccd4a65f85aa","data":{"id_number":"AALPJ1646C","full_name":"Shailendra Jadhav","dob":"1974-11-14"}}
+[2026-03-28T09:16:44.508Z] INFO: Task created: b4e76063-aeab-4908-9af6-1033eb9bdf45
+[2026-03-28T09:16:44.551Z] DEBUG: Poll 1: status = in_progress
+[2026-03-28T09:16:46.652Z] DEBUG: Poll 2: status = completed
+[2026-03-28T09:16:46.654Z] INFO: Task completed: {"action":"verify_with_source","completed_at":"2026-03-28T14:46:45+05:30","created_at":"2026-03-28T14:46:44+05:30","group_id":"d412c5ad-7ae4-4ab2-8d83-ccd4a65f85aa","request_id":"b4e76063-aeab-4908-9af6-1033eb9bdf45","result":{"source_output":{"aadhaar_seeding_status":true,"dob_match":false,"input_details":{"input_dob":"1974-11-14","input_name":"Shailendra Jadhav","input_pan_number":"AALPJ1646C"},"name_match":false,"pan_status":"Existing and Valid. PAN is Operative","status":"id_found"}},"status":"completed","task_id":"d7246a0e-3b72-4328-ba27-926628600f0e","type":"ind_pan"}
+[2026-03-28T09:16:46.659Z] INFO: POST /api/test-idfy/pan 200 - 2286ms
+[2026-03-28T09:21:44.118Z] INFO: SIGINT received, shutting down gracefully

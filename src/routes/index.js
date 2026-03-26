@@ -31,3 +31,11 @@ module.exports = router;
 // Webhook routes (public - no auth for webhooks)
 const webhookRoutes = require('./webhookRoutes');
 router.use('/webhooks', webhookRoutes);
+
+// Retry routes
+const retryRoutes = require('./retryRoutes');
+router.use('/retry', retryRoutes);
+
+// Test routes (IDFY testing)
+const testIdfyRoutes = require('./testIdfyRoutes');
+router.use('/test-idfy', testIdfyRoutes);

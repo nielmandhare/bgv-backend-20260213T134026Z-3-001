@@ -36,3 +36,12 @@
 [2026-03-03T07:54:02.943Z] 💥 Uncaught Exception: Error: listen EADDRINUSE: address already in use :::5001
 [2026-03-03T07:54:23.705Z] ❌ Accept consent error: error: null value in column "subject_name" of relation "consent_records" violates not-null constraint
 [2026-03-03T07:54:23.708Z] POST /api/consent/accept 500 - 29ms
+[2026-03-05T09:09:51.320Z] ❌ Query error: syntax error at or near "WHERE"
+[2026-03-28T06:54:04.893Z] ❌ PAN verification failed: [object Object]
+[2026-03-28T06:54:49.161Z] ❌ Aadhaar verification failed: [object Object]
+[2026-03-28T06:56:16.796Z] ❌ Aadhaar verification failed: [object Object]
+[2026-03-28T06:58:04.589Z] ❌ PAN verification failed: [object Object]
+[2026-03-28T06:58:25.341Z] ❌ PAN verification failed: [object Object]
+[2026-03-28T07:02:31.676Z] ❌ PAN verification failed: Timeout waiting for task completion
+[2026-03-28T07:04:38.881Z] ❌ PAN verification failed: Timeout waiting for task completion
+[2026-03-28T08:50:00.981Z] 400 - Expected double-quoted property name in JSON at position 57

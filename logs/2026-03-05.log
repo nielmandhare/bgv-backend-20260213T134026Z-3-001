@@ -1,0 +1,39 @@
+[2026-03-05T09:08:59.105Z] DEBUG: 📝 SQL: 
+      SELECT users.id, users.email, users.role, users.is_active, users.created_at,
+             tenants.id as tenant_id, tenants.name as tenant_name
+      FROM users 
+      JOIN tenants ON users.tena...
+[2026-03-05T09:08:59.130Z] INFO: ✅ Database connected
+[2026-03-05T09:08:59.178Z] DEBUG: 📝 SQL: 
+      SELECT users.id, users.email, users.role, users.is_active, users.created_at,
+             tenants.id as tenant_id, tenants.name as tenant_name
+      FROM users 
+      JOIN tenants ON users.tena...
+[2026-03-05T09:08:59.179Z] DEBUG: 📝 SQL: SELECT * FROM users WHERE id = $1...
+[2026-03-05T09:09:51.294Z] DEBUG: 📝 SQL: SELECT * FROM users 
+       ORDER BY created_at DESC 
+       LIMIT $1 OFFSET $2 WHERE tenant_id = $3...
+[2026-03-05T09:09:51.317Z] INFO: ✅ Database connected
+[2026-03-05T09:09:51.320Z] ERROR: ❌ Query error: syntax error at or near "WHERE"
+[2026-03-05T09:10:45.648Z] DEBUG: 📝 SQL: SELECT * FROM users 
+       WHERE tenant_id = $1
+       ORDER BY created_at DESC 
+       LIMIT $2 OFFSET $3...
+[2026-03-05T09:10:45.672Z] INFO: ✅ Database connected
+[2026-03-05T09:10:45.677Z] DEBUG: 📝 SQL: SELECT * FROM users 
+       WHERE tenant_id = $1
+       ORDER BY created_at DESC 
+       LIMIT $2 OFFSET $3...
+[2026-03-05T09:10:45.678Z] DEBUG: 📝 SQL: SELECT * FROM users 
+       WHERE id = $1 AND tenant_id = $2...
+[2026-03-05T09:11:37.348Z] DEBUG: 📝 SQL: SELECT * FROM users 
+       WHERE tenant_id = $1
+       ORDER BY created_at DESC 
+       LIMIT $2 OFFSET $3...
+[2026-03-05T09:11:37.369Z] INFO: ✅ Database connected
+[2026-03-05T09:11:37.371Z] DEBUG: 📝 SQL: SELECT * FROM users 
+       WHERE tenant_id = $1
+       ORDER BY created_at DESC 
+       LIMIT $2 OFFSET $3...
+[2026-03-05T09:11:37.372Z] DEBUG: 📝 SQL: SELECT * FROM users 
+       WHERE id = $1 AND tenant_id = $2...
