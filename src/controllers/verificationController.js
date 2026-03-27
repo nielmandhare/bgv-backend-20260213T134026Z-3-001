@@ -1,5 +1,7 @@
 console.log("✅ VERIFICATION CONTROLLER LOADED");
+
 const db = require("../utils/db");
+const thirdPartyService = require("../services/thirdPartyService");
 
 /*
 PAN Verification Intake
@@ -15,34 +17,52 @@ exports.createPanVerification = async (req, res, next) => {
       RETURNING *
     `;
 
-    const values = [
-      "PAN",
-      pan_number,
-      full_name,
-      dob,
-      client_id
-    ];
+    const values = ["PAN", pan_number, full_name, dob, client_id];
 
     const result = await db.query(query, values);
+    const createdRecord = result.rows[0];
+
+    // 🔥 NON-BLOCKING API CALL
+    thirdPartyService
+      .verifyPAN({
+        pan_number,
+        full_name,
+        dob,
+      })
+      .then(async () => {
+        await db.query(
+          `UPDATE verification_requests 
+           SET api_status = 'processing', last_api_attempt = NOW()
+           WHERE id = $1`,
+          [createdRecord.id]
+        );
+      })
+      .catch(async (err) => {
+        console.error("PAN API failed:", err.message);
+
+        await db.query(
+          `UPDATE verification_requests 
+           SET api_status = 'failed', failure_reason = $1
+           WHERE id = $2`,
+          [err.message, createdRecord.id]
+        );
+      });
 
     res.status(201).json({
       success: true,
       message: "PAN verification request created",
-      data: result.rows[0]
+      data: createdRecord,
     });
-
   } catch (error) {
     next(error);
   }
 };
-
 
 /*
 Aadhaar Verification Intake
 */
 exports.createAadhaarVerification = async (req, res, next) => {
   try {
-
     const { masked_aadhaar, full_name, client_id } = req.body;
 
     const query = `
@@ -52,33 +72,51 @@ exports.createAadhaarVerification = async (req, res, next) => {
       RETURNING *
     `;
 
-    const values = [
-      "AADHAAR",
-      masked_aadhaar,
-      full_name,
-      client_id
-    ];
+    const values = ["AADHAAR", masked_aadhaar, full_name, client_id];
 
     const result = await db.query(query, values);
+    const createdRecord = result.rows[0];
+
+    // 🔥 NON-BLOCKING API CALL
+    thirdPartyService
+      .verifyAadhaar({
+        masked_aadhaar,
+        full_name,
+      })
+      .then(async () => {
+        await db.query(
+          `UPDATE verification_requests 
+           SET api_status = 'processing', last_api_attempt = NOW()
+           WHERE id = $1`,
+          [createdRecord.id]
+        );
+      })
+      .catch(async (err) => {
+        console.error("Aadhaar API failed:", err.message);
+
+        await db.query(
+          `UPDATE verification_requests 
+           SET api_status = 'failed', failure_reason = $1
+           WHERE id = $2`,
+          [err.message, createdRecord.id]
+        );
+      });
 
     res.status(201).json({
       success: true,
       message: "Aadhaar verification request created",
-      data: result.rows[0]
+      data: createdRecord,
     });
-
   } catch (error) {
     next(error);
   }
 };
-
 
 /*
 GSTIN Verification Intake
 */
 exports.createGstinVerification = async (req, res, next) => {
   try {
-
     const { gstin, business_name, client_id } = req.body;
 
     const query = `
@@ -88,36 +126,53 @@ exports.createGstinVerification = async (req, res, next) => {
       RETURNING *
     `;
 
-    const values = [
-      "GSTIN",
-      gstin,
-      business_name,
-      client_id
-    ];
+    const values = ["GSTIN", gstin, business_name, client_id];
 
     const result = await db.query(query, values);
+    const createdRecord = result.rows[0];
+
+    // 🔥 NON-BLOCKING API CALL
+    thirdPartyService
+      .verifyGSTIN({
+        gstin,
+        business_name,
+      })
+      .then(async () => {
+        await db.query(
+          `UPDATE verification_requests 
+           SET api_status = 'processing', last_api_attempt = NOW()
+           WHERE id = $1`,
+          [createdRecord.id]
+        );
+      })
+      .catch(async (err) => {
+        console.error("GSTIN API failed:", err.message);
+
+        await db.query(
+          `UPDATE verification_requests 
+           SET api_status = 'failed', failure_reason = $1
+           WHERE id = $2`,
+          [err.message, createdRecord.id]
+        );
+      });
 
     res.status(201).json({
       success: true,
       message: "GSTIN verification request created",
-      data: result.rows[0]
+      data: createdRecord,
     });
-
   } catch (error) {
     next(error);
   }
 };
-
 
 /*
 Manual Retry Verification
 */
 exports.retryVerification = async (req, res, next) => {
   try {
-
     const { id } = req.params;
 
-    // 1️⃣ Find verification request
     const verification = await db.query(
       `SELECT * FROM verification_requests WHERE id = $1`,
       [id]
@@ -126,11 +181,10 @@ exports.retryVerification = async (req, res, next) => {
     if (verification.rows.length === 0) {
       return res.status(404).json({
         success: false,
-        message: "Verification request not found"
+        message: "Verification request not found",
       });
     }
 
-    // 2️⃣ Update retry fields
     const updated = await db.query(
       `UPDATE verification_requests
        SET retry_count = retry_count + 1,
@@ -143,7 +197,6 @@ exports.retryVerification = async (req, res, next) => {
 
     const updatedRequest = updated.rows[0];
 
-    // 3️⃣ Log retry history
     await db.query(
       `INSERT INTO verification_retry_history
        (verification_id, retry_number, retry_status, retry_reason)
@@ -152,17 +205,15 @@ exports.retryVerification = async (req, res, next) => {
         id,
         updatedRequest.retry_count,
         "manual_retry",
-        "Manual retry triggered via API"
+        "Manual retry triggered via API",
       ]
     );
 
-    // 4️⃣ Send response
     res.json({
       success: true,
       message: "Retry triggered successfully",
-      data: updatedRequest
+      data: updatedRequest,
     });
-
   } catch (error) {
     next(error);
   }

@@ -41,7 +41,9 @@
 
 This is the backend for a **Background Verification (BGV) Platform** that enables organizations to submit and track identity verification requests for PAN, Aadhaar, and GSTIN documents. The system is multi-tenant — multiple client organizations can share a single deployment while their data remains isolated.
 
-> **Important:** External verification provider (IDfy) integration is **not yet included**. The architecture is purpose-built to plug in a third-party verification API in Phase 5. All verification requests are stored with `api_status = 'pending'` until that integration is implemented.
+> **Important:** A reusable third-party API integration module has been implemented using a centralized API client and service layer.
+> Verification requests now trigger asynchronous external API calls, and the system updates `api_status` (`pending → processing → success/failed`) based on API responses.
+> Currently, placeholder endpoints are used, and failures are captured with error messages for traceability.
 
 ---
 
@@ -61,9 +63,15 @@ src/routes/       ← Route definitions (auth is public; all else requires JWT +
     ↓
 src/middlewares/  ← authMiddleware (JWT verify) → tenantMiddleware (extract tenant)
     ↓
-src/controllers/  ← Business logic, DB queries
+src/controllers/  ← Business logic + triggers async API calls
     ↓
-src/utils/db.js   ← pg Pool wrapper with query(), tenantQuery(), verifyTenantOwnership()
+src/services/     ← Third-party service layer (verification APIs)
+    ↓
+src/utils/apiClient.js ← Reusable Axios API client (base URL + headers + interceptors)
+    ↓
+External API (IDfy / Vendor)
+    ↓
+src/utils/db.js   ← PostgreSQL (status updates)
     ↓
 PostgreSQL        ← bgv_platform database
 ```
@@ -650,7 +658,7 @@ All endpoints return this shape:
 
 ---
 
-## 11. Verification Lifecycle
+## 11. Verification Lifecycle (Updated with API Integration)
 
 Every verification request follows this state machine:
 
@@ -663,21 +671,23 @@ INSERT into verification_requests
         ↓
 Initial state:
   api_status = 'pending'
-  failure_reason = NULL
-  last_api_attempt = NULL
         ↓
-[Phase 5: Background worker / webhook triggers processing]
+Controller triggers async API call (non-blocking)
         ↓
-  api_status = 'processing'
-  last_api_attempt = CURRENT_TIMESTAMP
-        ↓
-External Verification API (IDfy)
+External API request (via service + apiClient)
        ↙                    ↘
   Success                Failure
      ↓                      ↓
-api_status = 'success'   api_status = 'failed'
-                         failure_reason = "<error from API>"
+api_status = 'processing'  api_status = 'failed'
+last_api_attempt updated   failure_reason stored
 ```
+
+### Key Design Decisions
+
+- **Non-blocking API calls**: API requests are triggered asynchronously to avoid blocking client responses.
+- **Service layer abstraction**: All third-party API calls are handled via `thirdPartyService.js`.
+- **Reusable API client**: Axios instance (`apiClient.js`) manages base URL, headers, and interceptors.
+- **Error traceability**: All API failures are logged and stored in `failure_reason` for debugging.
 
 ---
 
@@ -981,9 +991,10 @@ The codebase is structured to support these additions with minimal changes:
 
 | Module ID | Name | Status |
 |---|---|---|
+| BE-1 | Third-Party API Configuration Setup | ✅ Complete |
 | BE-5 | File Upload Infrastructure & Authentication | ✅ Complete |
 | BE-6 | Secure Backend Foundation (API Key, Rate Limiting, Helmet) | ✅ Complete |
 | BE-7 | Verification Intake APIs (PAN, Aadhaar, GSTIN) | ✅ Complete |
 | BE-8 | Verification Retry Mechanism | ✅ Complete |
 | BE-9 | Verification API Status Tracking | ✅ Complete |
-| BE-Phase5 | External Verification Integration (IDfy) | 🔲 Pending |
+| BE-Phase5 | External Verification Integration (IDfy) | 🟡 In Progress (API client + service layer ready) |
