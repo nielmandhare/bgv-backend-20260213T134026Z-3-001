@@ -1,179 +1,136 @@
 /**
- * IDfy API Response Mappings
- * Maps IDfy's response fields to standardized format
+ * idfyMapping.js
+ *
+ * Defines how responseProcessor.js extracts and validates fields
+ * from raw IDfy v3 sync API responses.
+ *
+ * Each key (pan / aadhaar / gst) must match the verificationType
+ * string passed to responseProcessor.process().
+ *
+ * Each entry has:
+ *   fields           — dot-notation paths into the raw IDfy response
+ *   required         — fields that must be present for verified=true
+ *   successIndicator — path + value that confirms the document was found
+ *   transform        — optional post-extract cleanup
+ *
+ * ─── IDfy v3 sync response shape ─────────────────────────────────────────────
+ * {
+ *   status:     "completed",          ← top-level task status (always check this)
+ *   request_id, task_id, group_id,
+ *   result: {
+ *     source_output: {
+ *       status: "id_found" | "id_not_found" | "source_down" | "failed",
+ *       -- PAN fields (populated only when status = "id_found") --
+ *       name:                   "JOHN DOE",
+ *       pan_number:             "AAAAA0000A",
+ *       pan_status:             "E",           // E = existing & valid
+ *       last_updated:           "YYYY-MM-DD",
+ *       aadhaar_seeding_status: "Y" | "N",
+ *     },
+ *     name_match_result: {            // present only when full_name was sent
+ *       match_result: "yes" | "no",
+ *       match_score:  100,
+ *     }
+ *   }
+ * }
  */
 
-module.exports = {
-  // PAN Verification Mapping
+const idfyMapping = {
+
+  // ─── PAN ──────────────────────────────────────────────────────────────────
+
   pan: {
+    // Dot-notation paths resolved by responseProcessor.getValueByPath()
     fields: {
-      // targetField: sourcePath (in IDfy response)
-      pan_number: 'ocr_output.pan_number',
-      name: 'ocr_output.name_on_card',
-      father_name: 'ocr_output.fathers_name',
-      date_of_birth: 'ocr_output.dob',
-      date_of_issue: 'ocr_output.date_of_issue',
-      pan_type: 'ocr_output.pan_type',
-      is_minor: 'ocr_output.minor',
-      is_scanned: 'ocr_output.is_scanned',
-      aadhaar_linked: 'aadhaar_link_status.linked',
-      aadhaar_link_date: 'aadhaar_link_status.link_date'
+      lookup_status:          'result.source_output.status',   // "id_found" | "id_not_found"
+      pan_number:             'result.source_output.pan_number',
+      name_as_per_nsdl:       'result.source_output.name',
+      pan_status:             'result.source_output.pan_status',
+      last_updated:           'result.source_output.last_updated',
+      aadhaar_seeding_status: 'result.source_output.aadhaar_seeding_status',
+      name_match_result:      'result.name_match_result.match_result',
+      name_match_score:       'result.name_match_result.match_score',
     },
-    required: ['pan_number', 'name'],
+
+    // No required fields — id_not_found legitimately has all source_output
+    // fields as null. verified is determined entirely by successIndicator.
+    required: [],
+
+    // verified = true only when NSDL confirms the PAN exists
     successIndicator: {
-      path: 'status',
-      value: 'completed'
+      path:  'result.source_output.status',
+      value: 'id_found',
     },
-    transform: (extracted, raw) => {
-      // Add derived fields
+
+    // Post-extract cleanup
+    transform(extracted, raw) {
       return {
         ...extracted,
-        full_name: extracted.name,
-        age: calculateAge(extracted.date_of_birth),
-        verified_at: new Date().toISOString()
+        // Normalise aadhaar linkage to boolean
+        aadhaar_linked: extracted.aadhaar_seeding_status === 'Y',
+        // Audit fields
+        request_id: raw.request_id ?? null,
+        task_id:    raw.task_id    ?? null,
       };
-    }
+    },
   },
 
-  // Aadhaar Verification Mapping
+  // ─── Aadhaar ──────────────────────────────────────────────────────────────
+  // ❌ Not enabled on this IDfy account — stub mapping kept for completeness.
+
   aadhaar: {
     fields: {
-      aadhaar_number: 'ocr_output.aadhaar_number',
-      name: 'ocr_output.name',
-      gender: 'ocr_output.gender',
-      date_of_birth: 'ocr_output.dob',
-      address: 'ocr_output.address',
-      pin_code: 'ocr_output.pin_code',
-      masked_aadhaar: 'ocr_output.masked_aadhaar',
-      is_valid: 'validity.valid',
-      is_duplicate: 'validity.is_duplicate'
+      lookup_status:     'result.source_output.status',
+      name_as_per_uidai: 'result.source_output.name',
+      year_of_birth:     'result.source_output.year_of_birth',
+      gender:            'result.source_output.gender',
+      name_match_result: 'result.name_match_result.match_result',
+      name_match_score:  'result.name_match_result.match_score',
     },
-    required: ['aadhaar_number', 'name'],
-    successIndicator: {
-      path: 'status',
-      value: 'completed'
-    }
-  },
 
-  // GST Verification Mapping
-  gst: {
-    fields: {
-      gst_number: 'data.gstin',
-      business_name: 'data.trade_name',
-      legal_name: 'data.legal_name',
-      business_type: 'data.constitution_name',
-      registration_date: 'data.registration_date',
-      last_updated: 'data.last_updated',
-      status: 'data.status',
-      state: 'data.state',
-      address: 'data.address',
-      is_active: 'data.status',
-      taxpayer_type: 'data.taxpayer_type'
-    },
-    required: ['gst_number', 'business_name'],
+    required: [],
+
     successIndicator: {
-      path: 'status',
-      value: 'completed'
+      path:  'result.source_output.status',
+      value: 'id_found',
     },
-    transform: (extracted, raw) => {
-      // Add GST-specific derived fields
+
+    transform(extracted, raw) {
       return {
         ...extracted,
-        is_active: extracted.status === 'Active',
-        formatted_address: `${extracted.address}, ${extracted.state}`,
-        registration_year: extracted.registration_date?.split('-')[0]
+        request_id: raw.request_id ?? null,
+        task_id:    raw.task_id    ?? null,
       };
-    }
+    },
   },
 
-  // Bank Account Verification Mapping
-  bank: {
-    fields: {
-      account_number: 'data.account_number',
-      ifsc_code: 'data.ifsc',
-      account_holder: 'data.account_holder_name',
-      bank_name: 'data.bank_name',
-      branch: 'data.branch',
-      account_type: 'data.account_type',
-      is_valid: 'data.is_valid',
-      verification_status: 'data.verification_status'
-    },
-    required: ['account_number', 'ifsc_code', 'account_holder'],
-    successIndicator: {
-      path: 'data.is_valid',
-      value: true
-    }
-  },
+  // ─── GSTIN ────────────────────────────────────────────────────────────────
+  // ❌ Not enabled on this IDfy account — stub mapping kept for completeness.
 
-  // Court Record Mapping
-  court: {
+  gst: {
     fields: {
-      case_number: 'data.case_number',
-      court_name: 'data.court_name',
-      petitioner: 'data.petitioner',
-      respondent: 'data.respondent',
-      filing_date: 'data.filing_date',
-      status: 'data.case_status',
-      judge: 'data.judge_name',
-      is_active: 'data.is_active'
+      lookup_status:     'result.source_output.status',
+      legal_name:        'result.source_output.legal_name',
+      trade_name:        'result.source_output.trade_name',
+      gstin_status:      'result.source_output.gstin_status',
+      registration_date: 'result.source_output.registration_date',
     },
-    required: ['case_number', 'court_name'],
-    successIndicator: {
-      path: 'status',
-      value: 'completed'
-    }
-  },
 
-  // Education Verification Mapping
-  education: {
-    fields: {
-      institute_name: 'data.institute_name',
-      degree: 'data.degree',
-      student_name: 'data.student_name',
-      enrollment_number: 'data.enrollment_number',
-      passing_year: 'data.passing_year',
-      percentage: 'data.percentage',
-      grade: 'data.grade',
-      is_verified: 'data.is_verified',
-      verification_date: 'data.verification_date'
-    },
-    required: ['institute_name', 'student_name', 'enrollment_number'],
-    successIndicator: {
-      path: 'data.is_verified',
-      value: true
-    }
-  },
+    required: [],
 
-  // Employment Verification Mapping
-  employment: {
-    fields: {
-      employer_name: 'data.employer_name',
-      employee_name: 'data.employee_name',
-      designation: 'data.designation',
-      joining_date: 'data.joining_date',
-      relieving_date: 'data.relieving_date',
-      is_current: 'data.is_current',
-      salary: 'data.salary',
-      verification_status: 'data.verification_status',
-      comments: 'data.comments'
-    },
-    required: ['employer_name', 'employee_name', 'designation'],
     successIndicator: {
-      path: 'data.verification_status',
-      value: 'verified'
-    }
-  }
+      path:  'result.source_output.status',
+      value: 'id_found',
+    },
+
+    transform(extracted, raw) {
+      return {
+        ...extracted,
+        request_id: raw.request_id ?? null,
+        task_id:    raw.task_id    ?? null,
+      };
+    },
+  },
 };
 
-// Helper function for PAN age calculation
-function calculateAge(dob) {
-  if (!dob) return null;
-  const birthDate = new Date(dob);
-  const today = new Date();
-  let age = today.getFullYear() - birthDate.getFullYear();
-  const m = today.getMonth() - birthDate.getMonth();
-  if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
-    age--;
-  }
-  return age;
-}
+module.exports = idfyMapping;

@@ -1,111 +1,117 @@
 const idfyMapping = require('./vendorMappings/idfyMapping');
-const gridlinesMapping = require('./vendorMappings/gridlinesMapping');
-const confidenceCalculator = require('../utils/confidenceCalculator');
-const logger = require('../utils/logger');
 
+/**
+ * ResponseProcessor
+ *
+ * Takes a raw IDfy API response, extracts fields using the
+ * vendor mapping, validates required fields, and returns a
+ * clean standardised object that gets stored in the DB.
+ *
+ * Usage:
+ *   const processed = responseProcessor.process('idfy', rawResponse, 'pan');
+ *
+ * ─── Returned shape ───────────────────────────────────────────────────────────
+ * {
+ *   request_id:        string,
+ *   vendor:            'idfy',
+ *   verification_type: 'pan' | 'aadhaar' | 'gst',
+ *   status:            'success' | 'failed' | 'timeout' | 'in_progress',
+ *   verified:          boolean,   // true = document confirmed found in govt DB
+ *   result:            object,    // extracted + transformed fields
+ *   raw_response:      object,    // original IDfy payload (audit trail)
+ *   processed_at:      ISO string
+ * }
+ *
+ * ─── status vs verified ───────────────────────────────────────────────────────
+ *   status   = did the IDfy API call itself succeed?
+ *              'success' means IDfy responded correctly (even if PAN not found)
+ *              'failed'  means IDfy errored or the task failed
+ *
+ *   verified = did the document pass the govt database lookup?
+ *              true  = id_found  (PAN exists in NSDL)
+ *              false = id_not_found (PAN doesn't exist — not an API error)
+ */
 class ResponseProcessor {
   constructor() {
-    // Register all vendor mappings
     this.vendors = {
-      'idfy': idfyMapping,
-      'gridlines': gridlinesMapping
+      idfy: idfyMapping,
     };
   }
 
   /**
-   * Process vendor response into standardized format
-   * @param {string} vendor - Vendor name ('idfy', 'gridlines')
-   * @param {object} rawResponse - Raw response from vendor
-   * @param {string} verificationType - Type of verification ('pan', 'aadhaar', etc.)
-   * @returns {object} Standardized response
+   * Main entry point.
+   * @param {string} vendor           - 'idfy'
+   * @param {object} rawResponse      - Raw JSON from the vendor API
+   * @param {string} verificationType - 'pan' | 'aadhaar' | 'gst'
+   * @returns {object} Standardised result object
    */
   process(vendor, rawResponse, verificationType) {
     try {
-      logger.info(`🔄 Processing ${vendor} response for ${verificationType}`);
+      console.log(`[ResponseProcessor] Processing ${vendor}/${verificationType}`);
 
-      // Get the appropriate vendor mapping
       const mapping = this.vendors[vendor.toLowerCase()];
       if (!mapping) {
         throw new Error(`Unknown vendor: ${vendor}`);
       }
 
-      // Get the specific mapping for this verification type
       const typeMapping = mapping[verificationType];
       if (!typeMapping) {
-        throw new Error(`No mapping found for ${verificationType} with vendor ${vendor}`);
+        throw new Error(`No mapping for ${verificationType} under vendor ${vendor}`);
       }
 
-      // Extract data using the mapping
+      // Step 1 — Pull fields out of the raw response
       const extracted = this.extractData(rawResponse, typeMapping);
-      
-      // Calculate confidence score
-      const confidence = confidenceCalculator.calculate(
-        extracted,
-        rawResponse,
-        verificationType
-      );
 
-      // Determine if verification was successful
+      // Step 2 — Check required fields + successIndicator
       const verified = this.isVerified(extracted, typeMapping, rawResponse);
 
-      // Build standardized response
-      const standardized = {
-        request_id: rawResponse.request_id || rawResponse.id || 'unknown',
+      // Step 3 — Build the standardised response stored in DB
+      const standardised = {
+        request_id:        rawResponse.request_id || rawResponse.id || 'unknown',
         vendor,
         verification_type: verificationType,
-        status: this.mapStatus(rawResponse.status, verified),
+        status:            this.mapStatus(rawResponse.status, verified),
         verified,
-        confidence_score: confidence,
-        result: extracted,
-        raw_response: rawResponse, // Keep for audit
-        processed_at: new Date().toISOString(),
-        metadata: {
-          vendor_version: rawResponse.version || '1.0',
-          processing_time_ms: rawResponse.processing_time || 0
-        }
+        result:            extracted,
+        raw_response:      rawResponse,   // kept for audit trail
+        processed_at:      new Date().toISOString(),
       };
 
-      logger.info(`✅ Processed ${vendor} response with confidence ${confidence}`);
-      return standardized;
+      console.log(`[ResponseProcessor] Done — status=${standardised.status}, verified=${verified}`);
+      return standardised;
 
     } catch (error) {
-      logger.error(`❌ Response processing failed:`, error);
-      
-      // Return error response
+      console.error('[ResponseProcessor] Failed:', error.message);
+
+      // Always return a shape — never throw up to the controller
       return {
-        request_id: rawResponse?.request_id || 'unknown',
+        request_id:        rawResponse?.request_id || 'unknown',
         vendor,
         verification_type: verificationType,
-        status: 'failed',
-        verified: false,
-        confidence_score: 0,
-        error: error.message,
-        raw_response: rawResponse,
-        processed_at: new Date().toISOString()
+        status:            'failed',
+        verified:          false,
+        error:             error.message,
+        raw_response:      rawResponse,
+        processed_at:      new Date().toISOString(),
       };
     }
   }
 
   /**
-   * Extract data using field mappings
+   * Walk the field map and pull values out using dot-notation paths.
    */
   extractData(rawResponse, mapping) {
     const extracted = {};
 
     for (const [targetField, sourcePath] of Object.entries(mapping.fields)) {
-      try {
-        // Handle nested paths like 'ocr_output.pan_number'
-        const value = this.getValueByPath(rawResponse, sourcePath);
-        if (value !== undefined) {
-          extracted[targetField] = value;
-        }
-      } catch (error) {
-        logger.debug(`Field extraction failed for ${targetField}:`, error.message);
+      const value = this.getValueByPath(rawResponse, sourcePath);
+      if (value !== undefined && value !== null) {
+        extracted[targetField] = value;
       }
     }
 
-    // Apply any transformations if needed
-    if (mapping.transform) {
+    // Run the mapping's transform() if defined
+    if (typeof mapping.transform === 'function') {
       return mapping.transform(extracted, rawResponse);
     }
 
@@ -113,59 +119,65 @@ class ResponseProcessor {
   }
 
   /**
-   * Get value from nested object using dot notation
+   * Resolve a dot-notation path against a nested object.
+   * e.g. getValueByPath(obj, 'result.source_output.pan_number')
    */
   getValueByPath(obj, path) {
     if (!obj || !path) return undefined;
-    
-    const keys = path.split('.');
-    let value = obj;
-    
-    for (const key of keys) {
-      if (value === null || value === undefined) return undefined;
-      value = value[key];
-    }
-    
-    return value;
+    return path.split('.').reduce((current, key) => {
+      return current !== null && current !== undefined
+        ? current[key]
+        : undefined;
+    }, obj);
   }
 
   /**
-   * Map vendor status to standardized status
+   * Map the IDfy top-level task status to our internal api_status.
+   *
+   * Key distinction:
+   *   'completed' → 'success' ALWAYS — IDfy processed the request correctly.
+   *                 A PAN returning id_not_found is still a successful API call.
+   *                 The `verified` flag separately tells you if the doc was found.
+   *
+   *   'failed'    → 'failed' — IDfy itself errored (network, bad request, etc.)
+   *
+   * This prevents id_not_found from being written to DB as api_status='failed',
+   * which would make it look like an API outage rather than a valid "not found".
    */
   mapStatus(vendorStatus, verified) {
-    const statusMap = {
-      'completed': verified ? 'completed' : 'failed',
-      'success': verified ? 'completed' : 'failed',
-      'failed': 'failed',
-      'error': 'failed',
-      'timeout': 'timeout',
-      'pending': 'in_progress'
+    const map = {
+      completed:   'success',      // ← fixed: was `verified ? 'completed' : 'failed'`
+      success:     'success',
+      failed:      'failed',
+      error:       'failed',
+      timeout:     'timeout',
+      pending:     'in_progress',
     };
-
-    return statusMap[vendorStatus?.toLowerCase()] || 
-           (verified ? 'completed' : 'failed');
+    return map[vendorStatus?.toLowerCase()] ?? (verified ? 'success' : 'failed');
   }
 
   /**
-   * Determine if verification was successful
+   * A verification is considered `verified` when:
+   *  1. All required fields are present in the extracted data, AND
+   *  2. The vendor's successIndicator field matches its expected value
+   *
+   * For PAN: verified = (result.source_output.status === 'id_found')
+   *          id_not_found → verified=false (but api_status is still 'success')
    */
   isVerified(extracted, mapping, rawResponse) {
-    // Check if we have all required fields
-    const requiredFields = mapping.required || [];
-    const hasAllRequired = requiredFields.every(field => 
-      extracted[field] !== undefined && extracted[field] !== null
+    const required    = mapping.required || [];
+    const hasRequired = required.every(
+      field => extracted[field] !== undefined && extracted[field] !== null
     );
+    if (!hasRequired) return false;
 
-    if (!hasAllRequired) return false;
-
-    // Check vendor-specific success indicators
     if (mapping.successIndicator) {
-      const indicator = this.getValueByPath(rawResponse, mapping.successIndicator.path);
-      return indicator === mapping.successIndicator.value;
+      const actual = this.getValueByPath(rawResponse, mapping.successIndicator.path);
+      return actual === mapping.successIndicator.value;
     }
 
-    // Default: if we have required fields and no error, assume success
-    return rawResponse.error === undefined && 
+    // Fallback: no explicit error and top-level status isn't a failure
+    return !rawResponse.error &&
            rawResponse.status !== 'failed' &&
            rawResponse.status !== 'error';
   }
