@@ -173,11 +173,82 @@ const thirdPartyService = {
 
   // ───────────────────────────────────────────────────────────────────────────
   // verifyGSTIN
-  // ⚠️  Not enabled on this IDfy account — stub kept, same graceful pattern.
+  //
+  // Calls IDfy Eve v3 sync endpoint for GSTIN verification.
+  // Endpoint: POST /v3/tasks/sync/verify_with_source/ind_gstin
+  //
+  // ⚠️  ACCOUNT STATUS: This endpoint may not be enabled on this IDfy account.
+  //     Contact eve.support@idfy.com with your account-id to activate it.
+  //     The code below is fully wired — it will work the moment the account
+  //     is activated. Until then, IDfy will return a 404/403 error which gets
+  //     caught, stored in failure_reason, and api_status = 'failed' in the DB.
+  //
+  // WHY business_name IS NOT SENT TO IDfy:
+  //   The IDfy ind_gstin endpoint only accepts id_number (the GSTIN itself).
+  //   It does not support server-side name matching like PAN does.
+  //   The business_name field is stored in our DB for our own records.
+  //   If you want to cross-check, compare record.business_name against
+  //   the legal_name / trade_name returned in the IDfy response yourself.
+  //
+  // IDfy Request shape (ind_gstin):
+  //   {
+  //     task_id:  "gstin_<timestamp>",
+  //     group_id: "bgv_<timestamp>",
+  //     data: {
+  //       id_number: "27ABCDE1234F1Z5"   ← the GSTIN itself
+  //     }
+  //   }
+  //
+  // IDfy Response shape (when account is enabled):
+  //   {
+  //     status: "completed",
+  //     request_id: "uuid",
+  //     task_id: "gstin_...",
+  //     result: {
+  //       source_output: {
+  //         status:                      "id_found" | "id_not_found" | "source_down",
+  //         gstin:                       "27ABCDE1234F1Z5",
+  //         legal_name:                  "ABC TRADERS PRIVATE LIMITED",
+  //         trade_name:                  "ABC TRADERS",
+  //         gstin_status:                "Active",
+  //         registration_date:           "2018-07-01",
+  //         last_updated:                "2023-01-15",
+  //         business_type:               "Regular",
+  //         principal_place_of_business: "Mumbai, Maharashtra",
+  //         state_jurisdiction:          "Maharashtra",
+  //         center_jurisdiction:         "Mumbai Central",
+  //         taxpayer_type:               "Regular"
+  //       }
+  //     }
+  //   }
   // ───────────────────────────────────────────────────────────────────────────
   async verifyGSTIN(data) {
-    console.warn('[IDfy] GSTIN verify_with_source not available on this account.');
-    throw new Error('IDfy GSTIN verification not available on this account. Contact eve.support@idfy.com with your account-id to enable it.');
+    const taskId  = `gstin_${Date.now()}`;
+    const groupId = `bgv_${Date.now()}`;
+
+    const body = {
+      task_id:  taskId,
+      group_id: groupId,
+      data: {
+        id_number: data.gstin,
+        // business_name intentionally NOT sent — IDfy ind_gstin does not
+        // support server-side name matching. See comment above.
+      },
+    };
+
+    console.log(`[IDfy] GSTIN verify  task_id=${taskId}`);
+    console.log(`[IDfy] REQUEST BODY  ${JSON.stringify(body, null, 2)}`);
+
+    const response = await makeRequest(
+      'POST',
+      '/v3/tasks/sync/verify_with_source/ind_gstin',
+      body
+    );
+
+    console.log(`[IDfy] RAW RESPONSE  ${JSON.stringify(response, null, 2)}`);
+
+    thirdPartyService._assertResult(response, 'GSTIN');
+    return response;
   },
 
   // ───────────────────────────────────────────────────────────────────────────
@@ -205,7 +276,7 @@ const thirdPartyService = {
   //   - response is empty
   //   - top-level task status is 'failed'
   //   - source_output is missing (API-level failure)
-  //   - source is down (transient UIDAI/NSDL outage — should be retried later)
+  //   - source is down (transient UIDAI/NSDL/GST outage — should be retried later)
   //
   // Does NOT throw for id_not_found — that is a valid successful API call
   // where the document simply doesn't exist in the govt DB.

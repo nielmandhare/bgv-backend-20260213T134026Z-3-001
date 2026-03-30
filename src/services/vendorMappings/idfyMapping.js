@@ -52,6 +52,33 @@
  *     (only metadata like name, year_of_birth, gender, state).
  *   - The raw_response is stored in DB for audit, but it also never contains
  *     the full number — IDfy masks it at the source.
+ *
+ * ─── IDfy v3 sync response shape — GSTIN (ind_gstin) ────────────────────────
+ * {
+ *   status: "completed",
+ *   request_id, task_id, group_id,
+ *   result: {
+ *     source_output: {
+ *       status:                      "id_found" | "id_not_found" | "source_down",
+ *       gstin:                       "27ABCDE1234F1Z5",
+ *       legal_name:                  "ABC TRADERS PRIVATE LIMITED",
+ *       trade_name:                  "ABC TRADERS",
+ *       gstin_status:                "Active" | "Cancelled" | "Suspended",
+ *       registration_date:           "2018-07-01",
+ *       last_updated:                "2023-01-15",
+ *       business_type:               "Regular" | "Composition" | ...,
+ *       principal_place_of_business: "Mumbai, Maharashtra",
+ *       state_jurisdiction:          "Maharashtra",
+ *       center_jurisdiction:         "Mumbai Central",
+ *       taxpayer_type:               "Regular" | "Composition" | ...
+ *     }
+ *   }
+ * }
+ *
+ * NOTE: IDfy's ind_gstin does NOT support name_match_result in the response
+ * (unlike PAN and Aadhaar). If you need to verify business_name against the
+ * returned legal_name / trade_name, do that comparison in your own controller
+ * logic after the result is stored.
  */
 
 const idfyMapping = {
@@ -158,17 +185,60 @@ const idfyMapping = {
   },
 
   // ─── GSTIN ────────────────────────────────────────────────────────────────
-  // ⚠️  Not enabled on this IDfy account — stub kept for completeness.
+  //
+  // IDfy endpoint: POST /v3/tasks/sync/verify_with_source/ind_gstin
+  //
+  // What this returns when id_found:
+  //   legal_name                  — registered legal name of the entity
+  //   trade_name                  — trade name (may differ from legal_name)
+  //   gstin_status                — "Active" | "Cancelled" | "Suspended"
+  //   registration_date           — when GST registration was granted
+  //   last_updated                — last update in the GST portal
+  //   business_type               — "Regular" | "Composition" | etc.
+  //   principal_place_of_business — address string
+  //   state_jurisdiction          — state where registered
+  //   center_jurisdiction         — central tax jurisdiction
+  //   taxpayer_type               — "Regular" | "Composition" | etc.
+  //
+  // What this does NOT return:
+  //   - name_match_result (IDfy ind_gstin has no server-side name matching)
+  //     Compare business_name against legal_name / trade_name yourself if needed.
+  //
+  // ⚠️  Account activation required — contact eve.support@idfy.com
+  // ─────────────────────────────────────────────────────────────────────────
 
   gst: {
     fields: {
-      lookup_status:     'result.source_output.status',
-      legal_name:        'result.source_output.legal_name',
-      trade_name:        'result.source_output.trade_name',
-      gstin_status:      'result.source_output.gstin_status',
+      // Core lookup result — same pattern as PAN and Aadhaar
+      lookup_status: 'result.source_output.status',
+
+      // GSTIN echoed back for confirmation
+      gstin: 'result.source_output.gstin',
+
+      // Business identity
+      legal_name: 'result.source_output.legal_name',
+      trade_name: 'result.source_output.trade_name',
+
+      // Registration status — "Active" | "Cancelled" | "Suspended"
+      // Use gstin_active (from transform) for boolean checks
+      gstin_status: 'result.source_output.gstin_status',
+
+      // Timeline
       registration_date: 'result.source_output.registration_date',
+      last_updated:      'result.source_output.last_updated',
+
+      // Business classification
+      business_type:  'result.source_output.business_type',
+      taxpayer_type:  'result.source_output.taxpayer_type',
+
+      // Location / jurisdiction
+      principal_place_of_business: 'result.source_output.principal_place_of_business',
+      state_jurisdiction:          'result.source_output.state_jurisdiction',
+      center_jurisdiction:         'result.source_output.center_jurisdiction',
     },
 
+    // No required fields — id_not_found will have nulls for all source_output
+    // fields. verified is determined entirely by successIndicator.
     required: [],
 
     successIndicator: {
@@ -179,6 +249,13 @@ const idfyMapping = {
     transform(extracted, raw) {
       return {
         ...extracted,
+
+        // Normalise gstin_status to a boolean for easy frontend consumption.
+        // "Active" → true, anything else (Cancelled, Suspended, null) → false.
+        // Same pattern as aadhaar_linked on PAN.
+        gstin_active: extracted.gstin_status?.toLowerCase() === 'active',
+
+        // Audit fields — always attach for traceability
         request_id: raw.request_id ?? null,
         task_id:    raw.task_id    ?? null,
       };
