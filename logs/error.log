@@ -45,3 +45,56 @@
 [2026-03-28T07:02:31.676Z] ❌ PAN verification failed: Timeout waiting for task completion
 [2026-03-28T07:04:38.881Z] ❌ PAN verification failed: Timeout waiting for task completion
 [2026-03-28T08:50:00.981Z] 400 - Expected double-quoted property name in JSON at position 57
+[2026-03-30T13:11:08.463Z] ❌ Get retry stats error: ReferenceError: db is not defined
+[2026-03-30T13:11:08.465Z] GET /api/retry/stats 500 - 3ms
+[2026-03-30T13:11:08.467Z] ❌ Get retry stats error: ReferenceError: db is not defined
+[2026-03-30T13:11:08.468Z] GET /api/retry/stats 500 - 0ms
+[2026-03-30T13:11:08.702Z] ❌ Query error: relation "bulk_upload_batches" does not exist
+[2026-03-30T13:11:08.703Z] ❌ Get batches error: error: relation "bulk_upload_batches" does not exist
+[2026-03-30T13:11:08.705Z] GET /api/bulk-upload/batches 500 - 250ms
+[2026-03-30T13:11:08.726Z] ❌ Query error: relation "bulk_upload_batches" does not exist
+[2026-03-30T13:11:08.728Z] ❌ Get batches error: error: relation "bulk_upload_batches" does not exist
+[2026-03-30T13:11:08.731Z] GET /api/bulk-upload/batches 500 - 21ms
+[2026-03-30T13:11:55.206Z] ❌ Query error: relation "consent_records" does not exist
+[2026-03-30T13:11:55.207Z] ❌ Accept consent error: error: relation "consent_records" does not exist
+[2026-03-30T13:11:55.207Z] POST /api/consent/accept 500 - 11ms
+[2026-03-30T13:11:56.448Z] ❌ Query error: relation "consent_records" does not exist
+[2026-03-30T13:11:56.450Z] ❌ Accept consent error: error: relation "consent_records" does not exist
+[2026-03-30T13:11:56.452Z] POST /api/consent/accept 500 - 18ms
+[2026-03-30T13:11:58.962Z] ❌ Query error: relation "consent_records" does not exist
+[2026-03-30T13:11:58.964Z] ❌ Accept consent error: error: relation "consent_records" does not exist
+[2026-03-30T13:11:58.966Z] POST /api/consent/accept 500 - 19ms
+[2026-03-30T13:15:35.185Z] ❌ Get retry stats error: ReferenceError: db is not defined
+[2026-03-30T13:15:35.187Z] GET /api/retry/stats 500 - 4ms
+[2026-03-30T13:15:35.192Z] ❌ Get retry stats error: ReferenceError: db is not defined
+[2026-03-30T13:15:35.194Z] GET /api/retry/stats 500 - 4ms
+[2026-03-30T13:15:40.935Z] ❌ Query error: invalid input syntax for type uuid: "terms"
+[2026-03-30T13:15:40.937Z] ❌ Accept consent error: error: invalid input syntax for type uuid: "terms"
+[2026-03-30T13:15:40.938Z] POST /api/consent/accept 500 - 15ms
+[2026-03-30T13:15:41.594Z] ❌ Query error: invalid input syntax for type uuid: "terms"
+[2026-03-30T13:15:41.597Z] ❌ Accept consent error: error: invalid input syntax for type uuid: "terms"
+[2026-03-30T13:15:41.603Z] POST /api/consent/accept 500 - 35ms
+[2026-03-30T13:15:42.159Z] ❌ Query error: invalid input syntax for type uuid: "terms"
+[2026-03-30T13:15:42.162Z] ❌ Accept consent error: error: invalid input syntax for type uuid: "terms"
+[2026-03-30T13:15:42.166Z] POST /api/consent/accept 500 - 33ms
+[2026-03-30T13:15:44.207Z] ❌ Get retry stats error: ReferenceError: db is not defined
+[2026-03-30T13:15:44.210Z] GET /api/retry/stats 500 - 4ms
+[2026-03-30T13:15:44.218Z] ❌ Get retry stats error: ReferenceError: db is not defined
+[2026-03-30T13:15:44.220Z] GET /api/retry/stats 500 - 2ms
+[2026-03-30T13:16:00.925Z] ❌ Get retry stats error: ReferenceError: db is not defined
+[2026-03-30T13:16:00.927Z] GET /api/retry/stats 500 - 2ms
+[2026-03-30T13:16:00.932Z] ❌ Get retry stats error: ReferenceError: db is not defined
+[2026-03-30T13:16:00.933Z] GET /api/retry/stats 500 - 2ms
+[2026-03-30T13:16:52.435Z] ❌ Get retry stats error: ReferenceError: db is not defined
+[2026-03-30T13:16:52.436Z] GET /api/retry/stats 500 - 1ms
+[2026-03-30T13:16:52.437Z] ❌ Get retry stats error: ReferenceError: db is not defined
+[2026-03-30T13:16:52.438Z] GET /api/retry/stats 500 - 0ms
+[2026-03-30T13:17:06.769Z] ❌ Query error: invalid input syntax for type uuid: "terms"
+[2026-03-30T13:17:06.771Z] ❌ Accept consent error: error: invalid input syntax for type uuid: "terms"
+[2026-03-30T13:17:06.772Z] POST /api/consent/accept 500 - 22ms
+[2026-03-30T13:18:34.994Z] ❌ Query error: invalid input syntax for type uuid: "terms"
+[2026-03-30T13:18:34.998Z] ❌ Accept consent error: error: invalid input syntax for type uuid: "terms"
+[2026-03-30T13:18:35.001Z] POST /api/consent/accept 500 - 33ms
+[2026-03-30T13:19:41.871Z] ❌ Query error: invalid input syntax for type uuid: "terms"
+[2026-03-30T13:19:41.874Z] ❌ Accept consent error: error: invalid input syntax for type uuid: "terms"
+[2026-03-30T13:19:41.875Z] POST /api/consent/accept 500 - 22ms

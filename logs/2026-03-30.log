@@ -1,0 +1,560 @@
+[2026-03-30T13:07:50.695Z] INFO: 🔄 Polling fallback and retry jobs initialized
+[2026-03-30T13:07:50.696Z] INFO: 🚀 Server running on http://localhost:5001
+[2026-03-30T13:07:50.696Z] INFO: 📦 Environment: development
+[2026-03-30T13:07:50.696Z] INFO: 📝 API: http://localhost:5001/api
+[2026-03-30T13:07:50.696Z] INFO: 💾 Database: bgv_platform
+[2026-03-30T13:07:50.696Z] INFO: 🔄 Polling fallback: Active
+[2026-03-30T13:07:50.696Z] INFO: 🔄 Retry job: Active
+[2026-03-30T13:11:08.455Z] DEBUG: 📥 GET /api/bulk-upload/batches [object Object]
+[2026-03-30T13:11:08.456Z] DEBUG: 🔒 Tenant isolation: 7e204e4c-c1f3-43b1-8671-0c8e4f82337a
+[2026-03-30T13:11:08.456Z] DEBUG: 📝 SQL: SELECT * FROM bulk_upload_batches 
+       WHERE tenant_id = $1 
+       ORDER BY created_at DESC 
+       LIMIT $2...
+[2026-03-30T13:11:08.461Z] DEBUG: 📥 GET /api/retry/stats [object Object]
+[2026-03-30T13:11:08.462Z] DEBUG: 🔒 Tenant isolation: 7e204e4c-c1f3-43b1-8671-0c8e4f82337a
+[2026-03-30T13:11:08.462Z] DEBUG: 🔒 Tenant isolation: 7e204e4c-c1f3-43b1-8671-0c8e4f82337a
+[2026-03-30T13:11:08.463Z] ERROR: ❌ Get retry stats error: ReferenceError: db is not defined
+[2026-03-30T13:11:08.465Z] ERROR: GET /api/retry/stats 500 - 3ms
+[2026-03-30T13:11:08.466Z] DEBUG: 📥 GET /api/retry/stats [object Object]
+[2026-03-30T13:11:08.467Z] DEBUG: 🔒 Tenant isolation: 7e204e4c-c1f3-43b1-8671-0c8e4f82337a
+[2026-03-30T13:11:08.467Z] DEBUG: 🔒 Tenant isolation: 7e204e4c-c1f3-43b1-8671-0c8e4f82337a
+[2026-03-30T13:11:08.467Z] ERROR: ❌ Get retry stats error: ReferenceError: db is not defined
+[2026-03-30T13:11:08.467Z] ERROR: GET /api/retry/stats 500 - 0ms
+[2026-03-30T13:11:08.682Z] INFO: ✅ Database connected
+[2026-03-30T13:11:08.702Z] ERROR: ❌ Query error: relation "bulk_upload_batches" does not exist
+[2026-03-30T13:11:08.703Z] ERROR: ❌ Get batches error: error: relation "bulk_upload_batches" does not exist
+[2026-03-30T13:11:08.705Z] ERROR: GET /api/bulk-upload/batches 500 - 250ms
+[2026-03-30T13:11:08.708Z] DEBUG: 📥 GET /api/bulk-upload/batches [object Object]
+[2026-03-30T13:11:08.709Z] DEBUG: 🔒 Tenant isolation: 7e204e4c-c1f3-43b1-8671-0c8e4f82337a
+[2026-03-30T13:11:08.710Z] DEBUG: 📝 SQL: SELECT * FROM bulk_upload_batches 
+       WHERE tenant_id = $1 
+       ORDER BY created_at DESC 
+       LIMIT $2...
+[2026-03-30T13:11:08.723Z] INFO: ✅ Database connected
+[2026-03-30T13:11:08.726Z] ERROR: ❌ Query error: relation "bulk_upload_batches" does not exist
+[2026-03-30T13:11:08.728Z] ERROR: ❌ Get batches error: error: relation "bulk_upload_batches" does not exist
+[2026-03-30T13:11:08.730Z] ERROR: GET /api/bulk-upload/batches 500 - 21ms
+[2026-03-30T13:11:55.195Z] DEBUG: 📥 POST /api/consent/accept [object Object]
+[2026-03-30T13:11:55.196Z] DEBUG: 🔒 Tenant isolation: 7e204e4c-c1f3-43b1-8671-0c8e4f82337a
+[2026-03-30T13:11:55.197Z] DEBUG: 📝 SQL: SELECT * FROM consent_records 
+       WHERE user_id = $1 AND tenant_id = $2 AND consent_type = $3 AND is_active = true
+       ORDER BY consented_at DESC 
+       LIMIT 1...
+[2026-03-30T13:11:55.204Z] INFO: ✅ Database connected
+[2026-03-30T13:11:55.206Z] ERROR: ❌ Query error: relation "consent_records" does not exist
+[2026-03-30T13:11:55.207Z] ERROR: ❌ Accept consent error: error: relation "consent_records" does not exist
+[2026-03-30T13:11:55.207Z] ERROR: POST /api/consent/accept 500 - 11ms
+[2026-03-30T13:11:56.432Z] DEBUG: 📥 POST /api/consent/accept [object Object]
+[2026-03-30T13:11:56.433Z] DEBUG: 🔒 Tenant isolation: 7e204e4c-c1f3-43b1-8671-0c8e4f82337a
+[2026-03-30T13:11:56.435Z] DEBUG: 📝 SQL: SELECT * FROM consent_records 
+       WHERE user_id = $1 AND tenant_id = $2 AND consent_type = $3 AND is_active = true
+       ORDER BY consented_at DESC 
+       LIMIT 1...
+[2026-03-30T13:11:56.445Z] INFO: ✅ Database connected
+[2026-03-30T13:11:56.447Z] ERROR: ❌ Query error: relation "consent_records" does not exist
+[2026-03-30T13:11:56.450Z] ERROR: ❌ Accept consent error: error: relation "consent_records" does not exist
+[2026-03-30T13:11:56.451Z] ERROR: POST /api/consent/accept 500 - 18ms
+[2026-03-30T13:11:58.945Z] DEBUG: 📥 POST /api/consent/accept [object Object]
+[2026-03-30T13:11:58.946Z] DEBUG: 🔒 Tenant isolation: 7e204e4c-c1f3-43b1-8671-0c8e4f82337a
+[2026-03-30T13:11:58.948Z] DEBUG: 📝 SQL: SELECT * FROM consent_records 
+       WHERE user_id = $1 AND tenant_id = $2 AND consent_type = $3 AND is_active = true
+       ORDER BY consented_at DESC 
+       LIMIT 1...
+[2026-03-30T13:11:58.958Z] INFO: ✅ Database connected
+[2026-03-30T13:11:58.962Z] ERROR: ❌ Query error: relation "consent_records" does not exist
+[2026-03-30T13:11:58.964Z] ERROR: ❌ Accept consent error: error: relation "consent_records" does not exist
+[2026-03-30T13:11:58.965Z] ERROR: POST /api/consent/accept 500 - 19ms
+[2026-03-30T13:15:27.049Z] INFO: SIGINT received, shutting down gracefully
+[2026-03-30T13:15:30.001Z] INFO: 🔄 Polling fallback and retry jobs initialized
+[2026-03-30T13:15:30.002Z] INFO: 🚀 Server running on http://localhost:5001
+[2026-03-30T13:15:30.002Z] INFO: 📦 Environment: development
+[2026-03-30T13:15:30.002Z] INFO: 📝 API: http://localhost:5001/api
+[2026-03-30T13:15:30.002Z] INFO: 💾 Database: bgv_platform
+[2026-03-30T13:15:30.002Z] INFO: 🔄 Polling fallback: Active
+[2026-03-30T13:15:30.002Z] INFO: 🔄 Retry job: Active
+[2026-03-30T13:15:35.173Z] DEBUG: 📥 GET /api/bulk-upload/batches [object Object]
+[2026-03-30T13:15:35.174Z] DEBUG: 🔒 Tenant isolation: 7e204e4c-c1f3-43b1-8671-0c8e4f82337a
+[2026-03-30T13:15:35.174Z] DEBUG: 📝 SQL: SELECT * FROM bulk_upload_batches 
+       WHERE tenant_id = $1 
+       ORDER BY created_at DESC 
+       LIMIT $2...
+[2026-03-30T13:15:35.182Z] DEBUG: 📥 GET /api/retry/stats [object Object]
+[2026-03-30T13:15:35.183Z] DEBUG: 🔒 Tenant isolation: 7e204e4c-c1f3-43b1-8671-0c8e4f82337a
+[2026-03-30T13:15:35.184Z] DEBUG: 🔒 Tenant isolation: 7e204e4c-c1f3-43b1-8671-0c8e4f82337a
+[2026-03-30T13:15:35.185Z] ERROR: ❌ Get retry stats error: ReferenceError: db is not defined
+[2026-03-30T13:15:35.187Z] ERROR: GET /api/retry/stats 500 - 4ms
+[2026-03-30T13:15:35.190Z] DEBUG: 📥 GET /api/retry/stats [object Object]
+[2026-03-30T13:15:35.191Z] DEBUG: 🔒 Tenant isolation: 7e204e4c-c1f3-43b1-8671-0c8e4f82337a
+[2026-03-30T13:15:35.191Z] DEBUG: 🔒 Tenant isolation: 7e204e4c-c1f3-43b1-8671-0c8e4f82337a
+[2026-03-30T13:15:35.192Z] ERROR: ❌ Get retry stats error: ReferenceError: db is not defined
+[2026-03-30T13:15:35.194Z] ERROR: GET /api/retry/stats 500 - 4ms
+[2026-03-30T13:15:35.212Z] INFO: ✅ Database connected
+[2026-03-30T13:15:35.226Z] INFO: GET /api/bulk-upload/batches 200 - 52ms
+[2026-03-30T13:15:35.227Z] DEBUG: 📥 GET /api/bulk-upload/batches [object Object]
+[2026-03-30T13:15:35.227Z] DEBUG: 🔒 Tenant isolation: 7e204e4c-c1f3-43b1-8671-0c8e4f82337a
+[2026-03-30T13:15:35.228Z] DEBUG: 📝 SQL: SELECT * FROM bulk_upload_batches 
+       WHERE tenant_id = $1 
+       ORDER BY created_at DESC 
+       LIMIT $2...
+[2026-03-30T13:15:35.229Z] INFO: GET /api/bulk-upload/batches 304 - 2ms
+[2026-03-30T13:15:40.922Z] DEBUG: 📥 POST /api/consent/accept [object Object]
+[2026-03-30T13:15:40.923Z] DEBUG: 🔒 Tenant isolation: 7e204e4c-c1f3-43b1-8671-0c8e4f82337a
+[2026-03-30T13:15:40.925Z] DEBUG: 📝 SQL: SELECT * FROM consent_records 
+       WHERE user_id = $1 AND tenant_id = $2 AND consent_type = $3 AND is_active = true
+       ORDER BY consented_at DESC 
+       LIMIT 1...
+[2026-03-30T13:15:40.934Z] ERROR: ❌ Query error: invalid input syntax for type uuid: "terms"
+[2026-03-30T13:15:40.937Z] ERROR: ❌ Accept consent error: error: invalid input syntax for type uuid: "terms"
+[2026-03-30T13:15:40.938Z] ERROR: POST /api/consent/accept 500 - 15ms
+[2026-03-30T13:15:41.563Z] DEBUG: 📥 POST /api/consent/accept [object Object]
+[2026-03-30T13:15:41.564Z] DEBUG: 🔒 Tenant isolation: 7e204e4c-c1f3-43b1-8671-0c8e4f82337a
+[2026-03-30T13:15:41.565Z] DEBUG: 📝 SQL: SELECT * FROM consent_records 
+       WHERE user_id = $1 AND tenant_id = $2 AND consent_type = $3 AND is_active = true
+       ORDER BY consented_at DESC 
+       LIMIT 1...
+[2026-03-30T13:15:41.588Z] INFO: ✅ Database connected
+[2026-03-30T13:15:41.594Z] ERROR: ❌ Query error: invalid input syntax for type uuid: "terms"
+[2026-03-30T13:15:41.597Z] ERROR: ❌ Accept consent error: error: invalid input syntax for type uuid: "terms"
+[2026-03-30T13:15:41.600Z] ERROR: POST /api/consent/accept 500 - 35ms
+[2026-03-30T13:15:42.129Z] DEBUG: 📥 POST /api/consent/accept [object Object]
+[2026-03-30T13:15:42.130Z] DEBUG: 🔒 Tenant isolation: 7e204e4c-c1f3-43b1-8671-0c8e4f82337a
+[2026-03-30T13:15:42.131Z] DEBUG: 📝 SQL: SELECT * FROM consent_records 
+       WHERE user_id = $1 AND tenant_id = $2 AND consent_type = $3 AND is_active = true
+       ORDER BY consented_at DESC 
+       LIMIT 1...
+[2026-03-30T13:15:42.152Z] INFO: ✅ Database connected
+[2026-03-30T13:15:42.159Z] ERROR: ❌ Query error: invalid input syntax for type uuid: "terms"
+[2026-03-30T13:15:42.161Z] ERROR: ❌ Accept consent error: error: invalid input syntax for type uuid: "terms"
+[2026-03-30T13:15:42.163Z] ERROR: POST /api/consent/accept 500 - 33ms
+[2026-03-30T13:15:44.204Z] DEBUG: 📥 GET /api/retry/stats [object Object]
+[2026-03-30T13:15:44.205Z] DEBUG: 🔒 Tenant isolation: 7e204e4c-c1f3-43b1-8671-0c8e4f82337a
+[2026-03-30T13:15:44.206Z] DEBUG: 🔒 Tenant isolation: 7e204e4c-c1f3-43b1-8671-0c8e4f82337a
+[2026-03-30T13:15:44.207Z] ERROR: ❌ Get retry stats error: ReferenceError: db is not defined
+[2026-03-30T13:15:44.209Z] ERROR: GET /api/retry/stats 500 - 4ms
+[2026-03-30T13:15:44.211Z] DEBUG: 📥 GET /api/bulk-upload/batches [object Object]
+[2026-03-30T13:15:44.212Z] DEBUG: 🔒 Tenant isolation: 7e204e4c-c1f3-43b1-8671-0c8e4f82337a
+[2026-03-30T13:15:44.212Z] DEBUG: 📝 SQL: SELECT * FROM bulk_upload_batches 
+       WHERE tenant_id = $1 
+       ORDER BY created_at DESC 
+       LIMIT $2...
+[2026-03-30T13:15:44.216Z] DEBUG: 📥 GET /api/retry/stats [object Object]
+[2026-03-30T13:15:44.217Z] DEBUG: 🔒 Tenant isolation: 7e204e4c-c1f3-43b1-8671-0c8e4f82337a
+[2026-03-30T13:15:44.217Z] DEBUG: 🔒 Tenant isolation: 7e204e4c-c1f3-43b1-8671-0c8e4f82337a
+[2026-03-30T13:15:44.218Z] ERROR: ❌ Get retry stats error: ReferenceError: db is not defined
+[2026-03-30T13:15:44.219Z] ERROR: GET /api/retry/stats 500 - 2ms
+[2026-03-30T13:15:44.223Z] INFO: ✅ Database connected
+[2026-03-30T13:15:44.228Z] INFO: GET /api/bulk-upload/batches 304 - 17ms
+[2026-03-30T13:15:44.230Z] DEBUG: 📥 GET /api/bulk-upload/batches [object Object]
+[2026-03-30T13:15:44.230Z] DEBUG: 🔒 Tenant isolation: 7e204e4c-c1f3-43b1-8671-0c8e4f82337a
+[2026-03-30T13:15:44.231Z] DEBUG: 📝 SQL: SELECT * FROM bulk_upload_batches 
+       WHERE tenant_id = $1 
+       ORDER BY created_at DESC 
+       LIMIT $2...
+[2026-03-30T13:15:44.233Z] INFO: GET /api/bulk-upload/batches 304 - 3ms
+[2026-03-30T13:16:00.924Z] DEBUG: 📥 GET /api/retry/stats [object Object]
+[2026-03-30T13:16:00.925Z] DEBUG: 🔒 Tenant isolation: 7e204e4c-c1f3-43b1-8671-0c8e4f82337a
+[2026-03-30T13:16:00.925Z] DEBUG: 🔒 Tenant isolation: 7e204e4c-c1f3-43b1-8671-0c8e4f82337a
+[2026-03-30T13:16:00.925Z] ERROR: ❌ Get retry stats error: ReferenceError: db is not defined
+[2026-03-30T13:16:00.926Z] ERROR: GET /api/retry/stats 500 - 2ms
+[2026-03-30T13:16:00.928Z] DEBUG: 📥 GET /api/bulk-upload/batches [object Object]
+[2026-03-30T13:16:00.928Z] DEBUG: 🔒 Tenant isolation: 7e204e4c-c1f3-43b1-8671-0c8e4f82337a
+[2026-03-30T13:16:00.928Z] DEBUG: 📝 SQL: SELECT * FROM bulk_upload_batches 
+       WHERE tenant_id = $1 
+       ORDER BY created_at DESC 
+       LIMIT $2...
+[2026-03-30T13:16:00.931Z] DEBUG: 📥 GET /api/retry/stats [object Object]
+[2026-03-30T13:16:00.931Z] DEBUG: 🔒 Tenant isolation: 7e204e4c-c1f3-43b1-8671-0c8e4f82337a
+[2026-03-30T13:16:00.931Z] DEBUG: 🔒 Tenant isolation: 7e204e4c-c1f3-43b1-8671-0c8e4f82337a
+[2026-03-30T13:16:00.932Z] ERROR: ❌ Get retry stats error: ReferenceError: db is not defined
+[2026-03-30T13:16:00.933Z] ERROR: GET /api/retry/stats 500 - 2ms
+[2026-03-30T13:16:01.010Z] INFO: ✅ Database connected
+[2026-03-30T13:16:01.016Z] INFO: GET /api/bulk-upload/batches 304 - 87ms
+[2026-03-30T13:16:01.017Z] DEBUG: 📥 GET /api/bulk-upload/batches [object Object]
+[2026-03-30T13:16:01.017Z] DEBUG: 🔒 Tenant isolation: 7e204e4c-c1f3-43b1-8671-0c8e4f82337a
+[2026-03-30T13:16:01.018Z] DEBUG: 📝 SQL: SELECT * FROM bulk_upload_batches 
+       WHERE tenant_id = $1 
+       ORDER BY created_at DESC 
+       LIMIT $2...
+[2026-03-30T13:16:01.019Z] INFO: GET /api/bulk-upload/batches 304 - 2ms
+[2026-03-30T13:16:52.434Z] DEBUG: 📥 GET /api/retry/stats [object Object]
+[2026-03-30T13:16:52.434Z] DEBUG: 🔒 Tenant isolation: 7e204e4c-c1f3-43b1-8671-0c8e4f82337a
+[2026-03-30T13:16:52.434Z] DEBUG: 🔒 Tenant isolation: 7e204e4c-c1f3-43b1-8671-0c8e4f82337a
+[2026-03-30T13:16:52.434Z] ERROR: ❌ Get retry stats error: ReferenceError: db is not defined
+[2026-03-30T13:16:52.436Z] ERROR: GET /api/retry/stats 500 - 1ms
+[2026-03-30T13:16:52.436Z] DEBUG: 📥 GET /api/bulk-upload/batches [object Object]
+[2026-03-30T13:16:52.436Z] DEBUG: 🔒 Tenant isolation: 7e204e4c-c1f3-43b1-8671-0c8e4f82337a
+[2026-03-30T13:16:52.436Z] DEBUG: 📝 SQL: SELECT * FROM bulk_upload_batches 
+       WHERE tenant_id = $1 
+       ORDER BY created_at DESC 
+       LIMIT $2...
+[2026-03-30T13:16:52.437Z] DEBUG: 📥 GET /api/retry/stats [object Object]
+[2026-03-30T13:16:52.437Z] DEBUG: 🔒 Tenant isolation: 7e204e4c-c1f3-43b1-8671-0c8e4f82337a
+[2026-03-30T13:16:52.437Z] DEBUG: 🔒 Tenant isolation: 7e204e4c-c1f3-43b1-8671-0c8e4f82337a
+[2026-03-30T13:16:52.437Z] ERROR: ❌ Get retry stats error: ReferenceError: db is not defined
+[2026-03-30T13:16:52.438Z] ERROR: GET /api/retry/stats 500 - 0ms
+[2026-03-30T13:16:52.446Z] INFO: ✅ Database connected
+[2026-03-30T13:16:52.448Z] INFO: GET /api/bulk-upload/batches 304 - 12ms
+[2026-03-30T13:16:52.449Z] DEBUG: 📥 GET /api/bulk-upload/batches [object Object]
+[2026-03-30T13:16:52.449Z] DEBUG: 🔒 Tenant isolation: 7e204e4c-c1f3-43b1-8671-0c8e4f82337a
+[2026-03-30T13:16:52.449Z] DEBUG: 📝 SQL: SELECT * FROM bulk_upload_batches 
+       WHERE tenant_id = $1 
+       ORDER BY created_at DESC 
+       LIMIT $2...
+[2026-03-30T13:16:52.450Z] INFO: GET /api/bulk-upload/batches 304 - 1ms
+[2026-03-30T13:17:06.749Z] DEBUG: 📥 POST /api/consent/accept [object Object]
+[2026-03-30T13:17:06.750Z] DEBUG: 🔒 Tenant isolation: 7e204e4c-c1f3-43b1-8671-0c8e4f82337a
+[2026-03-30T13:17:06.751Z] DEBUG: 📝 SQL: SELECT * FROM consent_records 
+       WHERE user_id = $1 AND tenant_id = $2 AND consent_type = $3 AND is_active = true
+       ORDER BY consented_at DESC 
+       LIMIT 1...
+[2026-03-30T13:17:06.764Z] INFO: ✅ Database connected
+[2026-03-30T13:17:06.768Z] ERROR: ❌ Query error: invalid input syntax for type uuid: "terms"
+[2026-03-30T13:17:06.770Z] ERROR: ❌ Accept consent error: error: invalid input syntax for type uuid: "terms"
+[2026-03-30T13:17:06.772Z] ERROR: POST /api/consent/accept 500 - 22ms
+[2026-03-30T13:17:58.206Z] INFO: SIGINT received, shutting down gracefully
+[2026-03-30T13:18:18.442Z] INFO: 🔄 Polling fallback and retry jobs initialized
+[2026-03-30T13:18:18.443Z] INFO: 🚀 Server running on http://localhost:5001
+[2026-03-30T13:18:18.443Z] INFO: 📦 Environment: development
+[2026-03-30T13:18:18.443Z] INFO: 📝 API: http://localhost:5001/api
+[2026-03-30T13:18:18.443Z] INFO: 💾 Database: bgv_platform
+[2026-03-30T13:18:18.443Z] INFO: 🔄 Polling fallback: Active
+[2026-03-30T13:18:18.443Z] INFO: 🔄 Retry job: Active
+[2026-03-30T13:18:21.437Z] DEBUG: 📥 GET /api/bulk-upload/batches [object Object]
+[2026-03-30T13:18:21.438Z] DEBUG: 🔒 Tenant isolation: 7e204e4c-c1f3-43b1-8671-0c8e4f82337a
+[2026-03-30T13:18:21.440Z] DEBUG: 📝 SQL: SELECT * FROM bulk_upload_batches 
+       WHERE tenant_id = $1 
+       ORDER BY created_at DESC 
+       LIMIT $2...
+[2026-03-30T13:18:21.450Z] DEBUG: 📥 GET /api/retry/stats [object Object]
+[2026-03-30T13:18:21.451Z] DEBUG: 🔒 Tenant isolation: 7e204e4c-c1f3-43b1-8671-0c8e4f82337a
+[2026-03-30T13:18:21.451Z] DEBUG: 🔒 Tenant isolation: 7e204e4c-c1f3-43b1-8671-0c8e4f82337a
+[2026-03-30T13:18:21.451Z] DEBUG: 📝 SQL: SELECT 
+        COUNT(*) FILTER (WHERE status = 'failed' AND retry_count < max_retries) as pending_retry,
+        COUNT(*) FILTER (WHERE status = 'failed' AND retry_count >= max_retries) as permanentl...
+[2026-03-30T13:18:21.503Z] INFO: ✅ Database connected
+[2026-03-30T13:18:21.505Z] INFO: ✅ Database connected
+[2026-03-30T13:18:21.512Z] INFO: GET /api/bulk-upload/batches 304 - 74ms
+[2026-03-30T13:18:21.513Z] DEBUG: 📥 GET /api/bulk-upload/batches [object Object]
+[2026-03-30T13:18:21.514Z] DEBUG: 🔒 Tenant isolation: 7e204e4c-c1f3-43b1-8671-0c8e4f82337a
+[2026-03-30T13:18:21.514Z] DEBUG: 📝 SQL: SELECT * FROM bulk_upload_batches 
+       WHERE tenant_id = $1 
+       ORDER BY created_at DESC 
+       LIMIT $2...
+[2026-03-30T13:18:21.518Z] INFO: GET /api/bulk-upload/batches 304 - 4ms
+[2026-03-30T13:18:21.524Z] INFO: GET /api/retry/stats 200 - 73ms
+[2026-03-30T13:18:21.525Z] DEBUG: 📥 GET /api/retry/stats [object Object]
+[2026-03-30T13:18:21.525Z] DEBUG: 🔒 Tenant isolation: 7e204e4c-c1f3-43b1-8671-0c8e4f82337a
+[2026-03-30T13:18:21.526Z] DEBUG: 🔒 Tenant isolation: 7e204e4c-c1f3-43b1-8671-0c8e4f82337a
+[2026-03-30T13:18:21.526Z] DEBUG: 📝 SQL: SELECT 
+        COUNT(*) FILTER (WHERE status = 'failed' AND retry_count < max_retries) as pending_retry,
+        COUNT(*) FILTER (WHERE status = 'failed' AND retry_count >= max_retries) as permanentl...
+[2026-03-30T13:18:21.528Z] INFO: GET /api/retry/stats 304 - 3ms
+[2026-03-30T13:18:34.966Z] DEBUG: 📥 POST /api/consent/accept [object Object]
+[2026-03-30T13:18:34.967Z] DEBUG: 🔒 Tenant isolation: 7e204e4c-c1f3-43b1-8671-0c8e4f82337a
+[2026-03-30T13:18:34.969Z] DEBUG: 📝 SQL: SELECT * FROM consent_records 
+       WHERE user_id = $1 AND tenant_id = $2 AND consent_type = $3 AND is_active = true
+       ORDER BY consented_at DESC 
+       LIMIT 1...
+[2026-03-30T13:18:34.978Z] INFO: ✅ Database connected
+[2026-03-30T13:18:34.994Z] ERROR: ❌ Query error: invalid input syntax for type uuid: "terms"
+[2026-03-30T13:18:34.998Z] ERROR: ❌ Accept consent error: error: invalid input syntax for type uuid: "terms"
+[2026-03-30T13:18:35.000Z] ERROR: POST /api/consent/accept 500 - 33ms
+[2026-03-30T13:19:15.063Z] INFO: SIGINT received, shutting down gracefully
+[2026-03-30T13:19:24.808Z] INFO: 🔄 Polling fallback and retry jobs initialized
+[2026-03-30T13:19:24.809Z] INFO: 🚀 Server running on http://localhost:5001
+[2026-03-30T13:19:24.810Z] INFO: 📦 Environment: development
+[2026-03-30T13:19:24.810Z] INFO: 📝 API: http://localhost:5001/api
+[2026-03-30T13:19:24.810Z] INFO: 💾 Database: bgv_platform
+[2026-03-30T13:19:24.810Z] INFO: 🔄 Polling fallback: Active
+[2026-03-30T13:19:24.810Z] INFO: 🔄 Retry job: Active
+[2026-03-30T13:19:28.003Z] DEBUG: 📥 GET /api/bulk-upload/batches [object Object]
+[2026-03-30T13:19:28.004Z] DEBUG: 🔒 Tenant isolation: 7e204e4c-c1f3-43b1-8671-0c8e4f82337a
+[2026-03-30T13:19:28.006Z] DEBUG: 📝 SQL: SELECT * FROM bulk_upload_batches 
+       WHERE tenant_id = $1 
+       ORDER BY created_at DESC 
+       LIMIT $2...
+[2026-03-30T13:19:28.012Z] DEBUG: 📥 GET /api/retry/stats [object Object]
+[2026-03-30T13:19:28.013Z] DEBUG: 🔒 Tenant isolation: 7e204e4c-c1f3-43b1-8671-0c8e4f82337a
+[2026-03-30T13:19:28.013Z] DEBUG: 🔒 Tenant isolation: 7e204e4c-c1f3-43b1-8671-0c8e4f82337a
+[2026-03-30T13:19:28.013Z] DEBUG: 📝 SQL: SELECT 
+        COUNT(*) FILTER (WHERE status = 'failed' AND retry_count < max_retries) as pending_retry,
+        COUNT(*) FILTER (WHERE status = 'failed' AND retry_count >= max_retries) as permanentl...
+[2026-03-30T13:19:28.029Z] INFO: ✅ Database connected
+[2026-03-30T13:19:28.030Z] INFO: ✅ Database connected
+[2026-03-30T13:19:28.034Z] INFO: GET /api/bulk-upload/batches 304 - 30ms
+[2026-03-30T13:19:28.034Z] INFO: GET /api/retry/stats 304 - 21ms
+[2026-03-30T13:19:28.035Z] DEBUG: 📥 GET /api/bulk-upload/batches [object Object]
+[2026-03-30T13:19:28.035Z] DEBUG: 🔒 Tenant isolation: 7e204e4c-c1f3-43b1-8671-0c8e4f82337a
+[2026-03-30T13:19:28.035Z] DEBUG: 📝 SQL: SELECT * FROM bulk_upload_batches 
+       WHERE tenant_id = $1 
+       ORDER BY created_at DESC 
+       LIMIT $2...
+[2026-03-30T13:19:28.036Z] DEBUG: 📥 GET /api/retry/stats [object Object]
+[2026-03-30T13:19:28.036Z] DEBUG: 🔒 Tenant isolation: 7e204e4c-c1f3-43b1-8671-0c8e4f82337a
+[2026-03-30T13:19:28.036Z] DEBUG: 🔒 Tenant isolation: 7e204e4c-c1f3-43b1-8671-0c8e4f82337a
+[2026-03-30T13:19:28.036Z] DEBUG: 📝 SQL: SELECT 
+        COUNT(*) FILTER (WHERE status = 'failed' AND retry_count < max_retries) as pending_retry,
+        COUNT(*) FILTER (WHERE status = 'failed' AND retry_count >= max_retries) as permanentl...
+[2026-03-30T13:19:28.039Z] INFO: GET /api/bulk-upload/batches 304 - 4ms
+[2026-03-30T13:19:28.040Z] INFO: GET /api/retry/stats 304 - 3ms
+[2026-03-30T13:19:41.852Z] DEBUG: 📥 POST /api/consent/accept [object Object]
+[2026-03-30T13:19:41.853Z] DEBUG: 🔒 Tenant isolation: 7e204e4c-c1f3-43b1-8671-0c8e4f82337a
+[2026-03-30T13:19:41.854Z] DEBUG: 📝 SQL: SELECT * FROM consent_records 
+       WHERE user_id = $1 AND tenant_id = $2 AND consent_type = $3 AND is_active = true
+       ORDER BY consented_at DESC 
+       LIMIT 1...
+[2026-03-30T13:19:41.866Z] INFO: ✅ Database connected
+[2026-03-30T13:19:41.870Z] ERROR: ❌ Query error: invalid input syntax for type uuid: "terms"
+[2026-03-30T13:19:41.874Z] ERROR: ❌ Accept consent error: error: invalid input syntax for type uuid: "terms"
+[2026-03-30T13:19:41.875Z] ERROR: POST /api/consent/accept 500 - 22ms
+[2026-03-30T13:20:54.151Z] INFO: SIGINT received, shutting down gracefully
+[2026-03-30T13:21:03.763Z] INFO: 🔄 Polling fallback and retry jobs initialized
+[2026-03-30T13:21:03.764Z] INFO: 🚀 Server running on http://localhost:5001
+[2026-03-30T13:21:03.764Z] INFO: 📦 Environment: development
+[2026-03-30T13:21:03.764Z] INFO: 📝 API: http://localhost:5001/api
+[2026-03-30T13:21:03.764Z] INFO: 💾 Database: bgv_platform
+[2026-03-30T13:21:03.764Z] INFO: 🔄 Polling fallback: Active
+[2026-03-30T13:21:03.764Z] INFO: 🔄 Retry job: Active
+[2026-03-30T13:21:07.046Z] DEBUG: 📥 GET /api/bulk-upload/batches [object Object]
+[2026-03-30T13:21:07.047Z] DEBUG: 🔒 Tenant isolation: 7e204e4c-c1f3-43b1-8671-0c8e4f82337a
+[2026-03-30T13:21:07.048Z] DEBUG: 📝 SQL: SELECT * FROM bulk_upload_batches 
+       WHERE tenant_id = $1 
+       ORDER BY created_at DESC 
+       LIMIT $2...
+[2026-03-30T13:21:07.057Z] DEBUG: 📥 GET /api/retry/stats [object Object]
+[2026-03-30T13:21:07.058Z] DEBUG: 🔒 Tenant isolation: 7e204e4c-c1f3-43b1-8671-0c8e4f82337a
+[2026-03-30T13:21:07.058Z] DEBUG: 🔒 Tenant isolation: 7e204e4c-c1f3-43b1-8671-0c8e4f82337a
+[2026-03-30T13:21:07.058Z] DEBUG: 📝 SQL: SELECT 
+        COUNT(*) FILTER (WHERE status = 'failed' AND retry_count < max_retries) as pending_retry,
+        COUNT(*) FILTER (WHERE status = 'failed' AND retry_count >= max_retries) as permanentl...
+[2026-03-30T13:21:07.069Z] INFO: ✅ Database connected
+[2026-03-30T13:21:07.069Z] INFO: ✅ Database connected
+[2026-03-30T13:21:07.075Z] INFO: GET /api/retry/stats 304 - 17ms
+[2026-03-30T13:21:07.076Z] INFO: GET /api/bulk-upload/batches 304 - 30ms
+[2026-03-30T13:21:07.076Z] DEBUG: 📥 GET /api/retry/stats [object Object]
+[2026-03-30T13:21:07.076Z] DEBUG: 🔒 Tenant isolation: 7e204e4c-c1f3-43b1-8671-0c8e4f82337a
+[2026-03-30T13:21:07.077Z] DEBUG: 🔒 Tenant isolation: 7e204e4c-c1f3-43b1-8671-0c8e4f82337a
+[2026-03-30T13:21:07.077Z] DEBUG: 📝 SQL: SELECT 
+        COUNT(*) FILTER (WHERE status = 'failed' AND retry_count < max_retries) as pending_retry,
+        COUNT(*) FILTER (WHERE status = 'failed' AND retry_count >= max_retries) as permanentl...
+[2026-03-30T13:21:07.078Z] DEBUG: 📥 GET /api/bulk-upload/batches [object Object]
+[2026-03-30T13:21:07.079Z] DEBUG: 🔒 Tenant isolation: 7e204e4c-c1f3-43b1-8671-0c8e4f82337a
+[2026-03-30T13:21:07.079Z] DEBUG: 📝 SQL: SELECT * FROM bulk_upload_batches 
+       WHERE tenant_id = $1 
+       ORDER BY created_at DESC 
+       LIMIT $2...
+[2026-03-30T13:21:07.082Z] INFO: GET /api/retry/stats 304 - 6ms
+[2026-03-30T13:21:07.083Z] INFO: GET /api/bulk-upload/batches 304 - 4ms
+[2026-03-30T13:21:17.903Z] DEBUG: 📥 POST /api/consent/accept [object Object]
+[2026-03-30T13:21:17.904Z] DEBUG: 🔒 Tenant isolation: 7e204e4c-c1f3-43b1-8671-0c8e4f82337a
+[2026-03-30T13:21:17.905Z] DEBUG: 📝 SQL: SELECT * FROM consent_records 
+       WHERE user_id = $1 AND tenant_id = $2 AND consent_type = $3 AND is_active = true
+       ORDER BY consented_at DESC 
+       LIMIT 1...
+[2026-03-30T13:21:17.914Z] INFO: ✅ Database connected
+[2026-03-30T13:21:17.919Z] DEBUG: 📝 SQL: INSERT INTO consent_records (
+        id, user_id, tenant_id, verification_request_id, subject_name,
+        consent_type, consent_text, version, ip_address, user_agent, metadata
+      ) VALUES (
+    ...
+[2026-03-30T13:21:17.936Z] INFO: ✅ Consent accepted: terms for user 047d6220-fb0b-475a-a7c0-585acceb5e97
+[2026-03-30T13:21:17.938Z] INFO: POST /api/consent/accept 201 - 34ms
+[2026-03-30T13:21:17.945Z] DEBUG: 📥 POST /api/consent/accept [object Object]
+[2026-03-30T13:21:17.946Z] DEBUG: 🔒 Tenant isolation: 7e204e4c-c1f3-43b1-8671-0c8e4f82337a
+[2026-03-30T13:21:17.947Z] DEBUG: 📝 SQL: SELECT * FROM consent_records 
+       WHERE user_id = $1 AND tenant_id = $2 AND consent_type = $3 AND is_active = true
+       ORDER BY consented_at DESC 
+       LIMIT 1...
+[2026-03-30T13:21:17.949Z] DEBUG: 📝 SQL: INSERT INTO consent_records (
+        id, user_id, tenant_id, verification_request_id, subject_name,
+        consent_type, consent_text, version, ip_address, user_agent, metadata
+      ) VALUES (
+    ...
+[2026-03-30T13:21:17.951Z] INFO: ✅ Consent accepted: privacy for user 047d6220-fb0b-475a-a7c0-585acceb5e97
+[2026-03-30T13:21:17.951Z] INFO: POST /api/consent/accept 201 - 5ms
+[2026-03-30T13:21:17.956Z] DEBUG: 📥 POST /api/consent/accept [object Object]
+[2026-03-30T13:21:17.956Z] DEBUG: 🔒 Tenant isolation: 7e204e4c-c1f3-43b1-8671-0c8e4f82337a
+[2026-03-30T13:21:17.956Z] DEBUG: 📝 SQL: SELECT * FROM consent_records 
+       WHERE user_id = $1 AND tenant_id = $2 AND consent_type = $3 AND is_active = true
+       ORDER BY consented_at DESC 
+       LIMIT 1...
+[2026-03-30T13:21:17.958Z] DEBUG: 📝 SQL: INSERT INTO consent_records (
+        id, user_id, tenant_id, verification_request_id, subject_name,
+        consent_type, consent_text, version, ip_address, user_agent, metadata
+      ) VALUES (
+    ...
+[2026-03-30T13:21:17.960Z] INFO: ✅ Consent accepted: data_processing for user 047d6220-fb0b-475a-a7c0-585acceb5e97
+[2026-03-30T13:21:17.960Z] INFO: POST /api/consent/accept 201 - 4ms
+[2026-03-30T13:21:17.967Z] DEBUG: 📥 POST /api/test-idfy/pan [object Object]
+[2026-03-30T13:21:17.968Z] DEBUG: 🔒 Tenant isolation: 7e204e4c-c1f3-43b1-8671-0c8e4f82337a
+[2026-03-30T13:21:17.968Z] INFO: 📝 Testing PAN verification: IUGPM3181L
+[2026-03-30T13:21:17.969Z] INFO: Verifying PAN: IUGPM3181L
+[2026-03-30T13:21:17.970Z] DEBUG: Payload: {"task_id":"8eff0522-5441-43d4-8925-d14ad732ff57","group_id":"d0b164d6-c2c4-448c-b160-f5ba47ea6466","data":{"id_number":"IUGPM3181L","full_name":"NIEL KIRAN MANDHARE","dob":"2005-10-30"}}
+[2026-03-30T13:21:18.219Z] INFO: Task created: c1c47d1d-8173-4c7d-930d-c4fbc8cd0f54
+[2026-03-30T13:21:18.265Z] DEBUG: Poll 1: status = in_progress
+[2026-03-30T13:21:20.355Z] DEBUG: Poll 2: status = completed
+[2026-03-30T13:21:20.355Z] INFO: Task completed: {"action":"verify_with_source","completed_at":"2026-03-30T18:51:18+05:30","created_at":"2026-03-30T18:51:18+05:30","group_id":"d0b164d6-c2c4-448c-b160-f5ba47ea6466","request_id":"c1c47d1d-8173-4c7d-930d-c4fbc8cd0f54","result":{"source_output":{"aadhaar_seeding_status":true,"dob_match":true,"input_details":{"input_dob":"2005-10-30","input_name":"NIEL KIRAN MANDHARE","input_pan_number":"IUGPM3181L"},"name_match":true,"pan_status":"Existing and Valid. PAN is Operative","status":"id_found"}},"status":"completed","task_id":"8eff0522-5441-43d4-8925-d14ad732ff57","type":"ind_pan"}
+[2026-03-30T13:21:20.357Z] INFO: POST /api/test-idfy/pan 200 - 2390ms
+[2026-03-30T13:23:29.871Z] INFO: SIGINT received, shutting down gracefully
+[2026-03-30T13:23:43.663Z] INFO: 🔄 Polling fallback and retry jobs initialized
+[2026-03-30T13:23:43.665Z] INFO: 🚀 Server running on http://localhost:5001
+[2026-03-30T13:23:43.665Z] INFO: 📦 Environment: development
+[2026-03-30T13:23:43.665Z] INFO: 📝 API: http://localhost:5001/api
+[2026-03-30T13:23:43.665Z] INFO: 💾 Database: bgv_platform
+[2026-03-30T13:23:43.665Z] INFO: 🔄 Polling fallback: Active
+[2026-03-30T13:23:43.665Z] INFO: 🔄 Retry job: Active
+[2026-03-30T13:23:49.240Z] DEBUG: 📥 GET /api/bulk-upload/batches [object Object]
+[2026-03-30T13:23:49.242Z] DEBUG: 🔒 Tenant isolation: 7e204e4c-c1f3-43b1-8671-0c8e4f82337a
+[2026-03-30T13:23:49.243Z] DEBUG: 📝 SQL: SELECT * FROM bulk_upload_batches 
+       WHERE tenant_id = $1 
+       ORDER BY created_at DESC 
+       LIMIT $2...
+[2026-03-30T13:23:49.253Z] DEBUG: 📥 GET /api/retry/stats [object Object]
+[2026-03-30T13:23:49.254Z] DEBUG: 🔒 Tenant isolation: 7e204e4c-c1f3-43b1-8671-0c8e4f82337a
+[2026-03-30T13:23:49.254Z] DEBUG: 🔒 Tenant isolation: 7e204e4c-c1f3-43b1-8671-0c8e4f82337a
+[2026-03-30T13:23:49.255Z] DEBUG: 📝 SQL: SELECT 
+        COUNT(*) FILTER (WHERE status = 'failed' AND retry_count < max_retries) as pending_retry,
+        COUNT(*) FILTER (WHERE status = 'failed' AND retry_count >= max_retries) as permanentl...
+[2026-03-30T13:23:49.262Z] INFO: ✅ Database connected
+[2026-03-30T13:23:49.263Z] INFO: ✅ Database connected
+[2026-03-30T13:23:49.268Z] INFO: GET /api/bulk-upload/batches 304 - 27ms
+[2026-03-30T13:23:49.269Z] INFO: GET /api/retry/stats 304 - 15ms
+[2026-03-30T13:23:49.269Z] DEBUG: 📥 GET /api/bulk-upload/batches [object Object]
+[2026-03-30T13:23:49.269Z] DEBUG: 🔒 Tenant isolation: 7e204e4c-c1f3-43b1-8671-0c8e4f82337a
+[2026-03-30T13:23:49.270Z] DEBUG: 📝 SQL: SELECT * FROM bulk_upload_batches 
+       WHERE tenant_id = $1 
+       ORDER BY created_at DESC 
+       LIMIT $2...
+[2026-03-30T13:23:49.270Z] DEBUG: 📥 GET /api/retry/stats [object Object]
+[2026-03-30T13:23:49.270Z] DEBUG: 🔒 Tenant isolation: 7e204e4c-c1f3-43b1-8671-0c8e4f82337a
+[2026-03-30T13:23:49.270Z] DEBUG: 🔒 Tenant isolation: 7e204e4c-c1f3-43b1-8671-0c8e4f82337a
+[2026-03-30T13:23:49.270Z] DEBUG: 📝 SQL: SELECT 
+        COUNT(*) FILTER (WHERE status = 'failed' AND retry_count < max_retries) as pending_retry,
+        COUNT(*) FILTER (WHERE status = 'failed' AND retry_count >= max_retries) as permanentl...
+[2026-03-30T13:23:49.271Z] INFO: GET /api/bulk-upload/batches 304 - 2ms
+[2026-03-30T13:23:49.272Z] INFO: GET /api/retry/stats 304 - 2ms
+[2026-03-30T13:24:07.394Z] DEBUG: 📥 POST /api/consent/accept [object Object]
+[2026-03-30T13:24:07.395Z] DEBUG: 🔒 Tenant isolation: 7e204e4c-c1f3-43b1-8671-0c8e4f82337a
+[2026-03-30T13:24:07.396Z] DEBUG: 📝 SQL: SELECT * FROM consent_records 
+       WHERE user_id = $1 AND tenant_id = $2 AND consent_type = $3 AND is_active = true
+       ORDER BY consented_at DESC 
+       LIMIT 1...
+[2026-03-30T13:24:07.408Z] INFO: ✅ Database connected
+[2026-03-30T13:24:07.447Z] INFO: POST /api/consent/accept 200 - 52ms
+[2026-03-30T13:24:07.452Z] DEBUG: 📥 POST /api/consent/accept [object Object]
+[2026-03-30T13:24:07.452Z] DEBUG: 🔒 Tenant isolation: 7e204e4c-c1f3-43b1-8671-0c8e4f82337a
+[2026-03-30T13:24:07.452Z] DEBUG: 📝 SQL: SELECT * FROM consent_records 
+       WHERE user_id = $1 AND tenant_id = $2 AND consent_type = $3 AND is_active = true
+       ORDER BY consented_at DESC 
+       LIMIT 1...
+[2026-03-30T13:24:07.462Z] INFO: POST /api/consent/accept 200 - 10ms
+[2026-03-30T13:24:07.467Z] DEBUG: 📥 POST /api/consent/accept [object Object]
+[2026-03-30T13:24:07.468Z] DEBUG: 🔒 Tenant isolation: 7e204e4c-c1f3-43b1-8671-0c8e4f82337a
+[2026-03-30T13:24:07.469Z] DEBUG: 📝 SQL: SELECT * FROM consent_records 
+       WHERE user_id = $1 AND tenant_id = $2 AND consent_type = $3 AND is_active = true
+       ORDER BY consented_at DESC 
+       LIMIT 1...
+[2026-03-30T13:24:07.478Z] INFO: POST /api/consent/accept 200 - 10ms
+[2026-03-30T13:24:07.486Z] DEBUG: 📥 POST /api/test-idfy/pan [object Object]
+[2026-03-30T13:24:07.487Z] DEBUG: 🔒 Tenant isolation: 7e204e4c-c1f3-43b1-8671-0c8e4f82337a
+[2026-03-30T13:24:07.487Z] INFO: 📝 Testing PAN verification: IUGPM3181L
+[2026-03-30T13:24:07.488Z] INFO: Verifying PAN: IUGPM3181L
+[2026-03-30T13:24:07.489Z] DEBUG: Payload: {"task_id":"f10797bd-5bb9-4230-b96c-322687147986","group_id":"3ea5f6b4-d3c2-45b4-9256-358732e64151","data":{"id_number":"IUGPM3181L","full_name":"NIEL KIRAN MANDHARE","dob":"2005-10-30"}}
+[2026-03-30T13:24:07.672Z] INFO: Task created: 6e6e9f20-451a-414f-8672-f6b4d4be9d6c
+[2026-03-30T13:24:07.721Z] DEBUG: Poll 1: status = in_progress
+[2026-03-30T13:24:09.827Z] DEBUG: Poll 2: status = completed
+[2026-03-30T13:24:09.828Z] INFO: Task completed: {"action":"verify_with_source","completed_at":"2026-03-30T18:54:08+05:30","created_at":"2026-03-30T18:54:07+05:30","group_id":"3ea5f6b4-d3c2-45b4-9256-358732e64151","request_id":"6e6e9f20-451a-414f-8672-f6b4d4be9d6c","result":{"source_output":{"aadhaar_seeding_status":true,"dob_match":true,"input_details":{"input_dob":"2005-10-30","input_name":"NIEL KIRAN MANDHARE","input_pan_number":"IUGPM3181L"},"name_match":true,"pan_status":"Existing and Valid. PAN is Operative","status":"id_found"}},"status":"completed","task_id":"f10797bd-5bb9-4230-b96c-322687147986","type":"ind_pan"}
+[2026-03-30T13:24:09.830Z] INFO: POST /api/test-idfy/pan 200 - 2344ms
+[2026-03-30T13:24:11.223Z] INFO: 🔄 Polling fallback and retry jobs initialized
+[2026-03-30T13:24:11.224Z] INFO: 🚀 Server running on http://localhost:5001
+[2026-03-30T13:24:11.225Z] INFO: 📦 Environment: development
+[2026-03-30T13:24:11.225Z] INFO: 📝 API: http://localhost:5001/api
+[2026-03-30T13:24:11.225Z] INFO: 💾 Database: bgv_platform
+[2026-03-30T13:24:11.225Z] INFO: 🔄 Polling fallback: Active
+[2026-03-30T13:24:11.225Z] INFO: 🔄 Retry job: Active
+[2026-03-30T13:24:38.278Z] INFO: 🔄 Polling fallback and retry jobs initialized
+[2026-03-30T13:24:38.279Z] INFO: 🚀 Server running on http://localhost:5001
+[2026-03-30T13:24:38.279Z] INFO: 📦 Environment: development
+[2026-03-30T13:24:38.279Z] INFO: 📝 API: http://localhost:5001/api
+[2026-03-30T13:24:38.279Z] INFO: 💾 Database: bgv_platform
+[2026-03-30T13:24:38.279Z] INFO: 🔄 Polling fallback: Active
+[2026-03-30T13:24:38.279Z] INFO: 🔄 Retry job: Active
+[2026-03-30T13:25:38.618Z] INFO: 🔄 Polling fallback and retry jobs initialized
+[2026-03-30T13:25:38.620Z] INFO: 🚀 Server running on http://localhost:5001
+[2026-03-30T13:25:38.620Z] INFO: 📦 Environment: development
+[2026-03-30T13:25:38.620Z] INFO: 📝 API: http://localhost:5001/api
+[2026-03-30T13:25:38.620Z] INFO: 💾 Database: bgv_platform
+[2026-03-30T13:25:38.620Z] INFO: 🔄 Polling fallback: Active
+[2026-03-30T13:25:38.620Z] INFO: 🔄 Retry job: Active
+[2026-03-30T13:27:07.421Z] INFO: SIGINT received, shutting down gracefully
+[2026-03-30T13:28:05.950Z] INFO: 🔄 Polling fallback and retry jobs initialized
+[2026-03-30T13:28:05.951Z] INFO: 🚀 Server running on http://localhost:5001
+[2026-03-30T13:28:05.951Z] INFO: 📦 Environment: development
+[2026-03-30T13:28:05.951Z] INFO: 📝 API: http://localhost:5001/api
+[2026-03-30T13:28:05.951Z] INFO: 💾 Database: bgv_platform
+[2026-03-30T13:28:05.951Z] INFO: 🔄 Polling fallback: Active
+[2026-03-30T13:28:05.952Z] INFO: 🔄 Retry job: Active
+[2026-03-30T13:29:21.289Z] DEBUG: 📥 GET /api/bulk-upload/batches [object Object]
+[2026-03-30T13:29:21.289Z] DEBUG: 🔒 Tenant isolation: 7e204e4c-c1f3-43b1-8671-0c8e4f82337a
+[2026-03-30T13:29:21.290Z] DEBUG: 📝 SQL: SELECT * FROM bulk_upload_batches 
+       WHERE tenant_id = $1 
+       ORDER BY created_at DESC 
+       LIMIT $2...
+[2026-03-30T13:29:21.294Z] DEBUG: 📥 GET /api/retry/stats [object Object]
+[2026-03-30T13:29:21.294Z] DEBUG: 🔒 Tenant isolation: 7e204e4c-c1f3-43b1-8671-0c8e4f82337a
+[2026-03-30T13:29:21.294Z] DEBUG: 🔒 Tenant isolation: 7e204e4c-c1f3-43b1-8671-0c8e4f82337a
+[2026-03-30T13:29:21.294Z] DEBUG: 📝 SQL: SELECT 
+        COUNT(*) FILTER (WHERE status = 'failed' AND retry_count < max_retries) as pending_retry,
+        COUNT(*) FILTER (WHERE status = 'failed' AND retry_count >= max_retries) as permanentl...
+[2026-03-30T13:29:21.306Z] INFO: ✅ Database connected
+[2026-03-30T13:29:21.306Z] INFO: ✅ Database connected
+[2026-03-30T13:29:21.316Z] INFO: GET /api/bulk-upload/batches 304 - 27ms
+[2026-03-30T13:29:21.317Z] INFO: GET /api/retry/stats 304 - 23ms
+[2026-03-30T13:29:21.317Z] DEBUG: 📥 GET /api/bulk-upload/batches [object Object]
+[2026-03-30T13:29:21.317Z] DEBUG: 🔒 Tenant isolation: 7e204e4c-c1f3-43b1-8671-0c8e4f82337a
+[2026-03-30T13:29:21.317Z] DEBUG: 📝 SQL: SELECT * FROM bulk_upload_batches 
+       WHERE tenant_id = $1 
+       ORDER BY created_at DESC 
+       LIMIT $2...
+[2026-03-30T13:29:21.318Z] DEBUG: 📥 GET /api/retry/stats [object Object]
+[2026-03-30T13:29:21.318Z] DEBUG: 🔒 Tenant isolation: 7e204e4c-c1f3-43b1-8671-0c8e4f82337a
+[2026-03-30T13:29:21.318Z] DEBUG: 🔒 Tenant isolation: 7e204e4c-c1f3-43b1-8671-0c8e4f82337a
+[2026-03-30T13:29:21.318Z] DEBUG: 📝 SQL: SELECT 
+        COUNT(*) FILTER (WHERE status = 'failed' AND retry_count < max_retries) as pending_retry,
+        COUNT(*) FILTER (WHERE status = 'failed' AND retry_count >= max_retries) as permanentl...
+[2026-03-30T13:29:21.319Z] INFO: GET /api/bulk-upload/batches 304 - 2ms
+[2026-03-30T13:29:21.320Z] INFO: GET /api/retry/stats 304 - 2ms
+[2026-03-30T13:29:35.006Z] DEBUG: 📥 POST /api/consent/accept [object Object]
+[2026-03-30T13:29:35.008Z] DEBUG: 🔒 Tenant isolation: 7e204e4c-c1f3-43b1-8671-0c8e4f82337a
+[2026-03-30T13:29:35.009Z] DEBUG: 📝 SQL: SELECT * FROM consent_records 
+       WHERE user_id = $1 AND tenant_id = $2 AND consent_type = $3 AND is_active = true
+       ORDER BY consented_at DESC 
+       LIMIT 1...
+[2026-03-30T13:29:35.016Z] INFO: ✅ Database connected
+[2026-03-30T13:29:35.022Z] INFO: POST /api/consent/accept 200 - 15ms
+[2026-03-30T13:29:35.027Z] DEBUG: 📥 POST /api/consent/accept [object Object]
+[2026-03-30T13:29:35.027Z] DEBUG: 🔒 Tenant isolation: 7e204e4c-c1f3-43b1-8671-0c8e4f82337a
+[2026-03-30T13:29:35.028Z] DEBUG: 📝 SQL: SELECT * FROM consent_records 
+       WHERE user_id = $1 AND tenant_id = $2 AND consent_type = $3 AND is_active = true
+       ORDER BY consented_at DESC 
+       LIMIT 1...
+[2026-03-30T13:29:35.030Z] INFO: POST /api/consent/accept 200 - 3ms
+[2026-03-30T13:29:35.034Z] DEBUG: 📥 POST /api/consent/accept [object Object]
+[2026-03-30T13:29:35.035Z] DEBUG: 🔒 Tenant isolation: 7e204e4c-c1f3-43b1-8671-0c8e4f82337a
+[2026-03-30T13:29:35.036Z] DEBUG: 📝 SQL: SELECT * FROM consent_records 
+       WHERE user_id = $1 AND tenant_id = $2 AND consent_type = $3 AND is_active = true
+       ORDER BY consented_at DESC 
+       LIMIT 1...
+[2026-03-30T13:29:35.038Z] INFO: POST /api/consent/accept 200 - 3ms
+[2026-03-30T13:29:35.045Z] DEBUG: 📥 POST /api/test-idfy/pan [object Object]
+[2026-03-30T13:29:35.046Z] DEBUG: 🔒 Tenant isolation: 7e204e4c-c1f3-43b1-8671-0c8e4f82337a
+[2026-03-30T13:29:35.047Z] INFO: 📝 Testing PAN verification: IUGPM3181L
+[2026-03-30T13:29:35.048Z] INFO: Verifying PAN: IUGPM3181L
+[2026-03-30T13:29:35.049Z] DEBUG: Payload: {"task_id":"24d9054d-196d-47c0-b540-4c626f5645bc","group_id":"7f5ba14b-ebd0-4afc-afd7-8777b2baa669","data":{"id_number":"IUGPM3181L","full_name":"NIEL KIRAN MANDHARE","dob":"2005-10-30"}}
+[2026-03-30T13:29:35.204Z] INFO: Task created: 753282ee-ba72-42ec-9225-058cfa7e1d83
+[2026-03-30T13:29:35.252Z] DEBUG: Poll 1: status = in_progress
+[2026-03-30T13:29:37.345Z] DEBUG: Poll 2: status = completed
+[2026-03-30T13:29:37.347Z] INFO: Task completed: {"action":"verify_with_source","completed_at":"2026-03-30T18:59:35+05:30","created_at":"2026-03-30T18:59:35+05:30","group_id":"7f5ba14b-ebd0-4afc-afd7-8777b2baa669","request_id":"753282ee-ba72-42ec-9225-058cfa7e1d83","result":{"source_output":{"aadhaar_seeding_status":true,"dob_match":true,"input_details":{"input_dob":"2005-10-30","input_name":"NIEL KIRAN MANDHARE","input_pan_number":"IUGPM3181L"},"name_match":true,"pan_status":"Existing and Valid. PAN is Operative","status":"id_found"}},"status":"completed","task_id":"24d9054d-196d-47c0-b540-4c626f5645bc","type":"ind_pan"}
+[2026-03-30T13:29:37.348Z] INFO: POST /api/test-idfy/pan 200 - 2302ms
+[2026-03-30T13:34:02.695Z] INFO: SIGINT received, shutting down gracefully

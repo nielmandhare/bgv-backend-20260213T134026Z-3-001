@@ -458,3 +458,21 @@
 [2026-03-28T09:16:46.654Z] INFO: Task completed: {"action":"verify_with_source","completed_at":"2026-03-28T14:46:45+05:30","created_at":"2026-03-28T14:46:44+05:30","group_id":"d412c5ad-7ae4-4ab2-8d83-ccd4a65f85aa","request_id":"b4e76063-aeab-4908-9af6-1033eb9bdf45","result":{"source_output":{"aadhaar_seeding_status":true,"dob_match":false,"input_details":{"input_dob":"1974-11-14","input_name":"Shailendra Jadhav","input_pan_number":"AALPJ1646C"},"name_match":false,"pan_status":"Existing and Valid. PAN is Operative","status":"id_found"}},"status":"completed","task_id":"d7246a0e-3b72-4328-ba27-926628600f0e","type":"ind_pan"}
 [2026-03-28T09:16:46.659Z] INFO: POST /api/test-idfy/pan 200 - 2286ms
 [2026-03-28T09:21:44.118Z] INFO: SIGINT received, shutting down gracefully
+[2026-03-28T09:32:55.716Z] INFO: 🔄 Polling fallback and retry jobs initialized
+[2026-03-28T09:32:55.718Z] INFO: 🚀 Server running on http://localhost:5001
+[2026-03-28T09:32:55.718Z] INFO: 📦 Environment: development
+[2026-03-28T09:32:55.718Z] INFO: 📝 API: http://localhost:5001/api
+[2026-03-28T09:32:55.719Z] INFO: 💾 Database: bgv_platform
+[2026-03-28T09:32:55.719Z] INFO: 🔄 Polling fallback: Active
+[2026-03-28T09:32:55.719Z] INFO: 🔄 Retry job: Active
+[2026-03-28T09:34:03.044Z] DEBUG: 📥 POST /api/test-idfy/pan [object Object]
+[2026-03-28T09:34:03.045Z] DEBUG: 🔒 Tenant isolation: 7e204e4c-c1f3-43b1-8671-0c8e4f82337a
+[2026-03-28T09:34:03.045Z] INFO: 📝 Testing PAN verification: IUGPM3181L
+[2026-03-28T09:34:03.045Z] INFO: Verifying PAN: IUGPM3181L
+[2026-03-28T09:34:03.045Z] DEBUG: Payload: {"task_id":"8eedf5da-fede-43ba-9373-aabba26b2cc7","group_id":"3c9f7240-d63c-448c-81c0-a80c435a5cf9","data":{"id_number":"IUGPM3181L","full_name":"NIEL KIRAN MANDHARE","dob":"2005-10-30"}}
+[2026-03-28T09:34:03.477Z] INFO: Task created: 428a6e43-bd06-41b9-956e-ae21bd85bcc8
+[2026-03-28T09:34:03.530Z] DEBUG: Poll 1: status = in_progress
+[2026-03-28T09:34:05.622Z] DEBUG: Poll 2: status = completed
+[2026-03-28T09:34:05.623Z] INFO: Task completed: {"action":"verify_with_source","completed_at":"2026-03-28T15:04:04+05:30","created_at":"2026-03-28T15:04:03+05:30","group_id":"3c9f7240-d63c-448c-81c0-a80c435a5cf9","request_id":"428a6e43-bd06-41b9-956e-ae21bd85bcc8","result":{"source_output":{"aadhaar_seeding_status":true,"dob_match":true,"input_details":{"input_dob":"2005-10-30","input_name":"NIEL KIRAN MANDHARE","input_pan_number":"IUGPM3181L"},"name_match":true,"pan_status":"Existing and Valid. PAN is Operative","status":"id_found"}},"status":"completed","task_id":"8eedf5da-fede-43ba-9373-aabba26b2cc7","type":"ind_pan"}
+[2026-03-28T09:34:05.629Z] INFO: POST /api/test-idfy/pan 200 - 2584ms
+[2026-03-28T09:36:59.949Z] INFO: SIGINT received, shutting down gracefully
