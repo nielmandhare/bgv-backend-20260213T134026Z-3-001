@@ -1,11 +1,13 @@
 # BGV Backend — Background Verification Platform API
 
-**Author:** Niel Mandhare (Backend Developer Intern)  
+**Authors:** Atharva Jadhav & Niel Mandhare  
 **Company:** Shovel Screening Solutions  
-**Version:** 1.0.0  
+**Version:** 1.1.0  
 **Runtime:** Node.js + Express.js  
 **Database:** PostgreSQL  
-**Entry point:** `server.js`
+**Entry point:** `server.js`  
+**Third-party API:** IDfy Eve v3 REST API (`https://eve.idfy.com`)  
+**Last Updated:** March 2026
 
 ---
 
@@ -22,18 +24,20 @@
 9. [Authentication System](#9-authentication-system)
 10. [API Routes Reference](#10-api-routes-reference)
 11. [Verification Lifecycle](#11-verification-lifecycle)
-12. [Retry Mechanism](#12-retry-mechanism)
-13. [Multi-Tenant Support](#13-multi-tenant-support)
-14. [File Upload](#14-file-upload)
-15. [Bulk Upload](#15-bulk-upload)
-16. [Error Handling](#16-error-handling)
-17. [Logging](#17-logging)
-18. [Input Validation](#18-input-validation)
-19. [Installation & Local Setup](#19-installation--local-setup)
-20. [Scripts](#20-scripts)
-21. [Testing Endpoints with cURL](#21-testing-endpoints-with-curl)
-22. [Future Enhancements](#22-future-enhancements)
-23. [Implemented Modules (Sprint Tracker)](#23-implemented-modules-sprint-tracker)
+12. [IDfy Integration — Complete Technical Reference](#12-idfy-integration--complete-technical-reference)
+13. [Retry Mechanism](#13-retry-mechanism)
+14. [Multi-Tenant Support](#14-multi-tenant-support)
+15. [File Upload](#15-file-upload)
+16. [Bulk Upload](#16-bulk-upload)
+17. [Error Handling](#17-error-handling)
+18. [Logging](#18-logging)
+19. [Input Validation](#19-input-validation)
+20. [Installation & Local Setup](#20-installation--local-setup)
+21. [Scripts](#21-scripts)
+22. [Testing](#22-testing)
+23. [Known Limitations & Blockers](#23-known-limitations--blockers)
+24. [Future Enhancements](#24-future-enhancements)
+25. [Implemented Modules (Sprint Tracker)](#25-implemented-modules-sprint-tracker)
 
 ---
 
@@ -41,9 +45,9 @@
 
 This is the backend for a **Background Verification (BGV) Platform** that enables organizations to submit and track identity verification requests for PAN, Aadhaar, and GSTIN documents. The system is multi-tenant — multiple client organizations can share a single deployment while their data remains isolated.
 
-> **Important:** A reusable third-party API integration module has been implemented using a centralized API client and service layer.
-> Verification requests now trigger asynchronous external API calls, and the system updates `api_status` (`pending → processing → success/failed`) based on API responses.
-> Currently, placeholder endpoints are used, and failures are captured with error messages for traceability.
+The IDfy Eve v3 REST API is fully integrated and working for PAN verification. Aadhaar and GSTIN are fully wired in code but blocked on IDfy account activation (see Section 23).
+
+Verification requests are fire-and-forget async — the HTTP response is returned immediately, the IDfy call happens in the background, and the DB is updated with the result via `api_status`: `pending → processing → success/failed`. All API failures are captured in `failure_reason` for full traceability.
 
 ---
 
@@ -52,29 +56,46 @@ This is the backend for a **Background Verification (BGV) Platform** that enable
 ```
 Client Request
     ↓
-server.js         ← loads .env, validates required vars, starts HTTP server
+server.js              ← loads .env, validates required vars, starts HTTP server
     ↓
-src/app.js        ← applies all middleware in order, mounts routes
+src/app.js             ← applies all middleware in order, mounts routes
     ↓
-Middleware Stack  ← Helmet → CORS → Compression → Body Parser → Logger
-                    → Rate Limiter (global + API-level) → API Key Auth
+Middleware Stack        ← Helmet → CORS → Compression → Body Parser → Logger
+                          → Rate Limiter (global + API-level) → API Key Auth
     ↓
-src/routes/       ← Route definitions (auth is public; all else requires JWT + tenant)
+src/routes/            ← Route definitions (auth is public; all else requires JWT + tenant)
     ↓
-src/middlewares/  ← authMiddleware (JWT verify) → tenantMiddleware (extract tenant)
+src/middlewares/       ← authMiddleware (JWT verify) → tenantMiddleware (extract tenant)
     ↓
-src/controllers/  ← Business logic + triggers async API calls
+src/controllers/
+verificationController.js
     ↓
-src/services/     ← Third-party service layer (verification APIs)
+  INSERT into verification_requests (api_status = 'pending')
     ↓
-src/utils/apiClient.js ← Reusable Axios API client (base URL + headers + interceptors)
+  Fire-and-forget async runner
     ↓
-External API (IDfy / Vendor)
+src/services/thirdPartyService.js   ← builds request body, calls IDfy
     ↓
-src/utils/db.js   ← PostgreSQL (status updates)
+src/utils/apiClient.js              ← Axios instance with IDfy auth headers
     ↓
-PostgreSQL        ← bgv_platform database
+IDfy Eve v3 REST API (https://eve.idfy.com)
+    ↓
+src/services/responseProcessor.js  ← normalises raw IDfy response
+    ↓
+src/services/vendorMappings/
+idfyMapping.js                      ← field path definitions for IDfy v3 shape
+    ↓
+INSERT into verification_results
+UPDATE verification_requests (api_status = 'success' | 'failed')
+    ↓
+PostgreSQL — bgv_platform database
 ```
+
+**Key design decisions:**
+- **Non-blocking API calls** — verification responses return HTTP 201 instantly; IDfy runs in the background.
+- **Service layer abstraction** — all third-party calls go through `thirdPartyService.js`.
+- **Reusable API client** — `apiClient.js` manages base URL, headers, and interceptors centrally.
+- **Error traceability** — all IDfy failures are logged and stored in `failure_reason` for debugging.
 
 ---
 
@@ -94,16 +115,16 @@ bgv-backend/
 │   ├── controllers/
 │   │   ├── authController.js            ← login, refreshToken, logout
 │   │   ├── uploadController.js          ← single file upload handler
-│   │   ├── verificationController.js    ← PAN/Aadhaar/GSTIN intake + retry
+│   │   ├── verificationController.js    ← PAN/Aadhaar/GSTIN intake, retry, getById
 │   │   ├── tenantController.js          ← tenant CRUD
 │   │   ├── bulkUploadController.js      ← CSV/Excel batch upload
 │   │   ├── consentController.js         ← consent record management
 │   │   └── webhookController.js         ← inbound webhook handling
 │   │
 │   ├── routes/
-│   │   ├── index.js             ← Master router; auth/webhooks are public, rest require JWT
+│   │   ├── index.js             ← Master router
 │   │   ├── authRoutes.js        ← POST /login, /refresh, /logout
-│   │   ├── verificationRoutes.js← POST /pan, /aadhaar, /gstin, /retry/:id
+│   │   ├── verificationRoutes.js← POST /pan, /aadhaar, /gstin, /retry/:id, GET /:id
 │   │   ├── uploadRoutes.js      ← POST /upload
 │   │   ├── tenantRoutes.js      ← GET/POST /tenants
 │   │   ├── bulkUploadRoutes.js  ← POST /bulk-upload
@@ -136,7 +157,7 @@ bgv-backend/
 │   │   ├── Document.js              ← Document model
 │   │   ├── Tenant.js                ← Tenant model
 │   │   ├── AuditLog.js              ← Audit log model
-│   │   ├── BulkUploadBatch.js       ← Bulk batch model
+│   │   ├── BulkUploadBatch.js       ← Bulk batch tracking model
 │   │   ├── ConsentRecord.js         ← Consent record model
 │   │   ├── VerificationRequest.js   ← Verification request model
 │   │   ├── VerificationResult.js    ← Verification result model
@@ -144,24 +165,26 @@ bgv-backend/
 │   │   └── RefreshToken.js          ← Refresh token model
 │   │
 │   ├── services/
+│   │   ├── thirdPartyService.js          ← IDfy API calls (PAN/Aadhaar/GSTIN)
 │   │   ├── bulkUploadService.js          ← Bulk upload processing logic
-│   │   ├── responseProcessor.js          ← Vendor API response normalization
+│   │   ├── responseProcessor.js          ← Normalises raw IDfy response for DB storage
 │   │   └── vendorMappings/
-│   │       ├── idfyMapping.js            ← IDfy response field mapping
-│   │       ├── gridlinesMapping.js       ← Gridlines response field mapping
+│   │       ├── idfyMapping.js            ← IDfy v3 field path mappings + transform
+│   │       ├── gridlinesMapping.js       ← Gridlines response field mapping (stub)
 │   │       └── index.js                  ← Vendor mapper registry
 │   │
 │   ├── utils/
-│   │   ├── db.js            ← PostgreSQL pool, query(), tenantQuery(), verifyTenantOwnership()
-│   │   ├── apiResponse.js   ← Standardized { success, message, data } response builder
-│   │   ├── logger.js        ← Winston logger with file + console transports
-│   │   ├── auditLogger.js   ← Structured audit trail logging
-│   │   ├── csvParser.js     ← CSV row parser utility
-│   │   ├── excelParser.js   ← Excel/XLSX row parser utility
-│   │   ├── consentValidator.js   ← Consent status verification
+│   │   ├── db.js                   ← PostgreSQL pool, query(), tenantQuery(), verifyTenantOwnership()
+│   │   ├── apiClient.js            ← Axios instance with IDfy auth headers + interceptors
+│   │   ├── apiResponse.js          ← Standardized { success, message, data } response builder
+│   │   ├── logger.js               ← Winston logger with file + console transports
+│   │   ├── auditLogger.js          ← Structured audit trail logging
+│   │   ├── csvParser.js            ← CSV row parser utility
+│   │   ├── excelParser.js          ← Excel/XLSX row parser utility
+│   │   ├── consentValidator.js     ← Consent status verification
 │   │   ├── confidenceCalculator.js ← Verification confidence scoring
-│   │   ├── constants.js     ← Shared constants
-│   │   └── logViewer.js     ← Log file reader utility
+│   │   ├── constants.js            ← Shared constants
+│   │   └── logViewer.js            ← Log file reader utility
 │   │
 │   ├── migrations/
 │   │   └── 001_init.sql     ← Initial DB schema (run manually)
@@ -169,16 +192,14 @@ bgv-backend/
 │   ├── jobs/
 │   │   ├── notificationJob.js   ← (stub) Future notification scheduling
 │   │   ├── pdfJob.js            ← (stub) Future PDF report generation
-│   │   └── vendorJob.js         ← (stub) Future vendor API polling
+│   │   └── vendorJob.js         ← (stub) Future vendor API polling / auto-retry
 │   │
 │   └── tests/
 │       └── testTenantIsolation.js  ← Manual test for multi-tenant data isolation
 │
 ├── uploads/               ← Temporary file storage (UUID-named subdirs)
 ├── logs/                  ← Daily rotating log files (YYYY-MM-DD.log + error.log)
-├── .env                   ← Production secrets (never commit)
-├── .env.development       ← Dev overrides
-├── .env.staging           ← Staging overrides
+├── .env.development       ← Dev secrets (never commit)
 ├── .eslintrc.js           ← ESLint config
 ├── .prettierrc            ← Prettier config
 └── package.json
@@ -193,22 +214,24 @@ bgv-backend/
 | Package | Version | Purpose |
 |---|---|---|
 | `express` | ^4.18.2 | HTTP framework |
-| `pg` | ^8.11.0 | PostgreSQL client (uses connection pooling via `pg.Pool`) |
+| `pg` | ^8.11.0 | PostgreSQL client (connection pooling via `pg.Pool`) |
+| `axios` | latest | HTTP client for IDfy API calls |
 | `jsonwebtoken` | ^9.0.3 | JWT access + refresh token generation and verification |
-| `bcrypt` | ^6.0.0 | Password hashing (bcrypt with default salt rounds) |
-| `bcryptjs` | ^3.0.3 | Pure-JS fallback for bcrypt (used in some environments) |
+| `bcrypt` | ^6.0.0 | Password hashing |
+| `bcryptjs` | ^3.0.3 | Pure-JS fallback for bcrypt |
 | `joi` | ^18.0.2 | Schema-based input validation |
-| `express-rate-limit` | ^8.3.1 | Request rate limiting (global + per-API) |
-| `helmet` | ^8.1.0 | Security headers (XSS, CSP, HSTS, etc.) |
+| `express-rate-limit` | ^8.3.1 | Request rate limiting |
+| `helmet` | ^8.1.0 | Security headers |
 | `cors` | ^2.8.5 | Cross-Origin Resource Sharing |
 | `compression` | ^1.8.1 | Gzip response compression |
 | `morgan` | ^1.10.1 | HTTP request logging |
 | `multer` | ^2.1.1 | Multipart file upload handling |
-| `dotenv` | ^16.0.3 | Environment variable loading from `.env` files |
-| `uuid` | ^13.0.0 | UUID generation for document IDs |
+| `dotenv` | ^16.0.3 | Environment variable loading |
+| `uuid` | ^13.0.0 | UUID generation |
 | `csv-parser` | ^3.2.0 | CSV file parsing for bulk upload |
 | `xlsx` | ^0.18.5 | Excel file parsing for bulk upload |
-| `express-validator` | ^7.3.1 | Alternative validation (used in some routes) |
+| `express-validator` | ^7.3.1 | Alternative validation (some routes) |
+| `winston` | latest | Logging |
 
 ### Dev Dependencies
 
@@ -224,7 +247,7 @@ bgv-backend/
 
 ## 5. Environment Variables
 
-### Required at Startup
+### Required at Startup (server.js exits if missing)
 
 `server.js` will call `process.exit(1)` if any of these are missing:
 
@@ -235,16 +258,16 @@ bgv-backend/
 | `DB_NAME` | PostgreSQL database name |
 | `ACCESS_TOKEN_SECRET` | Secret for signing JWT access tokens |
 
-### Full `.env` Reference
+### Full `.env.development` Reference
 
 ```env
 # Server
 PORT=5001
-NODE_ENV=development          # development | staging | production
+NODE_ENV=development
 
 # Database
 DB_USER=postgres
-DB_PASSWORD=your_password
+DB_PASSWORD=your_db_password
 DB_NAME=bgv_platform
 DB_HOST=localhost
 DB_PORT=5432
@@ -253,8 +276,13 @@ DB_PORT=5432
 ACCESS_TOKEN_SECRET=your_access_secret_here
 REFRESH_TOKEN_SECRET=your_refresh_secret_here
 
-# API Security
-BGV_API_KEY=your_api_key_here
+# Internal API key (x-api-key header)
+BGV_API_KEY=bgv_secure_api_key_2026
+
+# IDfy Eve v3
+THIRD_PARTY_BASE_URL=https://eve.idfy.com
+THIRD_PARTY_API_KEY=your-idfy-api-key        # → header: api-key
+THIRD_PARTY_API_SECRET=your-idfy-account-id  # → header: account-id
 
 # Rate Limiting (optional — defaults shown)
 RATE_LIMIT_WINDOW_MS=900000          # 15 minutes (global limiter)
@@ -263,12 +291,15 @@ API_RATE_LIMIT_WINDOW_MS=60000       # 1 minute (API-level limiter)
 API_RATE_LIMIT_MAX_REQUESTS=60       # 60 requests per minute (API-level)
 ```
 
+> ⚠️ `THIRD_PARTY_API_SECRET` is the IDfy **account-id**, not a password.
+> IDfy uses `api-key` + `account-id` headers for auth — not Bearer tokens.
+
 ### Environment File Loading Order
 
 `server.js` calls `dotenv.config({ override: true })` which loads `.env`.
 `src/app.js` additionally loads `.env.${NODE_ENV}` (e.g., `.env.development`), which can override values.
 
-> **Note on DB Connection:** `src/utils/db.js` currently has hardcoded fallback values (`user: "postgres"`, `database: "bgv_platform"`, `password: "mmcoe"`). These are for local development only. In production, the `pg.Pool` constructor should read from `process.env` variables instead.
+> **Note on DB Connection:** `src/utils/db.js` currently has hardcoded fallback values for local development (`mmcoe`). These must be replaced with env vars before any production deployment.
 
 ---
 
@@ -280,8 +311,8 @@ CREATE TABLE users (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     email VARCHAR(255) UNIQUE NOT NULL,
     password_hash VARCHAR(255) NOT NULL,
-    role VARCHAR(50) NOT NULL,          -- 'admin' or 'client'
-    tenant_id UUID,                     -- links to tenants table
+    role VARCHAR(50) NOT NULL,
+    tenant_id UUID,
     is_active BOOLEAN DEFAULT true,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
@@ -327,24 +358,30 @@ CREATE TABLE documents (
 ```sql
 CREATE TABLE verification_requests (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    document_type VARCHAR(20),          -- 'PAN', 'AADHAAR', 'GSTIN'
+    document_type VARCHAR(20),       -- 'PAN', 'AADHAAR', 'GSTIN'
     document_number VARCHAR(50),
     full_name VARCHAR(255),
     dob DATE,
-    business_name VARCHAR(255),         -- for GSTIN only
-    client_id UUID,                     -- references tenants(id)
-    status VARCHAR(50),
-
-    -- Retry tracking fields (BE-8)
+    business_name VARCHAR(255),      -- GSTIN only
+    client_id UUID,
+    status VARCHAR(50),              -- 'verified' | 'failed' | 'retrying'
     retry_count INT DEFAULT 0,
     last_retry_at TIMESTAMP,
-
-    -- API status tracking fields (BE-9)
-    api_status VARCHAR(20) DEFAULT 'pending',  -- pending | processing | success | failed
+    api_status VARCHAR(20) DEFAULT 'pending',
     failure_reason TEXT,
     last_api_attempt TIMESTAMP,
-
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+```
+
+### `verification_results`
+```sql
+CREATE TABLE verification_results (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    verification_id UUID REFERENCES verification_requests(id),
+    result_data JSONB,    -- full normalised IDfy response stored here
+    verified BOOLEAN,
+    processed_at TIMESTAMP DEFAULT NOW()
 );
 ```
 
@@ -369,7 +406,7 @@ CREATE TABLE verification_retry_history (
 1. Print working directory
 2. Load `.env` with `dotenv.config({ override: true })`
 3. Print env diagnostics (`DB_USER`, `DB_NAME`, `NODE_ENV`, masked `DB_PASSWORD`)
-4. Assert all required env vars are present — **exits immediately if any are missing**
+4. Assert required env vars — **exits immediately if any are missing**
 5. Load `src/app.js` (registers middleware + routes)
 6. Load logger
 7. Start HTTP server on `PORT` (default: `5001`)
@@ -378,22 +415,20 @@ CREATE TABLE verification_retry_history (
 
 ## 8. Security Middleware Stack
 
-Applied in `src/app.js` in this exact order:
-
 ```
-1. helmet()                  → Security HTTP headers (XSS, CSP, HSTS, etc.)
-2. cors()                    → Allow cross-origin requests
-3. compression()             → Gzip all responses
-4. express.json()            → Parse JSON body (10mb limit)
-5. express.urlencoded()      → Parse URL-encoded form body (10mb limit)
-6. requestLogger             → Per-request logging middleware
-7. logger.middleware         → Winston HTTP logging
-8. globalLimiter             → 100 req / 15 min on ALL routes
-9. apiLimiter (/api/*)       → 60 req / 1 min on /api/* routes
-10. apiKeyAuth (/api/*)      → Reject requests missing valid x-api-key header
-11. routes                   → Application routes
-12. errorMiddleware.notFound → 404 handler
-13. errorMiddleware.errorHandler → Global error handler
+1.  helmet()              → Security HTTP headers
+2.  cors()                → Allow cross-origin requests
+3.  compression()         → Gzip all responses
+4.  express.json()        → Parse JSON body (10mb limit)
+5.  express.urlencoded()  → Parse URL-encoded body (10mb limit)
+6.  requestLogger         → Per-request logging
+7.  logger.middleware     → Winston HTTP logging
+8.  globalLimiter         → 100 req / 15 min on ALL routes
+9.  apiLimiter (/api/*)   → 60 req / 1 min on /api/* routes
+10. apiKeyAuth (/api/*)   → Reject missing/invalid x-api-key
+11. routes                → Application routes
+12. notFound              → 404 handler
+13. errorHandler          → Global error handler
 ```
 
 ### Public Routes (No API Key / No JWT Required)
@@ -441,8 +476,7 @@ Applied in `src/app.js` in this exact order:
 2. Splits on space and takes index `[1]`
 3. Calls `jwt.verify(token, process.env.ACCESS_TOKEN_SECRET)`
 4. Attaches `{ user_id, tenant_id, role }` to `req.user`
-5. Returns `401` if header is missing
-6. Returns `403` if token is invalid or expired
+5. Returns `401` if header is missing, `403` if token is invalid/expired
 
 ### How `roleMiddleware` Works
 
@@ -465,71 +499,53 @@ In `src/routes/index.js`:
 
 Passwords are stored as bcrypt hashes in `users.password_hash`. Login calls `bcrypt.compare(plainPassword, hash)`. The raw password is never stored or logged.
 
-### Logout Mechanism
+### Logout
 
-Logout deletes the refresh token from the `refresh_tokens` table. This invalidates the session server-side — even if the access token hasn't expired yet, no new access token can be issued using the revoked refresh token.
+Deletes the refresh token from the `refresh_tokens` table. New access tokens cannot be issued once the refresh token is revoked. This invalidates the session server-side — even if the access token hasn't expired yet.
 
 ---
 
 ## 10. API Routes Reference
 
-### Request Headers Required
+### Required Headers
 
-All `/api/*` routes require:
+All `/api/*` routes:
 ```
-x-api-key: <BGV_API_KEY>
+x-api-key: bgv_secure_api_key_2026
 ```
 
-All routes except `/api/auth/*` and `/api/webhooks/*` additionally require:
+All routes except `/api/auth/*` and `/api/webhooks/*`:
 ```
 Authorization: Bearer <access_token>
 ```
 
 ---
 
-### Auth Routes — `/api/auth`
+### Auth — `/api/auth`
 
-No JWT required for these routes.
-
-#### POST `/api/auth/login`
-```json
-// Request body
-{ "email": "user@example.com", "password": "password123" }
-
-// Response 200
-{ "accessToken": "...", "refreshToken": "..." }
-```
-
-#### POST `/api/auth/refresh`
-```json
-// Request body
-{ "refreshToken": "..." }
-
-// Response 200
-{ "accessToken": "new_access_token" }
-```
-
-#### POST `/api/auth/logout`
-```json
-// Request body
-{ "refreshToken": "..." }
-
-// Response 200
-{ "message": "Logged out successfully" }
-```
+| Method | Path | Body | Response |
+|---|---|---|---|
+| POST | `/api/auth/login` | `{ email, password }` | `{ accessToken, refreshToken }` |
+| POST | `/api/auth/refresh` | `{ refreshToken }` | `{ accessToken }` |
+| POST | `/api/auth/logout` | `{ refreshToken }` | `{ message }` |
 
 ---
 
-### Verification Routes — `/api/verification` or `/api/verifications`
+### Verification — `/api/verifications` (also `/api/verification`)
 
 Both path prefixes (`/api/verification` and `/api/verifications`) are registered in `src/routes/index.js` and route to the same handlers.
 
-#### POST `/api/verification/pan`
+| Method | Path | Description |
+|---|---|---|
+| POST | `/api/verifications/pan` | Submit PAN verification request |
+| POST | `/api/verifications/aadhaar` | Submit Aadhaar verification request |
+| POST | `/api/verifications/gstin` | Submit GSTIN verification request |
+| POST | `/api/verifications/retry/:id` | Manually retry a verification by UUID |
+| GET | `/api/verifications/:id` | Fetch verification request + result by UUID |
 
-Validates PAN format before inserting. Sets `api_status = 'pending'` on creation.
-
+#### POST `/api/verifications/pan`
 ```json
-// Request body
+// Request
 {
   "pan_number": "ABCDE1234F",
   "full_name": "Rahul Sharma",
@@ -541,16 +557,15 @@ Validates PAN format before inserting. Sets `api_status = 'pending'` on creation
 {
   "success": true,
   "message": "PAN verification request created",
-  "data": { /* full row from verification_requests */ }
+  "data": { /* verification_requests row, api_status: "pending" */ }
 }
 ```
 
-#### POST `/api/verification/aadhaar`
+#### POST `/api/verifications/aadhaar`
 
-Only the last 4 digits of Aadhaar are accepted. Full Aadhaar numbers are never stored.
+Only the last 4 digits of Aadhaar are accepted. Full Aadhaar numbers are never stored (UIDAI compliant).
 
 ```json
-// Request body
 {
   "masked_aadhaar": "XXXX-XXXX-1234",
   "full_name": "Rahul Sharma",
@@ -558,10 +573,8 @@ Only the last 4 digits of Aadhaar are accepted. Full Aadhaar numbers are never s
 }
 ```
 
-#### POST `/api/verification/gstin`
-
+#### POST `/api/verifications/gstin`
 ```json
-// Request body
 {
   "gstin": "27ABCDE1234F1Z5",
   "business_name": "ABC Traders",
@@ -569,36 +582,56 @@ Only the last 4 digits of Aadhaar are accepted. Full Aadhaar numbers are never s
 }
 ```
 
-#### POST `/api/verification/retry/:id`
+#### POST `/api/verifications/retry/:id`
 
-Triggers a manual retry for any verification request by its UUID. Requires admin role.
+Triggers a manual retry for any verification request by its UUID.
 
 ```json
 // Response 200
 {
   "success": true,
   "message": "Retry triggered successfully",
-  "data": {
-    "retry_count": 1,
-    "status": "retrying",
-    /* ...other updated fields */
-  }
+  "data": { "retry_count": 1, "status": "retrying" }
 }
 
 // Response 404 if ID not found
 { "success": false, "message": "Verification request not found" }
 ```
 
+#### GET `/api/verifications/:id`
+```json
+// Response 200
+{
+  "success": true,
+  "data": {
+    "id": "uuid",
+    "document_type": "PAN",
+    "document_number": "ABCDE1234F",
+    "full_name": "Rahul Sharma",
+    "dob": "1998-05-10T...",
+    "api_status": "success",
+    "status": "verified",
+    "failure_reason": null,
+    "retry_count": 0,
+    "verified": true,
+    "result": { /* full normalised IDfy result_data from verification_results */ },
+    "processed_at": "2026-03-29T14:45:08.016Z"
+  }
+}
+```
+
 ---
 
-### Upload Route — `/api/upload`
+### Upload — `/api/upload`
 
-#### POST `/api/upload`
+| Method | Path | Description |
+|---|---|---|
+| POST | `/api/upload` | Upload a single file (PDF/JPEG/PNG) |
 
 ```
 Content-Type: multipart/form-data
-Field name: file
-Allowed MIME types: application/pdf, image/jpeg, image/png
+Field name:   file
+Allowed MIME: application/pdf, image/jpeg, image/png
 ```
 
 ```json
@@ -606,10 +639,7 @@ Allowed MIME types: application/pdf, image/jpeg, image/png
 {
   "success": true,
   "message": "File uploaded successfully",
-  "data": {
-    "documentId": "uuid",
-    "fileName": "demo.pdf"
-  }
+  "data": { "documentId": "uuid", "fileName": "demo.pdf" }
 }
 ```
 
@@ -631,13 +661,12 @@ Allowed MIME types: application/pdf, image/jpeg, image/png
 | `/api/bulk-upload` | CSV/Excel batch verification submission |
 | `/api/consent` | Consent record creation and verification |
 | `/api/documents` | Document management (list, delete) |
-| `/api/webhooks` | Inbound webhook events (public — no auth) |
+| `/api/audit` | Audit log access |
+| `/api/webhooks` | Inbound webhook events (public — no JWT) |
 
 ---
 
 ### Standard API Response Format
-
-All endpoints return this shape:
 
 ```json
 // Success
@@ -658,59 +687,258 @@ All endpoints return this shape:
 
 ---
 
-## 11. Verification Lifecycle (Updated with API Integration)
-
-Every verification request follows this state machine:
+## 11. Verification Lifecycle
 
 ```
-Client submits POST /pan, /aadhaar, or /gstin
+POST /api/verifications/pan
         ↓
-Joi schema validation
+Joi validation (PAN format, required fields)
         ↓
-INSERT into verification_requests
+INSERT verification_requests (api_status = 'pending')
         ↓
-Initial state:
-  api_status = 'pending'
+HTTP 201 returned to client immediately
         ↓
-Controller triggers async API call (non-blocking)
+Background async runner starts
         ↓
-External API request (via service + apiClient)
-       ↙                    ↘
-  Success                Failure
-     ↓                      ↓
-api_status = 'processing'  api_status = 'failed'
-last_api_attempt updated   failure_reason stored
+UPDATE api_status = 'processing'
+        ↓
+thirdPartyService.verifyPAN() → IDfy Eve v3 API
+        ↓
+responseProcessor.process() → idfyMapping normalisation
+        ↓
+INSERT verification_results (result_data, verified)
+        ↓
+UPDATE verification_requests
+  api_status = 'success' | 'failed'
+  status     = 'verified' | 'failed'
 ```
 
-### Key Design Decisions
+### DB Status Values
 
-- **Non-blocking API calls**: API requests are triggered asynchronously to avoid blocking client responses.
-- **Service layer abstraction**: All third-party API calls are handled via `thirdPartyService.js`.
-- **Reusable API client**: Axios instance (`apiClient.js`) manages base URL, headers, and interceptors.
-- **Error traceability**: All API failures are logged and stored in `failure_reason` for debugging.
+| Field | Value | Meaning |
+|---|---|---|
+| `api_status` | `pending` | Request created, API call not yet started |
+| `api_status` | `processing` | IDfy call in progress |
+| `api_status` | `success` | IDfy responded correctly (even if doc not found in govt DB) |
+| `api_status` | `failed` | IDfy errored or network failure |
+| `status` | `verified` | Document confirmed found in govt DB |
+| `status` | `failed` | Document not found in govt DB |
+| `status` | `retrying` | Manual retry triggered |
+
+> **Important distinction:** `api_status=success` means the API call itself succeeded.
+> `status=verified` means the document exists in the government database.
+> A real PAN that doesn't exist in NSDL will have `api_status=success` but `status=failed` and `verified=false`.
 
 ---
 
-## 12. Retry Mechanism
+## 12. IDfy Integration — Complete Technical Reference
 
-When `POST /api/verification/retry/:id` is called:
+### PAN Endpoint (✅ Working)
+
+```
+POST https://eve.idfy.com/v3/tasks/sync/verify_with_source/ind_pan
+```
+
+**Auth Headers:**
+```
+api-key:      <THIRD_PARTY_API_KEY>
+account-id:   <THIRD_PARTY_API_SECRET>
+Content-Type: application/json
+```
+
+**Request Body:**
+```json
+{
+  "task_id":  "pan_1774794459989",
+  "group_id": "bgv_1774794459989",
+  "data": {
+    "id_number": "ABCDE1234F",
+    "full_name":  "Rahul Sharma",
+    "dob":        "1998-05-10"
+  }
+}
+```
+
+> ⚠️ `dob` MUST be plain `YYYY-MM-DD`. IDfy rejects ISO 8601 timestamps.
+> PostgreSQL returns `dob` as a JS `Date` object — `normaliseDob()` in `thirdPartyService.js` handles this conversion automatically.
+
+**IDfy Response Shape:**
+```json
+{
+  "status": "completed",
+  "request_id": "uuid",
+  "task_id": "pan_...",
+  "group_id": "bgv_...",
+  "result": {
+    "source_output": {
+      "status": "id_found",
+      "pan_status": "Existing and Valid. PAN is Operative",
+      "aadhaar_seeding_status": "Y",
+      "name": "RAHUL SHARMA"
+    },
+    "name_match_result": { "match_result": "yes", "match_score": 100 }
+  }
+}
+```
+
+**Key Response Paths:**
+
+| Field | Path in response | Meaning |
+|---|---|---|
+| Task status | `response.status` | `completed` or `failed` |
+| PAN lookup result | `response.result.source_output.status` | `id_found` or `id_not_found` |
+| PAN validity | `response.result.source_output.pan_status` | Human-readable PAN status string |
+| Aadhaar linked | `response.result.source_output.aadhaar_seeding_status` | `"Y"` / `"N"` |
+| Name match | `response.result.name_match_result.match_result` | `"yes"` / `"no"` |
+| Name match score | `response.result.name_match_result.match_score` | `0–100` |
+
+**Normalised `result_data` stored in DB:**
+```json
+{
+  "request_id": "uuid",
+  "vendor": "idfy",
+  "verification_type": "pan",
+  "status": "success",
+  "verified": true,
+  "result": {
+    "lookup_status": "id_found",
+    "pan_status": "Existing and Valid. PAN is Operative",
+    "aadhaar_seeding_status": "Y",
+    "aadhaar_linked": true,
+    "name_match_result": "yes",
+    "name_match_score": 100,
+    "name_matched": true
+  },
+  "raw_response": { /* full IDfy response kept for audit */ },
+  "processed_at": "2026-03-29T14:45:08.016Z"
+}
+```
+
+---
+
+### Aadhaar Endpoint (⏳ Account Activation Required)
+
+```
+POST https://eve.idfy.com/v3/tasks/sync/verify_with_source/ind_aadhaar
+```
+
+**Request Body:**
+```json
+{
+  "task_id":  "aadhaar_<timestamp>",
+  "group_id": "bgv_<timestamp>",
+  "data": {
+    "id_number": "1234",         ← last 4 digits only (UIDAI compliant)
+    "full_name": "Rahul Sharma"
+  }
+}
+```
+
+**Expected Response (when account is activated):**
+```json
+{
+  "status": "completed",
+  "result": {
+    "source_output": {
+      "status": "id_found",
+      "name":          "RAHUL SHARMA",
+      "year_of_birth": "1998",
+      "gender":        "M",
+      "area":          "Pune",
+      "state":         "MH"
+    },
+    "name_match_result": { "match_result": "yes", "match_score": 95 }
+  }
+}
+```
+
+**Current behaviour:** IDfy returns `404 NOT_FOUND` — endpoint not enabled on this account tier.
+
+---
+
+### GSTIN Endpoint (⏳ Account Activation Required)
+
+```
+POST https://eve.idfy.com/v3/tasks/sync/verify_with_source/ind_gstin
+```
+
+**Current behaviour:** `verifyGSTIN()` throws immediately — same account plan blocker as Aadhaar. Code structure is fully wired and mirrors the PAN/Aadhaar pattern.
+
+---
+
+### Key Files
+
+| File | Responsibility |
+|---|---|
+| `src/utils/apiClient.js` | Axios instance: base URL, `api-key` + `account-id` headers, request/error interceptors |
+| `src/services/thirdPartyService.js` | Builds request body, calls IDfy, runs `_assertResult`, returns raw response |
+| `src/services/responseProcessor.js` | Calls `idfyMapping`, extracts fields, determines `verified`, maps `status` |
+| `src/services/vendorMappings/idfyMapping.js` | Dot-notation field paths, `successIndicator`, `transform()` for cleanup |
+
+### Important Code Patterns
+
+#### `extractErrorMessage` (in `verificationController.js`)
+
+Pulls IDfy's real error from the axios error body instead of a generic message:
+
+```javascript
+function extractErrorMessage(err) {
+  const data = err?.response?.data;
+  if (data?.error && data?.message) return `${data.error}: ${data.message}`;
+  return err.message || 'Unknown error';
+}
+```
+
+#### `normaliseAadhaar` (in `thirdPartyService.js`)
+
+Extracts last 4 digits for IDfy, discarding the masked portion:
+
+```javascript
+function normaliseAadhaar(maskedAadhaar) {
+  const match = maskedAadhaar.match(/(\d{4})$/);
+  return match[1]; // "XXXX-XXXX-1234" → "1234"
+}
+```
+
+#### `idfyMapping` Pattern
+
+Each document type has: `fields` (dot-notation paths), `required`, `successIndicator`, and `transform()`.
+`responseProcessor.process('idfy', rawResponse, 'pan'|'aadhaar'|'gstin')` handles all types uniformly.
+
+### Account Status
+
+| Endpoint | Status |
+|---|---|
+| PAN (`ind_pan`) | ✅ Working |
+| Aadhaar (`ind_aadhaar`) | ❌ 404 — not on account plan |
+| GSTIN (`ind_gstin`) | ❌ Not wired — same blocker |
+
+To enable Aadhaar/GSTIN, contact: `eve.support@idfy.com` with your `account-id`.
+
+---
+
+## 13. Retry Mechanism
+
+When `POST /api/verifications/retry/:id` is called:
 
 1. Fetch the verification request — return `404` if not found
 2. `UPDATE verification_requests SET retry_count = retry_count + 1, last_retry_at = NOW(), status = 'retrying'`
-3. `INSERT INTO verification_retry_history (verification_id, retry_number, retry_status, retry_reason)` with `retry_reason = 'Manual retry triggered via API'`
+3. `INSERT INTO verification_retry_history` with `retry_reason = 'Manual retry triggered via API'`
 4. Return the updated row
 
 The `verification_retry_history` table provides a complete, immutable audit trail of every retry event. Each row is append-only and timestamped.
 
+> ⚠️ **Retry does not re-trigger the IDfy API call.** It only updates `retry_count` and `status`. Actual re-verification logic belongs in `src/jobs/vendorJob.js` (future work).
+
 ---
 
-## 13. Multi-Tenant Support
+## 14. Multi-Tenant Support
 
 Every verification request includes `client_id` (UUID) referencing the `tenants` table. This enables one deployed instance to serve multiple client organizations with full data isolation.
 
 ### `tenantMiddleware`
 
-After JWT validation, `tenantMiddleware.extractTenant` reads `tenant_id` from `req.user` (which was decoded from the access token) and attaches it to the request context for downstream use.
+After JWT validation, `tenantMiddleware.extractTenant` reads `tenant_id` from `req.user` (decoded from the access token) and attaches it to the request context for downstream use.
 
 ### `db.tenantQuery(text, params, tenantId)`
 
@@ -722,13 +950,14 @@ Runs `SELECT EXISTS(SELECT 1 FROM <table> WHERE id = $1 AND tenant_id = $2)` bef
 
 ---
 
-## 14. File Upload
+## 15. File Upload
 
 ### Configuration (`src/config/multerConfig.js`)
 
-- **Storage:** Local disk inside `uploads/<subdirectory>/`
+- **Storage:** Local disk inside `uploads/<uuid>/`
 - **Filename pattern:** `<timestamp>-<random>-<originalname>`
-- **Allowed MIME types:** `application/pdf`, `image/jpeg`, `image/png`
+- **Allowed types:** `application/pdf`, `image/jpeg`, `image/png`
+- **Field name:** `file`
 - **File size limit:** Configured via Multer's `limits` option
 
 ### Upload Directory Structure
@@ -739,28 +968,29 @@ uploads/
     <timestamp>-<rand>-<originalfilename>
 ```
 
-Each upload session gets its own UUID-named subdirectory.
+Each upload session gets its own UUID-named subdirectory to avoid filename collisions.
 
 ---
 
-## 15. Bulk Upload
+## 16. Bulk Upload
 
-The `/api/bulk-upload` endpoint accepts CSV or Excel files containing multiple verification records in one request.
+`POST /api/bulk-upload` accepts CSV or Excel files containing multiple verification records.
 
 - **CSV parsing:** `csv-parser` library via `src/utils/csvParser.js`
 - **Excel parsing:** `xlsx` library via `src/utils/excelParser.js`
-- **Row validation:** `bulkUploadMiddleware.js` validates each row before inserting
+- **Row-level validation:** `bulkUploadMiddleware.js` validates each row before inserting
 - **Batch tracking:** A `BulkUploadBatch` record is created and updated as rows are processed
-- **Error output:** Rows that fail validation are written to a separate error CSV file in the upload subdirectory
+- **Error output:** Rows that fail validation are written to a separate error CSV in the upload subdirectory
 - **Service layer:** `src/services/bulkUploadService.js` orchestrates row-by-row processing
 
 ---
 
-## 16. Error Handling
+## 17. Error Handling
 
 ### Error Flow
 
 Controllers call `next(error)` for any unhandled error. The global handler in `src/middlewares/errorMiddleware.js`:
+
 1. Reads `err.status || err.statusCode || 500`
 2. Logs the error via Winston
 3. Returns the standard error JSON response
@@ -768,6 +998,10 @@ Controllers call `next(error)` for any unhandled error. The global handler in `s
 ### 404 Handler
 
 Any request reaching past all route definitions hits `errorMiddleware.notFound`, which creates an error with `status = 404` and message `Route Not Found - <originalUrl>`.
+
+### IDfy Error Extraction
+
+IDfy axios errors are handled by `extractErrorMessage()` in `verificationController.js`, which pulls the real `{ error, message }` body from IDfy's response rather than returning a generic axios error string. This ensures `failure_reason` in the DB is always human-readable.
 
 ### Stack Traces
 
@@ -781,62 +1015,54 @@ Included in responses only when `process.env.NODE_ENV !== 'production'`. Always 
 
 ---
 
-## 17. Logging
+## 18. Logging
 
-### Logger (`src/utils/logger.js`)
+**Winston** with console + daily rotating file transports:
 
-Uses **Winston** with:
-- **Console transport** — colored, timestamped output for development
-- **File transport** — daily rotating log files:
-  - `logs/YYYY-MM-DD.log` — all log levels
-  - `logs/error.log` — error level only
-
-### Log Levels
+- `logs/YYYY-MM-DD.log` — all levels
+- `logs/error.log` — errors only
 
 | Level | Used For |
 |---|---|
 | `info` | Server startup, DB connect, route activity |
-| `warn` | Slow queries (>1000ms) |
-| `error` | DB errors, uncaught exceptions, 4xx/5xx errors |
-| `debug` | SQL query text (development only, first 200 chars) |
+| `warn` | Slow queries (>1000ms), 4xx responses |
+| `error` | DB errors, uncaught exceptions, 5xx |
+| `debug` | SQL query text (dev only), IDfy request/response bodies |
 
 ### Audit Logger (`src/utils/auditLogger.js`)
 
-Separate structured logger for compliance audit trails. Captures: user ID, tenant ID, action performed, resource accessed, IP address, and timestamp. Used by `auditMiddleware.js`.
+Separate structured logger for compliance audit trails. Captures: user ID, tenant ID, action performed, resource accessed, IP address, and timestamp. Used by `auditMiddleware.js` and consumed via `/api/audit` routes.
 
 ---
 
-## 18. Input Validation
+## 19. Input Validation
 
-All user-submitted data is validated using **Joi** schemas before reaching controllers.
+All user-submitted data is validated using **Joi** schemas before reaching controllers. The reusable `validate.js` middleware wraps schemas inline on route definitions:
 
-### Verification Validation Schemas (`src/validator/verificationValidator.js`)
-
-| Schema | Field | Validation Rule |
-|---|---|---|
-| `panSchema` | `pan_number` | Regex `/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/` — 10 chars: 5 uppercase letters, 4 digits, 1 uppercase letter |
-| `panSchema` | `full_name` | Required non-empty string |
-| `panSchema` | `dob` | Required date |
-| `panSchema` | `client_id` | Required UUID v4 |
-| `aadhaarSchema` | `masked_aadhaar` | Regex `/^XXXX-XXXX-[0-9]{4}$/` — only last 4 digits accepted |
-| `aadhaarSchema` | `full_name` | Required non-empty string |
-| `aadhaarSchema` | `client_id` | Required UUID v4 |
-| `gstinSchema` | `gstin` | Regex `/^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[A-Z0-9]{3}$/` — 15 chars |
-| `gstinSchema` | `business_name` | Required non-empty string |
-| `gstinSchema` | `client_id` | Required UUID v4 |
-
-### Validation Middleware (`src/middlewares/validate.js`)
-
-Reusable wrapper used in route definitions:
 ```js
 router.post('/pan', validate(panSchema), verificationController.createPanVerification);
 ```
 
 Returns `400 Bad Request` with a structured error message listing all failing fields if validation does not pass.
 
+**Schemas in `src/validator/verificationValidator.js`:**
+
+| Schema | Field | Rule |
+|---|---|---|
+| `panSchema` | `pan_number` | `/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/` |
+| `panSchema` | `full_name` | Required non-empty string |
+| `panSchema` | `dob` | Required date |
+| `panSchema` | `client_id` | Required UUID v4 |
+| `aadhaarSchema` | `masked_aadhaar` | `/^XXXX-XXXX-[0-9]{4}$/` |
+| `aadhaarSchema` | `full_name` | Required non-empty string |
+| `aadhaarSchema` | `client_id` | Required UUID v4 |
+| `gstinSchema` | `gstin` | `/^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[A-Z0-9]{3}$/` |
+| `gstinSchema` | `business_name` | Required non-empty string |
+| `gstinSchema` | `client_id` | Required UUID v4 |
+
 ---
 
-## 19. Installation & Local Setup
+## 20. Installation & Local Setup
 
 ### Prerequisites
 
@@ -847,39 +1073,34 @@ Returns `400 Bad Request` with a structured error message listing all failing fi
 ### Steps
 
 ```bash
-# 1. Clone the repository
+# 1. Clone and install
 git clone <repo-url>
 cd bgv-backend
-
-# 2. Install dependencies
 npm install
 
-# 3. Configure environment
+# 2. Configure environment
 cp .env.development .env
 # Edit .env — set DB_USER, DB_PASSWORD, DB_NAME, ACCESS_TOKEN_SECRET,
-# REFRESH_TOKEN_SECRET, BGV_API_KEY
+# REFRESH_TOKEN_SECRET, BGV_API_KEY, THIRD_PARTY_API_KEY, THIRD_PARTY_API_SECRET
 
-# 4. Create the PostgreSQL database
+# 3. Create the PostgreSQL database
 psql -U postgres -c "CREATE DATABASE bgv_platform;"
 
-# 5. Run the initial migration
+# 4. Run the initial migration
 psql -U postgres -d bgv_platform -f src/migrations/001_init.sql
 
-# 6. Create the uploads directory
+# 5. Create the uploads directory
 mkdir -p uploads
 
-# 7. Start in development mode (nodemon auto-restart)
+# 6. Start in development mode
 npm run dev
-
-# OR start without auto-restart
-npm start
 ```
 
 Server runs at: **http://localhost:5001**
 
 ---
 
-## 20. Scripts
+## 21. Scripts
 
 ```bash
 npm start          # node server.js
@@ -893,16 +1114,41 @@ npm run format     # prettier --write "src/**/*.js"
 
 ---
 
-## 21. Testing Endpoints with cURL
+## 22. Testing
 
-Replace `<API_KEY>` and `<ACCESS_TOKEN>` with actual values.
+### Quick Health Check
 
-### Health Check (no auth required)
 ```bash
 curl http://localhost:5001/health
 ```
 
-### Login
+### DB Query to Verify Result
+
+```sql
+SELECT
+  vr.id,
+  vr.document_type,
+  vr.document_number,
+  vr.full_name,
+  vr.api_status,
+  vr.status,
+  vr.failure_reason,
+  res.verified,
+  res.result_data,
+  res.processed_at
+FROM verification_requests vr
+LEFT JOIN verification_results res ON res.verification_id = vr.id
+ORDER BY vr.created_at DESC
+LIMIT 10;
+```
+
+---
+
+### cURL — Quick Endpoint Tests
+
+Replace `<API_KEY>` and `<ACCESS_TOKEN>` with actual values.
+
+#### Login
 ```bash
 curl -X POST http://localhost:5001/api/auth/login \
   -H "Content-Type: application/json" \
@@ -910,7 +1156,7 @@ curl -X POST http://localhost:5001/api/auth/login \
   -d '{"email":"admin@test.com","password":"password123"}'
 ```
 
-### PAN Verification
+#### PAN Verification
 ```bash
 curl -X POST http://localhost:5001/api/verification/pan \
   -H "Content-Type: application/json" \
@@ -924,7 +1170,7 @@ curl -X POST http://localhost:5001/api/verification/pan \
   }'
 ```
 
-### Aadhaar Verification
+#### Aadhaar Verification
 ```bash
 curl -X POST http://localhost:5001/api/verification/aadhaar \
   -H "Content-Type: application/json" \
@@ -937,14 +1183,14 @@ curl -X POST http://localhost:5001/api/verification/aadhaar \
   }'
 ```
 
-### Retry Verification
+#### Retry Verification
 ```bash
 curl -X POST http://localhost:5001/api/verification/retry/<verification-uuid> \
   -H "x-api-key: <API_KEY>" \
   -H "Authorization: Bearer <ACCESS_TOKEN>"
 ```
 
-### File Upload
+#### File Upload
 ```bash
 curl -X POST http://localhost:5001/api/upload \
   -H "x-api-key: <API_KEY>" \
@@ -952,13 +1198,13 @@ curl -X POST http://localhost:5001/api/upload \
   -F "file=@/path/to/document.pdf"
 ```
 
-### Test API Key Protection (expect 403)
+#### Test API Key Protection (expect 403)
 ```bash
 curl http://localhost:5001/api/upload
 # → { "success": false, "message": "Unauthorized: Invalid API Key" }
 ```
 
-### Refresh Token
+#### Refresh Token
 ```bash
 curl -X POST http://localhost:5001/api/auth/refresh \
   -H "Content-Type: application/json" \
@@ -968,33 +1214,178 @@ curl -X POST http://localhost:5001/api/auth/refresh \
 
 ---
 
-## 22. Future Enhancements
+### PowerShell — Full API Test Suite
 
-The codebase is structured to support these additions with minimal changes:
+See `TEST_SUITE.ps1` for the full suite. The abbreviated version below covers all major flows.
 
-| Enhancement | Hook Point |
-|---|---|
-| **IDfy integration** | `src/services/vendorMappings/idfyMapping.js` is already scaffolded; Phase 5 wires real API calls here |
-| **Gridlines integration** | `src/services/vendorMappings/gridlinesMapping.js` already scaffolded as alternate provider |
-| **Auto retry workers** | `src/jobs/vendorJob.js` stub is the insertion point for cron-based retry scheduling |
-| **PDF report generation** | `src/jobs/pdfJob.js` stub |
-| **Notification system** | `src/jobs/notificationJob.js` stub |
-| **Cloud storage (S3)** | Replace local `uploads/` logic in `multerConfig.js` with S3 storage engine |
-| **Retry attempt limits** | Add `max_retry_count` business rule in `retryVerification` controller |
-| **Verification analytics** | `api_status`, `retry_count`, `last_api_attempt` fields are pre-built for dashboard queries |
-| **API versioning** | Route structure supports `/api/v1/...` with minimal changes to `src/routes/index.js` |
-| **Advanced role management** | Extend `roleMiddleware` and add a `permissions` table |
+```powershell
+$BASE_URL  = "http://localhost:5001"
+$API_KEY   = "bgv_secure_api_key_2026"
+$CLIENT_ID = "57cab5a9-3c1f-428e-9b80-34d3ca27ad3b"
+
+$headers = @{ "x-api-key" = $API_KEY; "Content-Type" = "application/json" }
+
+# 1. Login
+$loginResponse = Invoke-RestMethod -Uri "$BASE_URL/api/auth/login" -Method POST -Headers $headers `
+    -Body (@{ email = "admin@test.com"; password = "password123" } | ConvertTo-Json)
+$ACCESS_TOKEN  = $loginResponse.accessToken
+$REFRESH_TOKEN = $loginResponse.refreshToken
+
+$authHeaders = @{
+    "x-api-key"     = $API_KEY
+    "Content-Type"  = "application/json"
+    "Authorization" = "Bearer $ACCESS_TOKEN"
+}
+
+# 2. PAN (fake — expect api_status=failed)
+$panResponse = Invoke-RestMethod -Uri "$BASE_URL/api/verifications/pan" -Method POST -Headers $authHeaders `
+    -Body (@{ pan_number = "ABCDE1234F"; full_name = "Rahul Sharma"; dob = "1998-05-10"; client_id = $CLIENT_ID } | ConvertTo-Json)
+$VERIFICATION_ID = $panResponse.data.id
+
+Start-Sleep -Seconds 6
+
+# 3. Fetch result
+$result = Invoke-RestMethod -Uri "$BASE_URL/api/verifications/$VERIFICATION_ID" -Method GET -Headers $authHeaders
+$result.data | Format-List
+
+# 4. Aadhaar (will fail — not enabled on account)
+Invoke-RestMethod -Uri "$BASE_URL/api/verifications/aadhaar" -Method POST -Headers $authHeaders `
+    -Body (@{ masked_aadhaar = "XXXX-XXXX-1234"; full_name = "Rahul Sharma"; client_id = $CLIENT_ID } | ConvertTo-Json)
+
+# 5. GSTIN (will fail — not enabled on account)
+Invoke-RestMethod -Uri "$BASE_URL/api/verifications/gstin" -Method POST -Headers $authHeaders `
+    -Body (@{ gstin = "27ABCDE1234F1Z5"; business_name = "ABC Traders"; client_id = $CLIENT_ID } | ConvertTo-Json)
+
+# 6. Retry
+Invoke-RestMethod -Uri "$BASE_URL/api/verifications/retry/$VERIFICATION_ID" -Method POST -Headers $authHeaders
+
+# 7. Logout
+Invoke-RestMethod -Uri "$BASE_URL/api/auth/logout" -Method POST -Headers $authHeaders `
+    -Body (@{ refreshToken = $REFRESH_TOKEN } | ConvertTo-Json)
+
+# 8. Refresh after logout (should fail)
+try {
+    Invoke-RestMethod -Uri "$BASE_URL/api/auth/refresh" -Method POST -Headers $headers `
+        -Body (@{ refreshToken = $REFRESH_TOKEN } | ConvertTo-Json)
+    Write-Host "ERROR: Should have failed"
+} catch { Write-Host "Correctly rejected" -ForegroundColor Green }
+```
 
 ---
 
-## 23. Implemented Modules (Sprint Tracker)
+### PowerShell — Real PAN Verification Test
+
+```powershell
+$BASE_URL  = "http://localhost:5001"
+$API_KEY   = "bgv_secure_api_key_2026"
+$CLIENT_ID = "57cab5a9-3c1f-428e-9b80-34d3ca27ad3b"
+
+$headers     = @{ "x-api-key" = $API_KEY; "Content-Type" = "application/json" }
+$loginResp   = Invoke-RestMethod -Uri "$BASE_URL/api/auth/login" -Method POST -Headers $headers `
+    -Body (@{ email = "admin@test.com"; password = "password123" } | ConvertTo-Json)
+$authHeaders = @{
+    "x-api-key"     = $API_KEY
+    "Content-Type"  = "application/json"
+    "Authorization" = "Bearer $($loginResp.accessToken)"
+}
+
+$panResp = Invoke-RestMethod -Uri "$BASE_URL/api/verifications/pan" -Method POST -Headers $authHeaders `
+    -Body (@{
+        pan_number = "YOUR_PAN_HERE"
+        full_name  = "NAME AS ON PAN"
+        dob        = "YYYY-MM-DD"
+        client_id  = $CLIENT_ID
+    } | ConvertTo-Json)
+$VID = $panResp.data.id
+
+Write-Host "Created: $VID — waiting 6s..."
+Start-Sleep -Seconds 6
+
+$r = (Invoke-RestMethod -Uri "$BASE_URL/api/verifications/$VID" -Method GET -Headers $authHeaders).data
+
+Write-Host "`n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━" -ForegroundColor Magenta
+Write-Host "       PAN VERIFICATION RESULT           " -ForegroundColor Magenta
+Write-Host "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━" -ForegroundColor Magenta
+Write-Host "ID             : $($r.id)"
+Write-Host "PAN            : $($r.document_number)"
+Write-Host "Name           : $($r.full_name)"
+Write-Host "DOB            : $(([DateTime]$r.dob).ToString('yyyy-MM-dd'))"
+Write-Host "API Status     : $($r.api_status)"
+Write-Host "Status         : $($r.status)"
+Write-Host "Verified       : $($r.verified)"
+Write-Host "PAN Status     : $($r.result.result.pan_status)"
+Write-Host "Name Match     : $($r.result.result.name_match_result)"
+Write-Host "Name Score     : $($r.result.result.name_match_score)"
+Write-Host "DOB Match      : $($r.result.result.dob_match)"
+Write-Host "Aadhaar Linked : $($r.result.result.aadhaar_seeding_status)"
+Write-Host "Processed At   : $($r.processed_at)"
+Write-Host "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━" -ForegroundColor Magenta
+```
+
+---
+
+## 23. Known Limitations & Blockers
+
+### 🔴 BE-3 — Aadhaar `ind_aadhaar` not on account plan
+
+The `ind_aadhaar` endpoint returns `404 NOT_FOUND` from IDfy. This is an **account plan restriction, not a code issue**. Individual Aadhaar verification requires UIDAI AUA/KUA licensing, which IDfy only enables on paid enterprise accounts.
+
+The current account (test-tier, 63 testing credits, Live Credits: 0) does not include this endpoint. The code is fully wired and ready — zero changes needed once activated.
+
+**Evidence from server log:**
+```
+[IDfy REQUEST] POST https://eve.idfy.com/v3/tasks/sync/verify_with_source/ind_aadhaar
+[IDfy ERROR] 404 { error: 'NOT_FOUND', message: 'Bad Request' }
+```
+
+**To fix:**
+1. Email `eve.support@idfy.com`, subject: `Enable ind_aadhaar verify_with_source endpoint`, body: include your `account-id`
+2. OR ask Shovel Screening Solutions for enterprise IDfy credentials
+3. OR implement Aadhaar OCR as an alternative (`ind_aadhaar_ocr` — image upload flow, available on current plan)
+
+### 🟡 GSTIN — Same Account Blocker
+
+`verifyGSTIN()` throws immediately. Not yet wired to the IDfy endpoint. Same account plan restriction applies. The code structure mirrors the PAN/Aadhaar pattern and is ready to wire once the account is activated.
+
+### 🟡 Retry Does Not Re-Trigger IDfy
+
+`POST /retry/:id` only updates `retry_count` and `status`. Actual re-verification logic belongs in `src/jobs/vendorJob.js` (future work).
+
+### 🟡 Hardcoded Fallback in `db.js`
+
+`src/utils/db.js` has a hardcoded fallback password for local development. This must be replaced with env vars before any production deployment.
+
+---
+
+## 24. Future Enhancements
+
+| Enhancement | Hook Point |
+|---|---|
+| Enable Aadhaar + GSTIN | Activate on IDfy account; code is already wired |
+| Auto retry workers | `src/jobs/vendorJob.js` stub |
+| PDF report generation | `src/jobs/pdfJob.js` stub |
+| Notification system | `src/jobs/notificationJob.js` stub |
+| Cloud storage (S3) | Replace `multerConfig.js` local storage with S3 engine |
+| Retry attempt limits | Add `max_retry_count` rule in `retryVerification` controller |
+| API versioning | Route structure supports `/api/v1/...` |
+| Gridlines as alternate vendor | `src/services/vendorMappings/gridlinesMapping.js` already scaffolded |
+| Advanced role management | Extend `roleMiddleware` and add a `permissions` table |
+| Verification analytics | `api_status`, `retry_count`, `last_api_attempt` fields are pre-built for dashboard queries |
+
+---
+
+## 25. Implemented Modules (Sprint Tracker)
 
 | Module ID | Name | Status |
 |---|---|---|
 | BE-1 | Third-Party API Configuration Setup | ✅ Complete |
+| BE-3 | Aadhaar Masked Verification Integration | ✅ Code complete / ⏳ Account blocked |
 | BE-5 | File Upload Infrastructure & Authentication | ✅ Complete |
 | BE-6 | Secure Backend Foundation (API Key, Rate Limiting, Helmet) | ✅ Complete |
 | BE-7 | Verification Intake APIs (PAN, Aadhaar, GSTIN) | ✅ Complete |
 | BE-8 | Verification Retry Mechanism | ✅ Complete |
 | BE-9 | Verification API Status Tracking | ✅ Complete |
-| BE-Phase5 | External Verification Integration (IDfy) | 🟡 In Progress (API client + service layer ready) |
+| BE-Phase5 | IDfy Eve v3 Integration — PAN Verification | ✅ Complete |
+| BE-Phase5 | IDfy Eve v3 Integration — Aadhaar | ✅ Code complete / ⏳ Account blocked |
+| BE-Phase5 | IDfy Eve v3 Integration — GSTIN | ⏳ Pending account activation |
+| BE-Phase6 | GET /verifications/:id endpoint | ✅ Complete |

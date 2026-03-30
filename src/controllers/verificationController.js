@@ -4,6 +4,30 @@ const db                = require("../utils/db");
 const thirdPartyService = require("../services/thirdPartyService");
 const responseProcessor = require("../services/responseProcessor");
 
+// ─────────────────────────────────────────────────────────────────────────────
+// extractErrorMessage
+//
+// Axios errors have the real message buried in error.response.data.
+// Without this, failure_reason gets the generic "Request failed with status
+// code 404" string instead of IDfy's actual { error, message } payload.
+//
+// Priority:
+//   1. IDfy's own error body  → e.g. "NOT_FOUND: Bad Request"
+//   2. Axios message          → e.g. "Request failed with status code 404"
+//   3. Fallback               → "Unknown error"
+// ─────────────────────────────────────────────────────────────────────────────
+function extractErrorMessage(err) {
+  const data = err?.response?.data;
+  if (data) {
+    // IDfy returns { error: 'NOT_FOUND', message: 'Bad Request' }
+    if (data.error && data.message) return `${data.error}: ${data.message}`;
+    if (data.message)               return data.message;
+    if (typeof data === 'string')   return data;
+    return JSON.stringify(data);
+  }
+  return err.message || 'Unknown error';
+}
+
 /* ─────────────────────────────────────────────────────────────
    INTERNAL HELPER — runs AFTER the HTTP response is sent.
 ───────────────────────────────────────────────────────────── */
@@ -55,14 +79,15 @@ async function runPanVerificationAsync(record) {
     console.log(`[PAN] ✅ Completed for record ${id} — api_status=${processed.status}`);
 
   } catch (err) {
-    console.error(`[PAN] ❌ Failed for record ${id}: ${err.message}`);
+    const reason = extractErrorMessage(err);
+    console.error(`[PAN] ❌ Failed for record ${id}: ${reason}`);
     console.error(`[PAN] ❌ Stack: ${err.stack}`);
     await db.query(
       `UPDATE verification_requests
        SET api_status     = 'failed',
            failure_reason = $1
        WHERE id = $2`,
-      [err.message, id]
+      [reason, id]
     ).catch(dbErr => {
       console.error('[PAN] ❌ Also failed to write failure_reason to DB:', dbErr.message);
     });
@@ -71,64 +96,99 @@ async function runPanVerificationAsync(record) {
 
 async function runAadhaarVerificationAsync(record) {
   const id = record.id;
+  console.log(`[Aadhaar ASYNC] ▶ Starting for record ${id}`);
+
   try {
+    console.log(`[Aadhaar ASYNC] Step 1: marking processing`);
     await db.query(
       `UPDATE verification_requests
        SET api_status = 'processing', last_api_attempt = NOW()
        WHERE id = $1`, [id]
     );
+
+    console.log(`[Aadhaar ASYNC] Step 2: calling IDfy — endpoint: ind_aadhaar`);
     const rawResponse = await thirdPartyService.verifyAadhaar({
       masked_aadhaar: record.document_number,
       full_name:      record.full_name
     });
+    console.log(`[Aadhaar ASYNC] Step 2: IDfy returned`);
+
+    console.log(`[Aadhaar ASYNC] Step 3: processing response`);
     const processed = responseProcessor.process('idfy', rawResponse, 'aadhaar');
+    console.log(`[Aadhaar ASYNC] Step 3: done — status=${processed.status}, verified=${processed.verified}`);
+
+    console.log(`[Aadhaar ASYNC] Step 4: inserting result`);
     await db.query(
       `INSERT INTO verification_results (verification_id, result_data, verified, processed_at)
        VALUES ($1, $2, $3, NOW())`,
       [id, JSON.stringify(processed), processed.verified]
     );
+
+    console.log(`[Aadhaar ASYNC] Step 5: updating final status`);
     await db.query(
       `UPDATE verification_requests SET api_status = $1, status = $2 WHERE id = $3`,
       [processed.status, processed.verified ? 'verified' : 'failed', id]
     );
-    console.log(`[Aadhaar] ✅ Completed for record ${id}`);
+
+    console.log(`[Aadhaar] ✅ Completed for record ${id} — api_status=${processed.status}, verified=${processed.verified}`);
+
   } catch (err) {
-    console.error(`[Aadhaar] ❌ Failed for record ${id}:`, err.message);
+    // extractErrorMessage pulls IDfy's { error, message } body out of the
+    // axios error so failure_reason is "NOT_FOUND: Bad Request" not the
+    // generic axios string.
+    const reason = extractErrorMessage(err);
+    console.error(`[Aadhaar] ❌ Failed for record ${id}: ${reason}`);
     await db.query(
       `UPDATE verification_requests SET api_status = 'failed', failure_reason = $1 WHERE id = $2`,
-      [err.message, id]
+      [reason, id]
     ).catch(() => {});
   }
 }
 
 async function runGstinVerificationAsync(record) {
   const id = record.id;
+  console.log(`[GSTIN ASYNC] ▶ Starting for record ${id}`);
+
   try {
+    console.log(`[GSTIN ASYNC] Step 1: marking processing`);
     await db.query(
       `UPDATE verification_requests
        SET api_status = 'processing', last_api_attempt = NOW()
        WHERE id = $1`, [id]
     );
+
+    console.log(`[GSTIN ASYNC] Step 2: calling IDfy`);
     const rawResponse = await thirdPartyService.verifyGSTIN({
       gstin:         record.document_number,
       business_name: record.business_name
     });
+    console.log(`[GSTIN ASYNC] Step 2: IDfy returned`);
+
+    console.log(`[GSTIN ASYNC] Step 3: processing response`);
     const processed = responseProcessor.process('idfy', rawResponse, 'gst');
+    console.log(`[GSTIN ASYNC] Step 3: done — status=${processed.status}, verified=${processed.verified}`);
+
+    console.log(`[GSTIN ASYNC] Step 4: inserting result`);
     await db.query(
       `INSERT INTO verification_results (verification_id, result_data, verified, processed_at)
        VALUES ($1, $2, $3, NOW())`,
       [id, JSON.stringify(processed), processed.verified]
     );
+
+    console.log(`[GSTIN ASYNC] Step 5: updating final status`);
     await db.query(
       `UPDATE verification_requests SET api_status = $1, status = $2 WHERE id = $3`,
       [processed.status, processed.verified ? 'verified' : 'failed', id]
     );
+
     console.log(`[GSTIN] ✅ Completed for record ${id}`);
+
   } catch (err) {
-    console.error(`[GSTIN] ❌ Failed for record ${id}:`, err.message);
+    const reason = extractErrorMessage(err);
+    console.error(`[GSTIN] ❌ Failed for record ${id}: ${reason}`);
     await db.query(
       `UPDATE verification_requests SET api_status = 'failed', failure_reason = $1 WHERE id = $2`,
-      [err.message, id]
+      [reason, id]
     ).catch(() => {});
   }
 }
@@ -212,10 +272,6 @@ exports.retryVerification = async (req, res, next) => {
   } catch (error) { next(error); }
 };
 
-/* ─────────────────────────────────────────────────────────────
-   GET /api/verifications/:id
-   Returns the verification request + its result joined together
-───────────────────────────────────────────────────────────── */
 exports.getVerificationById = async (req, res, next) => {
   try {
     const { id } = req.params;
