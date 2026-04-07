@@ -35,7 +35,15 @@ app.use(compression());
 // ====================================
 // 2. PARSING MIDDLEWARE
 // ====================================
-app.use(express.json({ limit: '10mb' }));
+// CHANGED: Added verify callback to capture raw body buffer.
+// webhookMiddleware needs req.rawBody to validate HMAC signatures from IDfy.
+// This is the ONLY change from the original app.js.
+app.use(express.json({
+  limit: '10mb',
+  verify: (req, res, buf) => {
+    req.rawBody = buf;
+  }
+}));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
 // ====================================
@@ -68,6 +76,13 @@ const apiLimiter = rateLimit({
 
 app.use(globalLimiter);                  // applies to everything
 app.use('/api', apiLimiter);             // stricter limit on /api/*
+
+// Webhook routes are PUBLIC — IDfy/Gridlines don't send our API key.
+// Auth is handled by HMAC signature validation inside webhookMiddleware.
+// These must be mounted BEFORE apiKeyAuth.
+const webhookRoutes = require('./routes/webhookRoutes');
+app.use('/api/webhooks', webhookRoutes);
+
 app.use('/api', apiKeyAuth);             // API key check on /api/*
 
 // ====================================

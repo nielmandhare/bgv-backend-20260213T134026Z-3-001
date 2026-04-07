@@ -1,8 +1,8 @@
 # BGV Backend — Background Verification Platform API
 
-**Authors:** Atharva Jadhav & Niel Mandhare
+**Authors:** Niel Mandhare & Atharva Jadhav
 **Company:** Shovel Screening Solutions
-**Version:** 1.2.0
+**Version:** 1.3.1
 **Runtime:** Node.js + Express.js
 **Database:** PostgreSQL
 **Entry point:** `server.js`
@@ -25,20 +25,21 @@
 10. [API Routes Reference](#10-api-routes-reference)
 11. [Verification Lifecycle](#11-verification-lifecycle)
 12. [IDfy Integration — Complete Technical Reference](#12-idfy-integration--complete-technical-reference)
-13. [Retry Mechanism](#13-retry-mechanism)
-14. [Multi-Tenant Support](#14-multi-tenant-support)
-15. [File Upload](#15-file-upload)
-16. [Bulk Upload](#16-bulk-upload)
-17. [Error Handling](#17-error-handling)
-18. [Logging](#18-logging)
-19. [Input Validation](#19-input-validation)
-20. [Installation & Local Setup](#20-installation--local-setup)
-21. [Scripts](#21-scripts)
-22. [Testing](#22-testing)
-23. [Known Limitations & Blockers](#23-known-limitations--blockers)
-24. [Future Enhancements](#24-future-enhancements)
-25. [Implemented Modules (Sprint Tracker)](#25-implemented-modules-sprint-tracker)
-26. [Changelog](#26-changelog)
+13. [Webhook Endpoint — BE-7](#13-webhook-endpoint--be-7)
+14. [Retry Mechanism](#14-retry-mechanism)
+15. [Multi-Tenant Support](#15-multi-tenant-support)
+16. [File Upload](#16-file-upload)
+17. [Bulk Upload](#17-bulk-upload)
+18. [Error Handling](#18-error-handling)
+19. [Logging](#19-logging)
+20. [Input Validation](#20-input-validation)
+21. [Installation & Local Setup](#21-installation--local-setup)
+22. [Scripts](#22-scripts)
+23. [Testing](#23-testing)
+24. [Known Limitations & Blockers](#24-known-limitations--blockers)
+25. [Future Enhancements](#25-future-enhancements)
+26. [Implemented Modules (Sprint Tracker)](#26-implemented-modules-sprint-tracker)
+27. [Changelog](#27-changelog)
 
 ---
 
@@ -58,6 +59,7 @@ This is the backend for a **Background Verification (BGV) Platform** built for S
 | File Upload | ✅ Complete |
 | Bulk Upload (CSV/Excel) | ✅ Complete |
 | Retry Mechanism | ✅ Complete (status update only — re-trigger is future work) |
+| Webhook Endpoint (IDfy async push) | ✅ Complete — HMAC validation wired, audit logging active |
 
 ### How Verification Works (High-Level)
 
@@ -67,6 +69,7 @@ Verification is **fire-and-forget async**:
 3. In the background, the server calls IDfy's API.
 4. The database is updated with the result.
 5. Client polls `GET /api/verifications/:id` to check the outcome.
+6. IDfy can also **push** results via webhook to `POST /api/webhooks/idfy` — the webhook handler updates the same DB rows the polling endpoint reads.
 
 All API failures are stored in `failure_reason` so nothing is lost silently.
 
@@ -82,9 +85,11 @@ server.js              ← loads .env, validates required vars, starts HTTP serv
 src/app.js             ← applies all middleware in order, mounts routes
     ↓
 Middleware Stack        ← Helmet → CORS → Compression → Body Parser → Logger
-                          → Rate Limiter (global + API-level) → API Key Auth
+                          → Rate Limiter (global + API-level)
+                          → Webhook routes (public, before API key check)
+                          → API Key Auth → JWT Auth → Tenant Middleware
     ↓
-src/routes/            ← Route definitions (auth is public; all else requires JWT + tenant)
+src/routes/            ← Route definitions (auth + webhooks are public; all else requires JWT + tenant)
     ↓
 src/middlewares/       ← authMiddleware (JWT verify) → tenantMiddleware (extract tenant)
     ↓
@@ -108,6 +113,16 @@ INSERT into verification_results
 UPDATE verification_requests (api_status = 'success' | 'failed')
     ↓
 PostgreSQL — bgv_platform database
+
+─── OR (async push path) ───────────────────────────────────────────────
+
+IDfy POST → /api/webhooks/idfy
+    ↓
+webhookMiddleware (log + HMAC signature validate)
+    ↓
+webhookController → responseProcessor → same DB writes as above
+    ↓
+webhook_events audit table
 ```
 
 ### Key Design Decisions
@@ -117,6 +132,7 @@ PostgreSQL — bgv_platform database
 - **Reusable API client** — `apiClient.js` centralizes IDfy's base URL, auth headers, and Axios interceptors.
 - **Error traceability** — all IDfy failures are logged to Winston AND written to `failure_reason` in the DB.
 - **Vendor-agnostic mapping** — `vendorMappings/` allows swapping IDfy for another provider (Gridlines stub already exists) without changing controllers.
+- **Always-200 webhooks** — webhook endpoints always return HTTP 200 to prevent IDfy retry storms on internal errors.
 
 ---
 
@@ -129,12 +145,12 @@ bgv-backend/
 │
 ├── src/
 │   ├── app.js                   ← Express app: middleware chain + route mounting
-│   │                              Also registers process.on('uncaughtException') guards
+│   │                              Webhook routes mounted before apiKeyAuth (IDfy has no API key)
 │   │
 │   ├── config/
 │   │   └── multerConfig.js      ← Multer file upload config (type + size validation)
 │   │
-│   ├── controllers/             ← Request handlers. Each controller calls next(error) for failures.
+│   ├── controllers/
 │   │   ├── authController.js            ← login, refreshToken, logout
 │   │   ├── uploadController.js          ← single file upload handler
 │   │   ├── verificationController.js    ← PAN/Aadhaar/GSTIN intake, retry, getById
@@ -142,7 +158,7 @@ bgv-backend/
 │   │   ├── tenantController.js          ← tenant CRUD
 │   │   ├── bulkUploadController.js      ← CSV/Excel batch upload
 │   │   ├── consentController.js         ← consent record management
-│   │   └── webhookController.js         ← inbound webhook handling
+│   │   └── webhookController.js         ← inbound webhook handling (IDfy + Gridlines stub)
 │   │
 │   ├── routes/
 │   │   ├── index.js             ← Master router — applies authMiddleware + tenantMiddleware
@@ -155,7 +171,7 @@ bgv-backend/
 │   │   ├── consentRoutes.js     ← Consent management
 │   │   ├── documentRoutes.js    ← Document management
 │   │   ├── auditRoutes.js       ← Audit log access
-│   │   └── webhookRoutes.js     ← POST /webhooks (public — no JWT)
+│   │   └── webhookRoutes.js     ← POST /webhooks/idfy, POST /webhooks/gridlines (public)
 │   │
 │   ├── middlewares/
 │   │   ├── apiKeyAuth.js        ← Validates x-api-key header on all /api/* routes
@@ -164,6 +180,7 @@ bgv-backend/
 │   │   ├── errorMiddleware.js   ← 404 handler + global error handler
 │   │   ├── tenantMiddleware.js  ← Extracts and verifies tenant from JWT
 │   │   ├── validate.js          ← Joi schema validation wrapper middleware
+│   │   ├── webhookMiddleware.js ← HMAC-SHA256 signature validation + inbound request logger
 │   │   ├── bulkUploadMiddleware.js  ← CSV/Excel parse + row validation
 │   │   ├── consentMiddleware.js     ← Consent verification
 │   │   ├── auditMiddleware.js       ← Request audit logging
@@ -215,7 +232,8 @@ bgv-backend/
 │   │   └── logViewer.js         ← Log file reader utility
 │   │
 │   ├── migrations/
-│   │   └── 001_init.sql         ← Full DB schema — run this manually on first setup
+│   │   ├── 001_init.sql         ← Full DB schema — run this manually on first setup
+│   │   └── 002_webhook_events.sql ← webhook_events audit table — run after BE-7
 │   │
 │   ├── jobs/                    ← Background job stubs (none are running yet)
 │   │   ├── notificationJob.js   ← Future: notification scheduling
@@ -226,6 +244,8 @@ bgv-backend/
 │       └── testTenantIsolation.js  ← Manual test script for multi-tenant data isolation
 │
 ├── uploads/               ← Temporary file storage (UUID-named subdirs per session)
+│   └── <uuid>/
+│       └── <timestamp>-<rand>-<originalfilename>
 ├── logs/                  ← Daily rotating logs (YYYY-MM-DD.log + error.log)
 ├── .env.development       ← Dev secrets — NEVER commit this file
 ├── .eslintrc.js
@@ -312,6 +332,12 @@ THIRD_PARTY_BASE_URL=https://eve.idfy.com
 THIRD_PARTY_API_KEY=your-idfy-api-key        # → sent as header: api-key
 THIRD_PARTY_API_SECRET=your-idfy-account-id  # → sent as header: account-id
 
+# Webhook HMAC Signature Secrets (added in BE-7)
+# IDfy will give you this value — email eve.support@idfy.com
+# Leave blank in development — middleware warns but does not block requests
+IDFY_WEBHOOK_SECRET=
+GRIDLINES_WEBHOOK_SECRET=
+
 # Rate Limiting (all optional — defaults shown below)
 RATE_LIMIT_WINDOW_MS=900000          # 15 minutes (global limiter window)
 RATE_LIMIT_MAX_REQUESTS=100          # max requests per window globally
@@ -333,7 +359,8 @@ API_RATE_LIMIT_MAX_REQUESTS=60       # 60 requests per minute on /api/*
 
 ## 6. Database Schema
 
-All tables are created by running `src/migrations/001_init.sql` manually.
+All core tables are created by running `src/migrations/001_init.sql` manually.
+The `webhook_events` audit table is created by `src/migrations/002_webhook_events.sql` (added in BE-7).
 
 ### `users`
 ```sql
@@ -436,6 +463,29 @@ CREATE TABLE verification_retry_history (
 );
 ```
 
+### `webhook_events` (added in BE-7)
+
+```sql
+CREATE TABLE webhook_events (
+    id               UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    vendor           VARCHAR(50)  NOT NULL,
+    event_type       VARCHAR(100) NOT NULL,
+    payload          JSONB        NOT NULL,
+    verification_id  UUID REFERENCES verification_requests(id) ON DELETE SET NULL,
+    status           VARCHAR(50)  NOT NULL,
+    error_message    TEXT,
+    received_at      TIMESTAMP    DEFAULT NOW()
+);
+```
+
+This table is **append-only** — never update or delete rows. It is a compliance audit trail of every inbound webhook payload, matched or not.
+
+| Column | Values |
+|---|---|
+| `vendor` | `'idfy'` or `'gridlines'` |
+| `event_type` | IDfy's `payload.status`, or `'unmatched'` / `'duplicate'` |
+| `status` | `received` → `processed` / `duplicate` / `unmatched` / `db_error` |
+
 ### Understanding the Two Status Fields
 
 This is a common source of confusion — there are two separate status fields on `verification_requests`:
@@ -468,30 +518,31 @@ Example: A valid PAN that isn't registered with NSDL will have `api_status = 'su
 Middleware is applied in this exact order in `src/app.js`:
 
 ```
-1.  helmet()              → Sets security HTTP headers (XSS, HSTS, etc.)
-2.  cors()                → Allow cross-origin requests
-3.  compression()         → Gzip all responses
-4.  express.json()        → Parse JSON body (10mb limit)
-5.  express.urlencoded()  → Parse URL-encoded body (10mb limit)
-6.  requestLogger         → Per-request logging
-7.  logger.middleware     → Winston HTTP logging (via morgan)
-8.  globalLimiter         → 100 req / 15 min on ALL routes
-9.  apiLimiter (/api/*)   → 60 req / 1 min on /api/* routes only
-10. apiKeyAuth (/api/*)   → Rejects any /api/* request missing or sending wrong x-api-key
-11. routes                → Application routes
-12. notFound              → 404 handler (creates error and calls next)
-13. errorHandler          → Global error handler (logs + returns standard error JSON)
+1.  helmet()
+2.  cors()
+3.  compression()
+4.  express.json({ verify: rawBodyCapture })  ← verify callback captures req.rawBody for HMAC
+5.  express.urlencoded()
+6.  requestLogger
+7.  logger.middleware
+8.  globalLimiter        (100 req / 15 min, all routes)
+9.  apiLimiter           (60 req / 1 min, /api/*)
+10. /api/webhooks/*      ← mounted HERE, before apiKeyAuth (IDfy has no API key)
+11. apiKeyAuth           (/api/* except /api/webhooks/*)
+12. routes               (all other /api/* routes with JWT + tenant middleware)
+13. notFound
+14. errorHandler
 ```
 
-### Routes That Bypass Authentication
-
-These three routes require neither `x-api-key` nor JWT:
+### Routes That Bypass API Key + JWT
 
 | Method | Path | Description |
 |---|---|---|
 | `GET` | `/` | Root welcome JSON |
 | `GET` | `/health` | Server health check |
 | `GET` | `/api/health` | API-level health check |
+| `POST` | `/api/webhooks/idfy` | IDfy webhook push (auth via HMAC signature) |
+| `POST` | `/api/webhooks/gridlines` | Gridlines webhook push (auth via HMAC signature) |
 
 ---
 
@@ -550,12 +601,10 @@ Reads `req.user.role` and checks it against the provided `allowedRoles` array. R
 
 ### Which Routes Require Auth
 
-Defined in `src/routes/index.js`:
-
 | Path | API Key | JWT |
 |---|---|---|
 | `/api/auth/*` | ✅ Required | ❌ Not required |
-| `/api/webhooks/*` | ✅ Required | ❌ Not required |
+| `/api/webhooks/*` | ❌ Exempt (IDfy can't send it) | ❌ Not required |
 | `/api/health` | ✅ Required | ❌ Not required |
 | Everything else | ✅ Required | ✅ Required |
 
@@ -688,6 +737,15 @@ Only the last 4 digits of Aadhaar are accepted. Full numbers are never stored (U
 
 ---
 
+### Webhooks — `/api/webhooks`
+
+| Method | Path | Description |
+|---|---|---|
+| POST | `/api/webhooks/idfy` | IDfy async result push (public — no JWT, no API key) |
+| POST | `/api/webhooks/gridlines` | Gridlines result push (stub — ready when account activates) |
+
+---
+
 ### Upload — `/api/upload`
 
 | Method | Path | Description |
@@ -728,7 +786,6 @@ Allowed MIME: application/pdf, image/jpeg, image/png
 | `/api/consent` | Consent record creation and verification |
 | `/api/documents` | Document management (list, delete) |
 | `/api/audit` | Audit log access |
-| `/api/webhooks` | Inbound webhook events (public — no JWT required) |
 
 ---
 
@@ -1054,7 +1111,101 @@ Each document type has a mapping object with:
 
 ---
 
-## 13. Retry Mechanism
+## 13. Webhook Endpoint — BE-7
+
+### What Was Built
+
+BE-7 implements the full inbound webhook pipeline so IDfy can **push** async verification results to the platform. Previously the platform only polled. Now it handles both directions.
+
+#### Files Added or Changed
+
+| File | Change |
+|---|---|
+| `src/controllers/webhookController.js` | Full rewrite — raw `db.query()` pattern, correct column names, always-200 ACK |
+| `src/middlewares/webhookMiddleware.js` | **New** — HMAC-SHA256 signature validation for IDfy + Gridlines |
+| `src/routes/webhookRoutes.js` | Rewritten — removed broken `getResult` route, added signature middleware |
+| `src/migrations/002_webhook_events.sql` | **New** — webhook audit table with 3 indexes |
+| `src/app.js` | Webhook routes mounted before `apiKeyAuth`; `express.json()` captures `req.rawBody` |
+| `.env.development` | `IDFY_WEBHOOK_SECRET=` and `GRIDLINES_WEBHOOK_SECRET=` added |
+
+#### How the Pipeline Works
+
+```
+IDfy POST → /api/webhooks/idfy
+    ↓
+webhookMiddleware.logInboundWebhook     (logs every hit regardless of outcome)
+    ↓
+webhookMiddleware.validateIDfySignature
+  → IDFY_WEBHOOK_SECRET set?  YES → HMAC-SHA256 validate req.rawBody vs x-idfy-signature
+                               NO  → warn in console, pass through (dev convenience)
+    ↓
+webhookController.handleIDfyWebhook
+    ↓
+  1. INSERT audit row into webhook_events (status = 'received')
+  2. Find matching verification_request (WHERE api_status IN ('pending','processing'))
+     → No match? Return 200 + log 'unmatched'
+  3. Duplicate check: api_status = 'success' already? Return 200 + log 'duplicate'
+  4. responseProcessor.process('idfy', payload, verificationType)
+  5. INSERT or UPDATE verification_results
+  6. UPDATE verification_requests (api_status, status)
+  7. INSERT final audit row (status = 'processed')
+  8. Return 200
+```
+
+#### Why Always Return 200
+
+IDfy's retry policy fires on any non-200 response. If our DB has a momentary error and we return 500, IDfy retries forever. We ACK 200 always and handle errors internally via logging and `webhook_events.status = 'db_error'`.
+
+#### HMAC Signature Validation
+
+When IDfy provides your webhook secret:
+1. Set `IDFY_WEBHOOK_SECRET=<value>` in `.env.development`
+2. Validation activates automatically — no code changes needed
+3. If IDfy sends base64 (not hex) signatures, change `.digest("hex")` to `.digest("base64")` in `webhookMiddleware.js`
+
+To get the secret: email `eve.support@idfy.com` and ask for the webhook signing secret for your account-id.
+
+#### Known Limitation: Webhook-to-Verification Matching
+
+`findVerificationByVendorRequestId()` is currently a placeholder — it fetches the most recent `pending` or `processing` row instead of doing an exact match. This works for single-user dev testing but is not safe for production with concurrent requests.
+
+**Production fix:**
+```sql
+-- Run as migration 003
+ALTER TABLE verification_requests ADD COLUMN vendor_request_id VARCHAR(255);
+CREATE INDEX idx_verification_vendor_request_id ON verification_requests(vendor_request_id);
+```
+Then store IDfy's `request_id` from the outbound call into this column. The lookup becomes `WHERE vendor_request_id = $1`.
+
+#### Testing the Webhook Endpoint (PowerShell)
+
+```powershell
+# No API key needed — IDfy is the caller
+Invoke-WebRequest -Uri "http://localhost:5001/api/webhooks/idfy" `
+  -Method POST `
+  -Headers @{ "Content-Type" = "application/json" } `
+  -Body '{"request_id":"test-123","status":"completed","result":{"pan_number":"ABCDE1234F","status":"id_found"}}' `
+  | Select-Object -ExpandProperty Content
+
+# Expected when no pending verification exists:
+# {"success":false,"message":"Webhook received but no matching verification found"}
+
+# Expected when a pending verification exists:
+# {"success":true,"message":"Webhook processed successfully","data":{...}}
+```
+
+#### Query Webhook Audit Log
+
+```sql
+SELECT vendor, event_type, status, verification_id, error_message, received_at
+FROM webhook_events
+ORDER BY received_at DESC
+LIMIT 20;
+```
+
+---
+
+## 14. Retry Mechanism
 
 When `POST /api/verifications/retry/:id` is called:
 
@@ -1069,7 +1220,7 @@ The `verification_retry_history` table is append-only — every retry event gets
 
 ---
 
-## 14. Multi-Tenant Support
+## 15. Multi-Tenant Support
 
 Every verification request includes `client_id` (UUID) referencing `tenants.id`. One deployed instance serves multiple organizations with full data isolation.
 
@@ -1092,7 +1243,7 @@ Returns `true` or `false`. Call this before modifying any resource to confirm it
 
 ---
 
-## 15. File Upload
+## 16. File Upload
 
 ### Configuration (`src/config/multerConfig.js`)
 
@@ -1116,7 +1267,7 @@ uploads/
 
 ---
 
-## 16. Bulk Upload
+## 17. Bulk Upload
 
 `POST /api/bulk-upload` accepts CSV or Excel files containing multiple verification records.
 
@@ -1129,7 +1280,7 @@ uploads/
 
 ---
 
-## 17. Error Handling
+## 18. Error Handling
 
 ### Normal Error Flow
 
@@ -1169,7 +1320,7 @@ Both log the error and exit after 1 second, allowing the logger to flush.
 
 ---
 
-## 18. Logging
+## 19. Logging
 
 Winston with two output transports:
 
@@ -1189,9 +1340,11 @@ Winston with two output transports:
 
 A separate structured logger for compliance audit trails. Each audit entry captures: user ID, tenant ID, action performed, resource accessed, IP address, and timestamp. Used by `auditMiddleware.js` and accessible via `/api/audit` routes.
 
+Webhook events are additionally logged to the `webhook_events` table (see Section 13) for a complete compliance audit trail of every inbound payload.
+
 ---
 
-## 19. Input Validation
+## 20. Input Validation
 
 All user-submitted data is validated by **Joi** schemas before reaching any controller. The `validate.js` middleware wraps schemas inline on route definitions:
 
@@ -1218,7 +1371,7 @@ Returns `400 Bad Request` with a structured message listing all failing fields.
 
 ---
 
-## 20. Installation & Local Setup
+## 21. Installation & Local Setup
 
 ### Prerequisites
 
@@ -1241,12 +1394,14 @@ cp .env.development .env
 #   ACCESS_TOKEN_SECRET, REFRESH_TOKEN_SECRET
 #   BGV_API_KEY
 #   THIRD_PARTY_API_KEY, THIRD_PARTY_API_SECRET
+#   IDFY_WEBHOOK_SECRET (optional — leave blank in dev)
 
 # 3. Create the PostgreSQL database
 psql -U postgres -c "CREATE DATABASE bgv_platform;"
 
-# 4. Run the initial migration (creates all tables)
+# 4. Run the initial migrations (creates all tables)
 psql -U postgres -d bgv_platform -f src/migrations/001_init.sql
+psql -U postgres -d bgv_platform -f src/migrations/002_webhook_events.sql
 
 # 5. Create the uploads directory
 mkdir -p uploads
@@ -1259,7 +1414,7 @@ Server runs at: **http://localhost:5001**
 
 ---
 
-## 21. Scripts
+## 22. Scripts
 
 ```bash
 npm start          # node server.js (production)
@@ -1273,7 +1428,7 @@ npm run format     # prettier --write "src/**/*.js"
 
 ---
 
-## 22. Testing
+## 23. Testing
 
 See **TESTING_GUIDE.md** for the complete PowerShell test suite.
 
@@ -1301,6 +1456,15 @@ FROM verification_requests vr
 LEFT JOIN verification_results res ON res.verification_id = vr.id
 ORDER BY vr.created_at DESC
 LIMIT 10;
+```
+
+### DB Query — Check Webhook Audit Log
+
+```sql
+SELECT vendor, event_type, status, verification_id, error_message, received_at
+FROM webhook_events
+ORDER BY received_at DESC
+LIMIT 20;
 ```
 
 ### cURL — Quick Endpoint Tests
@@ -1475,7 +1639,7 @@ Write-Host "━━━━━━━━━━━━━━━━━━━━━━�
 
 ---
 
-## 23. Known Limitations & Blockers
+## 24. Known Limitations & Blockers
 
 ### 🔴 Aadhaar & GSTIN — IDfy Account Plan Restriction (BE-3, BE-4)
 
@@ -1495,6 +1659,10 @@ Both `ind_aadhaar` and `ind_gstin` return `404 NOT_FOUND` from IDfy. **This is n
 
 See **BLOCKER_ANALYSIS_AND_FIX.md** for detailed resolution steps.
 
+### 🟡 Webhook-to-Verification Matching Is a Placeholder
+
+`findVerificationByVendorRequestId()` grabs the most recent pending row instead of exact-matching by `vendor_request_id`. Production fix requires adding a `vendor_request_id` column — see Section 13 for the migration.
+
 ### 🟡 Retry Does Not Re-Call IDfy
 
 `POST /retry/:id` updates `retry_count`, `status`, and `verification_retry_history`. It does **not** re-call IDfy. The re-verification logic is planned for `src/jobs/vendorJob.js`.
@@ -1505,11 +1673,13 @@ See **BLOCKER_ANALYSIS_AND_FIX.md** for detailed resolution steps.
 
 ---
 
-## 24. Future Enhancements
+## 25. Future Enhancements
 
 | Enhancement | Where to implement |
 |---|---|
 | Enable Aadhaar + GSTIN verification | Upgrade IDfy account; zero code changes needed |
+| Exact webhook matching | Add `vendor_request_id` column (migration 003) — see Section 13 |
+| HMAC secret activation | Set `IDFY_WEBHOOK_SECRET` in env when IDfy provides it |
 | Auto-retry workers | `src/jobs/vendorJob.js` stub |
 | PDF report generation | `src/jobs/pdfJob.js` stub |
 | Notification system | `src/jobs/notificationJob.js` stub |
@@ -1522,7 +1692,7 @@ See **BLOCKER_ANALYSIS_AND_FIX.md** for detailed resolution steps.
 
 ---
 
-## 25. Implemented Modules (Sprint Tracker)
+## 26. Implemented Modules (Sprint Tracker)
 
 | Module ID | Name | Status |
 |---|---|---|
@@ -1531,7 +1701,7 @@ See **BLOCKER_ANALYSIS_AND_FIX.md** for detailed resolution steps.
 | BE-4 | GSTIN Verification Integration | ✅ **Code complete** / ⏳ Blocked on IDfy account |
 | BE-5 | File Upload Infrastructure & Authentication | ✅ Complete |
 | BE-6 | Secure Backend Foundation (API Key, Rate Limiting, Helmet) | ✅ Complete |
-| BE-7 | Verification Intake APIs (PAN, Aadhaar, GSTIN) | ✅ Complete |
+| BE-7 | Verification Intake APIs (PAN, Aadhaar, GSTIN) + Webhook Endpoint Implementation | ✅ Complete |
 | BE-8 | Verification Retry Mechanism | ✅ Complete |
 | BE-9 | Verification API Status Tracking | ✅ Complete |
 | BE-Phase5 | IDfy Eve v3 — PAN Verification | ✅ **Working live** |
@@ -1541,7 +1711,36 @@ See **BLOCKER_ANALYSIS_AND_FIX.md** for detailed resolution steps.
 
 ---
 
-## 26. Changelog
+## 27. Changelog
+
+### v1.3.1 — March 30, 2026
+- 📝 Documentation merge: restored content from v1.2.0 that was truncated in v1.3.0
+  - Restored expected JSON response blocks for Aadhaar and GSTIN in Section 12
+  - Restored "Key field paths in the raw response" table for PAN verification
+  - Restored `business_name` / IDfy name-matching explanation for GSTIN
+  - Restored `/api/upload` success response JSON example in Section 10
+  - Restored `uploads/` directory ASCII tree with UUID subdirectory structure
+  - Restored `.eslintrc.js` and `.prettierrc` to the project structure tree
+  - Restored inline comments for rate-limiting env variables in Section 5
+  - Restored `curl` "Confirm API Key Protection" test in Section 23
+  - Restored `BLOCKER_ANALYSIS_AND_FIX.md` references in Sections 24 and 27
+  - Combined BE-7 sprint tracker entry to reflect both original goal (Verification Intake APIs) and BE-7 update (Webhook Endpoint Implementation)
+  - Restored Dev Dependencies table in Section 4
+  - Restored detailed `tenantMiddleware`, `tenantQuery`, and `verifyTenantOwnership` explanations in Section 15
+  - Restored process-level guards documentation in Section 18
+  - Restored Winston log level table and Audit Logger description in Section 19
+
+### v1.3.0 — March 30, 2026
+- ✅ Completed BE-7: Webhook Endpoint Implementation
+  - Rewrote `src/controllers/webhookController.js` — replaced non-existent model method calls with raw `db.query()` matching codebase pattern
+  - Fixed 4 production-breaking bugs in original controller (wrong column name `verification_type` vs `document_type`, non-existent DB columns, `req.user` on public route)
+  - Created `src/middlewares/webhookMiddleware.js` — HMAC-SHA256 signature validation for IDfy and Gridlines, degrades gracefully when secret not set
+  - Created `src/migrations/002_webhook_events.sql` — append-only audit table with 3 indexes
+  - Rewrote `src/routes/webhookRoutes.js` — removed crashing `getResult` route, wired signature middleware
+  - Updated `src/app.js` — webhook routes mounted before `apiKeyAuth`, `req.rawBody` captured for HMAC
+  - Added `IDFY_WEBHOOK_SECRET` and `GRIDLINES_WEBHOOK_SECRET` to `.env.development`
+  - Always-200 ACK pattern prevents IDfy retry storms on internal errors
+  - Full audit trail: every inbound payload written to `webhook_events` table
 
 ### v1.2.0 — March 30, 2026
 - ✅ Completed BE-4: GSTIN verification integration
