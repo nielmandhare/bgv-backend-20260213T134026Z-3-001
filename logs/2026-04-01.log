@@ -1,0 +1,334 @@
+[2026-04-01T11:03:45.963Z] INFO: 🚀 Server running on http://localhost:5001
+[2026-04-01T11:03:45.965Z] INFO: 📦 Environment: development
+[2026-04-01T11:03:45.966Z] INFO: 📝 API Docs:    http://localhost:5001/api
+[2026-04-01T11:03:45.967Z] INFO: 💾 Database:    bgv_platform
+[2026-04-01T11:03:45.967Z] INFO: 👤 DB User:     postgres
+[2026-04-01T11:04:03.131Z] INFO: GET /health 200 - 10ms
+[2026-04-01T11:04:03.195Z] WARN: GET /api/health 403 - 1ms
+[2026-04-01T11:04:03.204Z] INFO: GET /api/health 200 - 1ms
+[2026-04-01T11:04:03.209Z] DEBUG: 📥 GET / [object Object]
+[2026-04-01T11:04:03.211Z] INFO: GET / 200 - 1ms
+[2026-04-01T11:04:03.239Z] INFO: GET /health 200 - 0ms
+[2026-04-01T11:04:03.262Z] INFO: GET /api/health 200 - 0ms
+[2026-04-01T11:04:03.268Z] INFO: GET /api/health 200 - 1ms
+[2026-04-01T11:04:03.272Z] INFO: GET /api/health 200 - 1ms
+[2026-04-01T11:04:03.275Z] INFO: GET /api/health 200 - 1ms
+[2026-04-01T11:04:03.278Z] INFO: GET /api/health 200 - 1ms
+[2026-04-01T11:04:03.280Z] INFO: GET /api/health 200 - 1ms
+[2026-04-01T11:04:03.282Z] INFO: GET /api/health 200 - 0ms
+[2026-04-01T11:04:03.285Z] INFO: GET /api/health 200 - 0ms
+[2026-04-01T11:04:03.288Z] INFO: GET /api/health 200 - 1ms
+[2026-04-01T11:04:03.290Z] INFO: GET /api/health 200 - 0ms
+[2026-04-01T11:04:03.292Z] INFO: GET /api/health 200 - 1ms
+[2026-04-01T11:04:03.294Z] INFO: GET /api/health 200 - 1ms
+[2026-04-01T11:04:03.298Z] INFO: GET /api/health 200 - 0ms
+[2026-04-01T11:04:03.301Z] INFO: GET /api/health 200 - 1ms
+[2026-04-01T11:04:03.303Z] INFO: GET /api/health 200 - 0ms
+[2026-04-01T11:04:03.304Z] INFO: GET /api/health 200 - 0ms
+[2026-04-01T11:04:03.306Z] INFO: GET /api/health 200 - 1ms
+[2026-04-01T11:04:03.307Z] INFO: GET /api/health 200 - 0ms
+[2026-04-01T11:04:03.309Z] INFO: GET /api/health 200 - 1ms
+[2026-04-01T11:04:03.311Z] INFO: GET /api/health 200 - 1ms
+[2026-04-01T11:04:03.313Z] INFO: GET /api/health 200 - 0ms
+[2026-04-01T11:04:03.315Z] INFO: GET /api/health 200 - 0ms
+[2026-04-01T11:04:03.317Z] INFO: GET /api/health 200 - 0ms
+[2026-04-01T11:04:03.319Z] INFO: GET /api/health 200 - 0ms
+[2026-04-01T11:04:03.321Z] INFO: GET /api/health 200 - 1ms
+[2026-04-01T11:04:03.324Z] INFO: GET /api/health 200 - 1ms
+[2026-04-01T11:04:03.326Z] INFO: GET /api/health 200 - 0ms
+[2026-04-01T11:04:03.328Z] INFO: GET /api/health 200 - 1ms
+[2026-04-01T11:04:03.330Z] INFO: GET /api/health 200 - 1ms
+[2026-04-01T11:04:03.331Z] INFO: GET /api/health 200 - 0ms
+[2026-04-01T11:04:03.333Z] INFO: GET /api/health 200 - 1ms
+[2026-04-01T11:04:03.335Z] INFO: GET /api/health 200 - 0ms
+[2026-04-01T11:04:03.337Z] INFO: GET /api/health 200 - 1ms
+[2026-04-01T11:04:03.339Z] INFO: GET /api/health 200 - 1ms
+[2026-04-01T11:04:03.342Z] INFO: GET /api/health 200 - 0ms
+[2026-04-01T11:04:03.344Z] INFO: GET /api/health 200 - 0ms
+[2026-04-01T11:04:03.346Z] INFO: GET /api/health 200 - 1ms
+[2026-04-01T11:04:03.348Z] INFO: GET /api/health 200 - 0ms
+[2026-04-01T11:04:03.349Z] INFO: GET /api/health 200 - 0ms
+[2026-04-01T11:04:03.351Z] INFO: GET /api/health 200 - 1ms
+[2026-04-01T11:04:03.353Z] INFO: GET /api/health 200 - 0ms
+[2026-04-01T11:04:03.354Z] INFO: GET /api/health 200 - 0ms
+[2026-04-01T11:04:03.356Z] INFO: GET /api/health 200 - 0ms
+[2026-04-01T11:04:03.358Z] INFO: GET /api/health 200 - 1ms
+[2026-04-01T11:04:03.359Z] INFO: GET /api/health 200 - 0ms
+[2026-04-01T11:04:03.361Z] INFO: GET /api/health 200 - 1ms
+[2026-04-01T11:04:03.362Z] INFO: GET /api/health 200 - 0ms
+[2026-04-01T11:04:03.364Z] INFO: GET /api/health 200 - 1ms
+[2026-04-01T11:04:03.365Z] INFO: GET /api/health 200 - 0ms
+[2026-04-01T11:04:03.367Z] INFO: GET /api/health 200 - 0ms
+[2026-04-01T11:04:03.368Z] INFO: GET /api/health 200 - 0ms
+[2026-04-01T11:04:03.370Z] INFO: GET /api/health 200 - 0ms
+[2026-04-01T11:04:03.373Z] INFO: GET /api/health 200 - 1ms
+[2026-04-01T11:04:03.374Z] INFO: GET /api/health 200 - 0ms
+[2026-04-01T11:04:03.376Z] INFO: GET /api/health 200 - 1ms
+[2026-04-01T11:04:03.377Z] INFO: GET /api/health 200 - 0ms
+[2026-04-01T11:04:03.378Z] INFO: GET /api/health 200 - 0ms
+[2026-04-01T11:04:03.380Z] INFO: GET /api/health 200 - 1ms
+[2026-04-01T11:04:03.382Z] WARN: GET /api/health 429 - 1ms
+[2026-04-01T11:04:03.385Z] WARN: GET /api/health 429 - 1ms
+[2026-04-01T11:04:03.387Z] WARN: GET /api/health 429 - 1ms
+[2026-04-01T11:04:03.388Z] WARN: GET /api/health 429 - 0ms
+[2026-04-01T11:04:03.390Z] WARN: GET /api/health 429 - 0ms
+[2026-04-01T11:04:03.392Z] WARN: GET /api/health 429 - 1ms
+[2026-04-01T11:04:03.394Z] WARN: GET /api/health 429 - 1ms
+[2026-04-01T11:04:03.396Z] WARN: GET /api/health 429 - 1ms
+[2026-04-01T11:04:03.398Z] WARN: GET /api/health 429 - 0ms
+[2026-04-01T11:04:03.400Z] WARN: GET /api/health 429 - 0ms
+[2026-04-01T11:04:03.402Z] WARN: GET /api/health 429 - 0ms
+[2026-04-01T11:04:03.404Z] WARN: GET /api/health 429 - 0ms
+[2026-04-01T11:04:03.407Z] WARN: GET /api/health 429 - 0ms
+[2026-04-01T11:04:03.408Z] WARN: GET /api/health 429 - 0ms
+[2026-04-01T11:04:03.410Z] WARN: GET /api/health 429 - 0ms
+[2026-04-01T11:04:03.412Z] WARN: GET /api/health 429 - 0ms
+[2026-04-01T11:04:03.414Z] WARN: GET /api/health 429 - 0ms
+[2026-04-01T11:04:03.415Z] WARN: GET /api/health 429 - 0ms
+[2026-04-01T11:04:03.417Z] WARN: GET /api/health 429 - 1ms
+[2026-04-01T11:04:03.418Z] WARN: GET /api/health 429 - 0ms
+[2026-04-01T11:04:03.420Z] WARN: GET /api/health 429 - 1ms
+[2026-04-01T11:04:03.421Z] WARN: GET /api/health 429 - 0ms
+[2026-04-01T11:04:03.423Z] WARN: GET /api/health 429 - 1ms
+[2026-04-01T11:04:03.425Z] WARN: GET /api/health 429 - 1ms
+[2026-04-01T11:04:03.426Z] WARN: GET /api/health 429 - 0ms
+[2026-04-01T11:04:03.428Z] WARN: GET /api/health 429 - 0ms
+[2026-04-01T11:04:03.430Z] WARN: GET /api/health 429 - 0ms
+[2026-04-01T11:04:03.432Z] WARN: GET /api/health 429 - 1ms
+[2026-04-01T11:04:03.434Z] WARN: GET /api/health 429 - 0ms
+[2026-04-01T11:04:03.435Z] WARN: GET /api/health 429 - 0ms
+[2026-04-01T11:04:03.437Z] WARN: GET /api/health 429 - 0ms
+[2026-04-01T11:04:03.439Z] WARN: GET /api/health 429 - 1ms
+[2026-04-01T11:04:03.442Z] WARN: GET /api/health 429 - 1ms
+[2026-04-01T11:04:03.450Z] WARN: GET /api/health 429 - 1ms
+[2026-04-01T11:04:03.453Z] WARN: GET /api/health 429 - 1ms
+[2026-04-01T11:04:03.457Z] WARN: GET /api/health 429 - 0ms
+[2026-04-01T11:04:03.460Z] WARN: GET /api/health 429 - 0ms
+[2026-04-01T11:04:03.468Z] WARN: GET /api/health 429 - 0ms
+[2026-04-01T11:04:03.473Z] WARN: GET /api/health 429 - 1ms
+[2026-04-01T11:04:03.479Z] WARN: GET /api/health 429 - 0ms
+[2026-04-01T11:04:03.481Z] WARN: GET /api/health 429 - 1ms
+[2026-04-01T11:04:03.487Z] WARN: GET /api/health 429 - 1ms
+[2026-04-01T11:04:03.494Z] WARN: GET /api/health 429 - 0ms
+[2026-04-01T11:04:03.496Z] WARN: GET /api/health 429 - 1ms
+[2026-04-01T11:04:03.499Z] WARN: GET /api/health 429 - 1ms
+[2026-04-01T11:04:03.501Z] WARN: GET /api/health 429 - 0ms
+[2026-04-01T11:04:03.504Z] WARN: GET /api/health 429 - 1ms
+[2026-04-01T11:04:03.507Z] WARN: GET /api/health 429 - 1ms
+[2026-04-01T11:04:03.509Z] WARN: GET /api/health 429 - 0ms
+[2026-04-01T11:04:03.512Z] WARN: GET /api/health 429 - 0ms
+[2026-04-01T11:04:03.514Z] WARN: GET /api/health 429 - 1ms
+[2026-04-01T11:04:03.516Z] WARN: GET /api/health 429 - 1ms
+[2026-04-01T11:04:03.517Z] WARN: GET /api/health 429 - 0ms
+[2026-04-01T11:04:03.519Z] WARN: GET /api/health 429 - 0ms
+[2026-04-01T11:04:03.521Z] WARN: GET /api/health 429 - 0ms
+[2026-04-01T11:04:03.524Z] WARN: GET /api/health 429 - 0ms
+[2026-04-01T11:04:03.526Z] WARN: GET /api/health 429 - 1ms
+[2026-04-01T11:04:03.528Z] WARN: GET /api/health 429 - 1ms
+[2026-04-01T11:04:03.530Z] WARN: GET /api/health 429 - 1ms
+[2026-04-01T11:04:03.531Z] WARN: GET /api/health 429 - 0ms
+[2026-04-01T11:04:03.533Z] WARN: GET /api/health 429 - 0ms
+[2026-04-01T11:04:03.534Z] WARN: GET /api/health 429 - 0ms
+[2026-04-01T11:04:27.653Z] DEBUG: 📥 POST /api/auth/login [object Object]
+[2026-04-01T11:04:27.656Z] WARN: POST /api/auth/login 429 - 2ms
+[2026-04-01T11:04:28.261Z] DEBUG: 📥 POST /api/verifications/pan [object Object]
+[2026-04-01T11:04:28.262Z] WARN: POST /api/verifications/pan 429 - 1ms
+[2026-04-01T11:04:31.330Z] DEBUG: 📥 POST /api/verifications/aadhaar [object Object]
+[2026-04-01T11:04:31.331Z] WARN: POST /api/verifications/aadhaar 429 - 0ms
+[2026-04-01T11:04:31.346Z] DEBUG: 📥 POST /api/verifications/gstin [object Object]
+[2026-04-01T11:04:31.347Z] WARN: POST /api/verifications/gstin 429 - 0ms
+[2026-04-01T11:04:31.355Z] DEBUG: 📥 POST /api/verifications/retry/ [object Object]
+[2026-04-01T11:04:31.356Z] WARN: POST /api/verifications/retry/ 429 - 0ms
+[2026-04-01T11:04:31.371Z] DEBUG: 📥 POST /api/auth/logout [object Object]
+[2026-04-01T11:04:31.372Z] WARN: POST /api/auth/logout 429 - 0ms
+[2026-04-01T11:04:31.382Z] DEBUG: 📥 POST /api/auth/refresh [object Object]
+[2026-04-01T11:04:31.383Z] WARN: POST /api/auth/refresh 429 - 0ms
+[2026-04-01T11:05:03.755Z] INFO: 🚀 Server running on http://localhost:5001
+[2026-04-01T11:05:03.755Z] INFO: 📦 Environment: development
+[2026-04-01T11:05:03.756Z] INFO: 📝 API Docs:    http://localhost:5001/api
+[2026-04-01T11:05:03.756Z] INFO: 💾 Database:    bgv_platform
+[2026-04-01T11:05:03.757Z] INFO: 👤 DB User:     postgres
+[2026-04-01T11:05:35.823Z] DEBUG: 📥 POST /api/auth/login [object Object]
+[2026-04-01T11:05:35.843Z] DEBUG: 📝 SQL: SELECT * FROM users WHERE email = $1...
+[2026-04-01T11:05:35.944Z] INFO: ✅ Database connected
+[2026-04-01T11:05:36.164Z] DEBUG: 📝 SQL: INSERT INTO refresh_tokens (user_id, token, expires_at)
+       VALUES ($1, $2, NOW() + INTERVAL '7 days')...
+[2026-04-01T11:05:36.198Z] INFO: POST /api/auth/login 200 - 374ms
+[2026-04-01T11:05:36.266Z] DEBUG: 📥 POST /api/verifications/pan [object Object]
+[2026-04-01T11:05:36.271Z] DEBUG: 🔒 Tenant isolation: 57cab5a9-3c1f-428e-9b80-34d3ca27ad3b
+[2026-04-01T11:05:36.272Z] DEBUG: 📝 SQL: INSERT INTO verification_requests
+         (document_type, document_number, full_name, dob, client_id, api_status)
+       VALUES ($1, $2, $3, $4, $5::uuid, 'pending')
+       RETURNING *...
+[2026-04-01T11:05:36.291Z] DEBUG: 📝 SQL: UPDATE verification_requests
+       SET api_status = 'processing', last_api_attempt = NOW()
+       WHERE id = $1...
+[2026-04-01T11:05:36.294Z] INFO: POST /api/verifications/pan 201 - 26ms
+[2026-04-01T11:05:36.981Z] DEBUG: 📝 SQL: UPDATE verification_requests
+       SET api_status     = 'failed',
+           failure_reason = $1
+       WHERE id = $2...
+[2026-04-01T11:05:39.351Z] DEBUG: 📥 POST /api/verifications/aadhaar [object Object]
+[2026-04-01T11:05:39.353Z] DEBUG: 🔒 Tenant isolation: 57cab5a9-3c1f-428e-9b80-34d3ca27ad3b
+[2026-04-01T11:05:39.353Z] DEBUG: 📝 SQL: INSERT INTO verification_requests
+         (document_type, document_number, full_name, client_id, api_status)
+       VALUES ($1, $2, $3, $4::uuid, 'pending')
+       RETURNING *...
+[2026-04-01T11:05:39.363Z] DEBUG: 📝 SQL: UPDATE verification_requests
+       SET api_status = 'processing', last_api_attempt = NOW()
+       WHERE id = $1...
+[2026-04-01T11:05:39.365Z] INFO: POST /api/verifications/aadhaar 201 - 13ms
+[2026-04-01T11:05:39.370Z] DEBUG: 📥 POST /api/verifications/gstin [object Object]
+[2026-04-01T11:05:39.371Z] DEBUG: 🔒 Tenant isolation: 57cab5a9-3c1f-428e-9b80-34d3ca27ad3b
+[2026-04-01T11:05:39.371Z] DEBUG: 📝 SQL: INSERT INTO verification_requests
+         (document_type, document_number, business_name, client_id, api_status)
+       VALUES ($1, $2, $3, $4::uuid, 'pending')
+       RETURNING *...
+[2026-04-01T11:05:39.376Z] DEBUG: 📝 SQL: UPDATE verification_requests
+       SET api_status = 'processing', last_api_attempt = NOW()
+       WHERE id = $1...
+[2026-04-01T11:05:39.377Z] INFO: POST /api/verifications/gstin 201 - 7ms
+[2026-04-01T11:05:39.382Z] DEBUG: 📥 POST /api/verifications/retry/f37f675e-6062-438d-95a6-d0f8116892f2 [object Object]
+[2026-04-01T11:05:39.383Z] DEBUG: 🔒 Tenant isolation: 57cab5a9-3c1f-428e-9b80-34d3ca27ad3b
+[2026-04-01T11:05:39.383Z] DEBUG: 📝 SQL: SELECT * FROM verification_requests WHERE id = $1...
+[2026-04-01T11:05:39.385Z] DEBUG: 📝 SQL: UPDATE verification_requests
+       SET retry_count = retry_count + 1, last_retry_at = NOW(), status = 'retrying'
+       WHERE id = $1 RETURNING *...
+[2026-04-01T11:05:39.386Z] DEBUG: 📝 SQL: INSERT INTO verification_retry_history
+         (verification_id, retry_number, retry_status, retry_reason)
+       VALUES ($1, $2, $3, $4)...
+[2026-04-01T11:05:39.388Z] INFO: POST /api/verifications/retry/f37f675e-6062-438d-95a6-d0f8116892f2 200 - 6ms
+[2026-04-01T11:05:39.393Z] DEBUG: 📥 POST /api/auth/logout [object Object]
+[2026-04-01T11:05:39.394Z] DEBUG: 📝 SQL: DELETE FROM refresh_tokens WHERE token = $1...
+[2026-04-01T11:05:39.397Z] INFO: POST /api/auth/logout 200 - 4ms
+[2026-04-01T11:05:39.403Z] DEBUG: 📥 POST /api/auth/refresh [object Object]
+[2026-04-01T11:05:39.404Z] DEBUG: 📝 SQL: SELECT * FROM refresh_tokens WHERE token = $1...
+[2026-04-01T11:05:39.406Z] WARN: POST /api/auth/refresh 403 - 3ms
+[2026-04-01T11:05:39.444Z] DEBUG: 📝 SQL: UPDATE verification_requests SET api_status = 'failed', failure_reason = $1 WHERE id = $2...
+[2026-04-01T11:05:39.551Z] DEBUG: 📝 SQL: UPDATE verification_requests SET api_status = 'failed', failure_reason = $1 WHERE id = $2...
+[2026-04-01T11:14:27.570Z] INFO: GET /health 200 - 2ms
+[2026-04-01T11:14:27.704Z] WARN: GET /api/health 403 - 2ms
+[2026-04-01T11:14:27.713Z] INFO: GET /api/health 200 - 1ms
+[2026-04-01T11:14:27.727Z] DEBUG: 📥 GET / [object Object]
+[2026-04-01T11:14:27.729Z] INFO: GET / 200 - 1ms
+[2026-04-01T11:14:27.809Z] INFO: GET /health 200 - 1ms
+[2026-04-01T11:14:27.824Z] INFO: GET /api/health 200 - 1ms
+[2026-04-01T11:14:27.835Z] INFO: GET /api/health 200 - 1ms
+[2026-04-01T11:14:27.840Z] INFO: GET /api/health 200 - 1ms
+[2026-04-01T11:14:27.844Z] INFO: GET /api/health 200 - 1ms
+[2026-04-01T11:14:27.851Z] INFO: GET /api/health 200 - 0ms
+[2026-04-01T11:14:27.855Z] INFO: GET /api/health 200 - 1ms
+[2026-04-01T11:14:27.863Z] INFO: GET /api/health 200 - 4ms
+[2026-04-01T11:14:27.865Z] INFO: GET /api/health 200 - 1ms
+[2026-04-01T11:14:27.870Z] INFO: GET /api/health 200 - 0ms
+[2026-04-01T11:14:27.873Z] INFO: GET /api/health 200 - 1ms
+[2026-04-01T11:14:27.878Z] INFO: GET /api/health 200 - 1ms
+[2026-04-01T11:14:27.883Z] INFO: GET /api/health 200 - 2ms
+[2026-04-01T11:14:27.886Z] INFO: GET /api/health 200 - 1ms
+[2026-04-01T11:14:27.890Z] INFO: GET /api/health 200 - 0ms
+[2026-04-01T11:14:27.898Z] INFO: GET /api/health 200 - 6ms
+[2026-04-01T11:14:27.901Z] INFO: GET /api/health 200 - 1ms
+[2026-04-01T11:14:27.908Z] INFO: GET /api/health 200 - 5ms
+[2026-04-01T11:14:27.915Z] INFO: GET /api/health 200 - 1ms
+[2026-04-01T11:14:27.920Z] INFO: GET /api/health 200 - 2ms
+[2026-04-01T11:14:27.924Z] INFO: GET /api/health 200 - 1ms
+[2026-04-01T11:14:27.929Z] INFO: GET /api/health 200 - 1ms
+[2026-04-01T11:14:27.934Z] INFO: GET /api/health 200 - 1ms
+[2026-04-01T11:14:27.939Z] INFO: GET /api/health 200 - 1ms
+[2026-04-01T11:14:27.944Z] INFO: GET /api/health 200 - 1ms
+[2026-04-01T11:14:27.953Z] INFO: GET /api/health 200 - 2ms
+[2026-04-01T11:14:27.959Z] INFO: GET /api/health 200 - 1ms
+[2026-04-01T11:14:27.969Z] INFO: GET /api/health 200 - 1ms
+[2026-04-01T11:14:27.974Z] INFO: GET /api/health 200 - 1ms
+[2026-04-01T11:14:27.979Z] INFO: GET /api/health 200 - 1ms
+[2026-04-01T11:14:27.984Z] INFO: GET /api/health 200 - 1ms
+[2026-04-01T11:14:27.993Z] INFO: GET /api/health 200 - 3ms
+[2026-04-01T11:14:27.999Z] INFO: GET /api/health 200 - 2ms
+[2026-04-01T11:14:28.003Z] INFO: GET /api/health 200 - 1ms
+[2026-04-01T11:14:28.017Z] INFO: GET /api/health 200 - 1ms
+[2026-04-01T11:14:28.022Z] INFO: GET /api/health 200 - 1ms
+[2026-04-01T11:14:28.030Z] INFO: GET /api/health 200 - 3ms
+[2026-04-01T11:14:28.035Z] INFO: GET /api/health 200 - 1ms
+[2026-04-01T11:14:28.042Z] INFO: GET /api/health 200 - 1ms
+[2026-04-01T11:14:28.047Z] INFO: GET /api/health 200 - 1ms
+[2026-04-01T11:14:28.055Z] INFO: GET /api/health 200 - 1ms
+[2026-04-01T11:14:28.060Z] INFO: GET /api/health 200 - 1ms
+[2026-04-01T11:14:28.066Z] INFO: GET /api/health 200 - 1ms
+[2026-04-01T11:14:28.073Z] INFO: GET /api/health 200 - 1ms
+[2026-04-01T11:14:28.078Z] INFO: GET /api/health 200 - 1ms
+[2026-04-01T11:14:28.084Z] INFO: GET /api/health 200 - 1ms
+[2026-04-01T11:14:28.093Z] INFO: GET /api/health 200 - 3ms
+[2026-04-01T11:14:28.099Z] INFO: GET /api/health 200 - 1ms
+[2026-04-01T11:14:28.106Z] INFO: GET /api/health 200 - 0ms
+[2026-04-01T11:14:28.111Z] INFO: GET /api/health 200 - 1ms
+[2026-04-01T11:14:28.117Z] INFO: GET /api/health 200 - 1ms
+[2026-04-01T11:14:28.123Z] INFO: GET /api/health 200 - 1ms
+[2026-04-01T11:14:28.128Z] INFO: GET /api/health 200 - 1ms
+[2026-04-01T11:14:28.134Z] INFO: GET /api/health 200 - 3ms
+[2026-04-01T11:14:28.138Z] INFO: GET /api/health 200 - 1ms
+[2026-04-01T11:14:28.144Z] INFO: GET /api/health 200 - 1ms
+[2026-04-01T11:14:28.149Z] INFO: GET /api/health 200 - 1ms
+[2026-04-01T11:14:28.154Z] INFO: GET /api/health 200 - 1ms
+[2026-04-01T11:14:28.159Z] INFO: GET /api/health 200 - 1ms
+[2026-04-01T11:14:28.165Z] WARN: GET /api/health 429 - 1ms
+[2026-04-01T11:14:28.172Z] WARN: GET /api/health 429 - 1ms
+[2026-04-01T11:14:28.178Z] WARN: GET /api/health 429 - 0ms
+[2026-04-01T11:14:28.184Z] WARN: GET /api/health 429 - 1ms
+[2026-04-01T11:14:28.192Z] WARN: GET /api/health 429 - 1ms
+[2026-04-01T11:14:28.198Z] WARN: GET /api/health 429 - 1ms
+[2026-04-01T11:14:28.203Z] WARN: GET /api/health 429 - 1ms
+[2026-04-01T11:14:28.208Z] WARN: GET /api/health 429 - 0ms
+[2026-04-01T11:14:28.214Z] WARN: GET /api/health 429 - 1ms
+[2026-04-01T11:14:28.218Z] WARN: GET /api/health 429 - 1ms
+[2026-04-01T11:14:28.225Z] WARN: GET /api/health 429 - 1ms
+[2026-04-01T11:14:28.229Z] WARN: GET /api/health 429 - 1ms
+[2026-04-01T11:14:28.233Z] WARN: GET /api/health 429 - 1ms
+[2026-04-01T11:14:28.239Z] WARN: GET /api/health 429 - 1ms
+[2026-04-01T11:14:28.244Z] WARN: GET /api/health 429 - 1ms
+[2026-04-01T11:14:28.248Z] WARN: GET /api/health 429 - 1ms
+[2026-04-01T11:14:28.254Z] WARN: GET /api/health 429 - 1ms
+[2026-04-01T11:14:28.262Z] WARN: GET /api/health 429 - 2ms
+[2026-04-01T11:14:28.265Z] WARN: GET /api/health 429 - 1ms
+[2026-04-01T11:14:28.268Z] WARN: GET /api/health 429 - 1ms
+[2026-04-01T11:14:28.273Z] WARN: GET /api/health 429 - 1ms
+[2026-04-01T11:14:28.280Z] WARN: GET /api/health 429 - 3ms
+[2026-04-01T11:14:28.284Z] WARN: GET /api/health 429 - 1ms
+[2026-04-01T11:14:28.292Z] WARN: GET /api/health 429 - 4ms
+[2026-04-01T11:14:28.296Z] WARN: GET /api/health 429 - 0ms
+[2026-04-01T11:14:28.301Z] WARN: GET /api/health 429 - 1ms
+[2026-04-01T11:14:28.308Z] WARN: GET /api/health 429 - 1ms
+[2026-04-01T11:14:28.312Z] WARN: GET /api/health 429 - 1ms
+[2026-04-01T11:14:28.318Z] WARN: GET /api/health 429 - 2ms
+[2026-04-01T11:14:28.321Z] WARN: GET /api/health 429 - 1ms
+[2026-04-01T11:14:28.328Z] WARN: GET /api/health 429 - 1ms
+[2026-04-01T11:14:28.333Z] WARN: GET /api/health 429 - 2ms
+[2026-04-01T11:14:28.339Z] WARN: GET /api/health 429 - 0ms
+[2026-04-01T11:14:28.343Z] WARN: GET /api/health 429 - 1ms
+[2026-04-01T11:14:28.348Z] WARN: GET /api/health 429 - 1ms
+[2026-04-01T11:14:28.353Z] WARN: GET /api/health 429 - 1ms
+[2026-04-01T11:14:28.358Z] WARN: GET /api/health 429 - 0ms
+[2026-04-01T11:14:28.363Z] WARN: GET /api/health 429 - 1ms
+[2026-04-01T11:14:28.370Z] WARN: GET /api/health 429 - 1ms
+[2026-04-01T11:14:28.375Z] WARN: GET /api/health 429 - 1ms
+[2026-04-01T11:14:28.382Z] WARN: GET /api/health 429 - 0ms
+[2026-04-01T11:14:28.386Z] WARN: GET /api/health 429 - 1ms
+[2026-04-01T11:14:28.391Z] WARN: GET /api/health 429 - 0ms
+[2026-04-01T11:14:28.396Z] WARN: GET /api/health 429 - 0ms
+[2026-04-01T11:14:28.401Z] WARN: GET /api/health 429 - 0ms
+[2026-04-01T11:14:28.405Z] WARN: GET /api/health 429 - 1ms
+[2026-04-01T11:14:28.412Z] WARN: GET /api/health 429 - 1ms
+[2026-04-01T11:14:28.418Z] WARN: GET /api/health 429 - 1ms
+[2026-04-01T11:14:28.423Z] WARN: GET /api/health 429 - 1ms
+[2026-04-01T11:14:28.428Z] WARN: GET /api/health 429 - 1ms
+[2026-04-01T11:14:28.434Z] WARN: GET /api/health 429 - 1ms
+[2026-04-01T11:14:28.440Z] WARN: GET /api/health 429 - 1ms
+[2026-04-01T11:14:28.444Z] WARN: GET /api/health 429 - 1ms
+[2026-04-01T11:14:28.449Z] WARN: GET /api/health 429 - 0ms
+[2026-04-01T11:14:28.454Z] WARN: GET /api/health 429 - 0ms
+[2026-04-01T11:14:28.458Z] WARN: GET /api/health 429 - 0ms
+[2026-04-01T11:14:28.466Z] WARN: GET /api/health 429 - 1ms
+[2026-04-01T11:14:28.471Z] WARN: GET /api/health 429 - 1ms
+[2026-04-01T11:14:28.476Z] WARN: GET /api/health 429 - 1ms
+[2026-04-01T11:14:28.480Z] WARN: GET /api/health 429 - 1ms
+[2026-04-01T11:14:28.487Z] WARN: GET /api/health 429 - 0ms
+[2026-04-01T11:14:28.492Z] WARN: GET /api/health 429 - 1ms

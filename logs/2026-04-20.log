@@ -1,0 +1,705 @@
+[2026-04-20T09:25:51.116Z] INFO: 🚀 Server running on http://localhost:5001
+[2026-04-20T09:25:51.116Z] INFO: 📦 Environment: development
+[2026-04-20T09:25:51.117Z] INFO: 📝 API Docs:    http://localhost:5001/api
+[2026-04-20T09:25:51.117Z] INFO: 💾 Database:    bgv_platform
+[2026-04-20T09:25:51.117Z] INFO: 👤 DB User:     postgres
+[2026-04-20T09:25:58.360Z] INFO: GET /health 200 - 8ms
+[2026-04-20T09:25:58.417Z] DEBUG: 📥 POST /api/verifications/pan [object Object]
+[2026-04-20T09:25:58.418Z] WARN: POST /api/verifications/pan 403 - 1ms
+[2026-04-20T09:25:58.448Z] DEBUG: 📥 POST /api/auth/login [object Object]
+[2026-04-20T09:25:58.450Z] DEBUG: 📝 SQL: SELECT * FROM users WHERE email = $1
+[2026-04-20T09:25:58.505Z] INFO: ✅ Database pool: new client connected
+[2026-04-20T09:25:58.592Z] DEBUG: 📝 SQL: INSERT INTO refresh_tokens (user_id, token, expires_at)
+       VALUES ($1, $2, NOW() + INTERVAL '7 days')
+[2026-04-20T09:25:58.612Z] INFO: POST /api/auth/login 200 - 163ms
+[2026-04-20T09:25:58.619Z] DEBUG: 📥 POST /api/verifications/pan [object Object]
+[2026-04-20T09:25:58.621Z] WARN: POST /api/verifications/pan 401 - 0ms
+[2026-04-20T09:25:58.625Z] DEBUG: 📥 POST /api/verifications/pan [object Object]
+[2026-04-20T09:25:58.627Z] DEBUG: 🔒 Tenant isolation: 57cab5a9-3c1f-428e-9b80-34d3ca27ad3b
+[2026-04-20T09:25:58.628Z] DEBUG: 📝 SQL: INSERT INTO verification_requests
+         (document_type, document_number, full_name, dob, client_id, api_status)
+       VALUES ($1, $2, $3, $4, $5::uuid, 'pending')
+       RETURNING *
+[2026-04-20T09:25:58.643Z] DEBUG: 📝 SQL: UPDATE verification_requests
+     SET api_status       = 'processing',
+         last_api_attempt = NOW()
+     WHERE id = $1
+[2026-04-20T09:25:58.644Z] INFO: POST /api/verifications/pan 201 - 19ms
+[2026-04-20T09:25:58.663Z] DEBUG: 📥 POST /api/verifications/pan [object Object]
+[2026-04-20T09:25:58.664Z] DEBUG: 🔒 Tenant isolation: 57cab5a9-3c1f-428e-9b80-34d3ca27ad3b
+[2026-04-20T09:25:58.666Z] WARN: POST /api/verifications/pan 400 - 3ms
+[2026-04-20T09:25:58.671Z] DEBUG: 📥 POST /api/verifications/pan [object Object]
+[2026-04-20T09:25:58.672Z] DEBUG: 🔒 Tenant isolation: 57cab5a9-3c1f-428e-9b80-34d3ca27ad3b
+[2026-04-20T09:25:58.673Z] WARN: POST /api/verifications/pan 400 - 2ms
+[2026-04-20T09:25:58.675Z] DEBUG: 📥 POST /api/verifications/pan [object Object]
+[2026-04-20T09:25:58.676Z] DEBUG: 🔒 Tenant isolation: 57cab5a9-3c1f-428e-9b80-34d3ca27ad3b
+[2026-04-20T09:25:58.677Z] WARN: POST /api/verifications/pan 400 - 1ms
+[2026-04-20T09:25:58.957Z] DEBUG: 📝 SQL: UPDATE verification_requests
+     SET api_status       = 'failed',
+         status           = 'failed',
+         failure_reason   = $1,
+         last_api_attempt = NOW()
+     WHERE id = $2
+[2026-04-20T09:26:03.696Z] DEBUG: 📥 GET /api/verifications/1022819a-337c-4683-aa01-b423edac931b [object Object]
+[2026-04-20T09:26:03.697Z] DEBUG: 🔒 Tenant isolation: 57cab5a9-3c1f-428e-9b80-34d3ca27ad3b
+[2026-04-20T09:26:03.698Z] DEBUG: 📝 SQL: SELECT
+         vr.id,
+         vr.document_type,
+         vr.document_number,
+         vr.full_name,
+         vr.dob,
+         vr.business_name,
+         vr.client_id,
+         vr.api_status,
+       ...
+[2026-04-20T09:26:03.704Z] INFO: GET /api/verifications/1022819a-337c-4683-aa01-b423edac931b 200 - 8ms
+[2026-04-20T09:26:03.710Z] DEBUG: 📥 GET /api/verifications/00000000-0000-0000-0000-000000000000 [object Object]
+[2026-04-20T09:26:03.711Z] DEBUG: 🔒 Tenant isolation: 57cab5a9-3c1f-428e-9b80-34d3ca27ad3b
+[2026-04-20T09:26:03.712Z] DEBUG: 📝 SQL: SELECT
+         vr.id,
+         vr.document_type,
+         vr.document_number,
+         vr.full_name,
+         vr.dob,
+         vr.business_name,
+         vr.client_id,
+         vr.api_status,
+       ...
+[2026-04-20T09:26:03.713Z] WARN: GET /api/verifications/00000000-0000-0000-0000-000000000000 404 - 2ms
+[2026-04-20T09:26:03.718Z] DEBUG: 📥 POST /api/verifications/aadhaar [object Object]
+[2026-04-20T09:26:03.719Z] DEBUG: 🔒 Tenant isolation: 57cab5a9-3c1f-428e-9b80-34d3ca27ad3b
+[2026-04-20T09:26:03.719Z] DEBUG: 📝 SQL: INSERT INTO verification_requests
+         (document_type, document_number, full_name, client_id, api_status)
+       VALUES ($1, $2, $3, $4::uuid, 'pending')
+       RETURNING *
+[2026-04-20T09:26:03.721Z] DEBUG: 📝 SQL: UPDATE verification_requests
+     SET api_status       = 'processing',
+         last_api_attempt = NOW()
+     WHERE id = $1
+[2026-04-20T09:26:03.722Z] INFO: POST /api/verifications/aadhaar 201 - 4ms
+[2026-04-20T09:26:03.727Z] DEBUG: 📥 POST /api/verifications/aadhaar [object Object]
+[2026-04-20T09:26:03.728Z] DEBUG: 🔒 Tenant isolation: 57cab5a9-3c1f-428e-9b80-34d3ca27ad3b
+[2026-04-20T09:26:03.729Z] WARN: POST /api/verifications/aadhaar 400 - 1ms
+[2026-04-20T09:26:03.734Z] DEBUG: 📥 POST /api/verifications/gstin [object Object]
+[2026-04-20T09:26:03.735Z] DEBUG: 🔒 Tenant isolation: 57cab5a9-3c1f-428e-9b80-34d3ca27ad3b
+[2026-04-20T09:26:03.735Z] DEBUG: 📝 SQL: INSERT INTO verification_requests
+         (document_type, document_number, business_name, client_id, api_status)
+       VALUES ($1, $2, $3, $4::uuid, 'pending')
+       RETURNING *
+[2026-04-20T09:26:03.737Z] DEBUG: 📝 SQL: UPDATE verification_requests
+     SET api_status       = 'processing',
+         last_api_attempt = NOW()
+     WHERE id = $1
+[2026-04-20T09:26:03.738Z] INFO: POST /api/verifications/gstin 201 - 3ms
+[2026-04-20T09:26:03.744Z] DEBUG: 📥 POST /api/verifications/gstin [object Object]
+[2026-04-20T09:26:03.745Z] DEBUG: 🔒 Tenant isolation: 57cab5a9-3c1f-428e-9b80-34d3ca27ad3b
+[2026-04-20T09:26:03.746Z] WARN: POST /api/verifications/gstin 400 - 1ms
+[2026-04-20T09:26:03.751Z] DEBUG: 📥 POST /api/verifications/retry/1022819a-337c-4683-aa01-b423edac931b [object Object]
+[2026-04-20T09:26:03.752Z] DEBUG: 🔒 Tenant isolation: 57cab5a9-3c1f-428e-9b80-34d3ca27ad3b
+[2026-04-20T09:26:03.752Z] DEBUG: 📝 SQL: SELECT * FROM verification_requests WHERE id = $1
+[2026-04-20T09:26:03.753Z] DEBUG: 📝 SQL: UPDATE verification_requests
+       SET retry_count   = retry_count + 1,
+           last_retry_at = NOW(),
+           status        = 'retrying'
+       WHERE id = $1
+       RETURNING *
+[2026-04-20T09:26:03.754Z] DEBUG: 📝 SQL: INSERT INTO verification_retry_history
+         (verification_id, retry_number, retry_status, retry_reason)
+       VALUES ($1, $2, $3, $4)
+[2026-04-20T09:26:03.757Z] INFO: POST /api/verifications/retry/1022819a-337c-4683-aa01-b423edac931b 200 - 6ms
+[2026-04-20T09:26:03.764Z] DEBUG: 📥 POST /api/verifications/retry/00000000-0000-0000-0000-000000000000 [object Object]
+[2026-04-20T09:26:03.765Z] DEBUG: 🔒 Tenant isolation: 57cab5a9-3c1f-428e-9b80-34d3ca27ad3b
+[2026-04-20T09:26:03.765Z] DEBUG: 📝 SQL: SELECT * FROM verification_requests WHERE id = $1
+[2026-04-20T09:26:03.766Z] WARN: POST /api/verifications/retry/00000000-0000-0000-0000-000000000000 404 - 2ms
+[2026-04-20T09:26:03.774Z] DEBUG: 📝 SQL: UPDATE verification_requests
+     SET api_status       = 'failed',
+         status           = 'failed',
+         failure_reason   = $1,
+         last_api_attempt = NOW()
+     WHERE id = $2
+[2026-04-20T09:26:03.775Z] INFO: [Webhook] Inbound — vendor path: /idfy | IP: ::1 | Content-Type: application/json | Body size: 220 bytes
+[2026-04-20T09:26:03.776Z] WARN: [Webhook][IDfy] IDFY_WEBHOOK_SECRET not set — skipping signature validation. Set this in .env.development before going to production.
+[2026-04-20T09:26:03.776Z] INFO: [Webhook][idfy] Received — request_id: webhook-test-no-match-1819192524
+[2026-04-20T09:26:03.778Z] DEBUG: 📝 SQL: INSERT INTO webhook_events
+         (vendor, event_type, payload, verification_id, status, error_message, received_at)
+       VALUES ($1, $2, $3, $4, $5, $6, NOW())
+[2026-04-20T09:26:03.809Z] INFO: ✅ Database pool: new client connected
+[2026-04-20T09:26:03.815Z] DEBUG: 📝 SQL: SELECT * FROM verification_requests
+     WHERE api_status IN ('pending', 'processing')
+     ORDER BY created_at DESC
+     LIMIT 1
+[2026-04-20T09:26:03.818Z] INFO: [Webhook][idfy] Matched verification ee9c6d5a-ad8e-47b4-8f77-9262bbc74956 (GSTIN)
+[2026-04-20T09:26:03.819Z] INFO: [Webhook][idfy] Processed — status=success, verified=false
+[2026-04-20T09:26:03.820Z] DEBUG: 📝 SQL: SELECT id FROM verification_results WHERE verification_id = $1
+[2026-04-20T09:26:03.821Z] DEBUG: 📝 SQL: INSERT INTO verification_results
+           (verification_id, result_data, verified, processed_at)
+         VALUES ($1, $2, $3, NOW())
+[2026-04-20T09:26:03.829Z] INFO: [Webhook][idfy] Inserted verification_results for ee9c6d5a-ad8e-47b4-8f77-9262bbc74956
+[2026-04-20T09:26:03.830Z] DEBUG: 📝 SQL: UPDATE verification_requests
+       SET api_status = $1,
+           status     = $2
+       WHERE id = $3
+[2026-04-20T09:26:03.831Z] INFO: [Webhook][idfy] Updated verification_requests for ee9c6d5a-ad8e-47b4-8f77-9262bbc74956
+[2026-04-20T09:26:03.831Z] DEBUG: 📝 SQL: INSERT INTO webhook_events
+         (vendor, event_type, payload, verification_id, status, error_message, received_at)
+       VALUES ($1, $2, $3, $4, $5, $6, NOW())
+[2026-04-20T09:26:03.832Z] INFO: POST /api/webhooks/idfy 200 - 57ms
+[2026-04-20T09:26:03.837Z] INFO: [Webhook] Inbound — vendor path: /idfy | IP: ::1 | Content-Type: application/json | Body size: 657 bytes
+[2026-04-20T09:26:03.837Z] WARN: [Webhook][IDfy] IDFY_WEBHOOK_SECRET not set — skipping signature validation. Set this in .env.development before going to production.
+[2026-04-20T09:26:03.838Z] INFO: [Webhook][idfy] Received — request_id: idfy-simulated-1055634342
+[2026-04-20T09:26:03.838Z] DEBUG: 📝 SQL: INSERT INTO webhook_events
+         (vendor, event_type, payload, verification_id, status, error_message, received_at)
+       VALUES ($1, $2, $3, $4, $5, $6, NOW())
+[2026-04-20T09:26:03.839Z] DEBUG: 📝 SQL: SELECT * FROM verification_requests
+     WHERE api_status IN ('pending', 'processing')
+     ORDER BY created_at DESC
+     LIMIT 1
+[2026-04-20T09:26:03.840Z] INFO: [Webhook][idfy] Matched verification d5576088-ac1e-4c0c-abbe-cbf757497c7f (AADHAAR)
+[2026-04-20T09:26:03.841Z] INFO: [Webhook][idfy] Processed — status=success, verified=true
+[2026-04-20T09:26:03.841Z] DEBUG: 📝 SQL: SELECT id FROM verification_results WHERE verification_id = $1
+[2026-04-20T09:26:03.842Z] DEBUG: 📝 SQL: INSERT INTO verification_results
+           (verification_id, result_data, verified, processed_at)
+         VALUES ($1, $2, $3, NOW())
+[2026-04-20T09:26:03.843Z] INFO: [Webhook][idfy] Inserted verification_results for d5576088-ac1e-4c0c-abbe-cbf757497c7f
+[2026-04-20T09:26:03.844Z] DEBUG: 📝 SQL: UPDATE verification_requests
+       SET api_status = $1,
+           status     = $2
+       WHERE id = $3
+[2026-04-20T09:26:03.845Z] INFO: [Webhook][idfy] Updated verification_requests for d5576088-ac1e-4c0c-abbe-cbf757497c7f
+[2026-04-20T09:26:03.845Z] DEBUG: 📝 SQL: INSERT INTO webhook_events
+         (vendor, event_type, payload, verification_id, status, error_message, received_at)
+       VALUES ($1, $2, $3, $4, $5, $6, NOW())
+[2026-04-20T09:26:03.846Z] INFO: POST /api/webhooks/idfy 200 - 9ms
+[2026-04-20T09:26:03.851Z] INFO: [Webhook] Inbound — vendor path: /idfy | IP: ::1 | Content-Type: application/json | Body size: 154 bytes
+[2026-04-20T09:26:03.852Z] WARN: [Webhook][IDfy] IDFY_WEBHOOK_SECRET not set — skipping signature validation. Set this in .env.development before going to production.
+[2026-04-20T09:26:03.852Z] INFO: [Webhook][idfy] Received — request_id: dup-test-1337949774
+[2026-04-20T09:26:03.852Z] DEBUG: 📝 SQL: INSERT INTO webhook_events
+         (vendor, event_type, payload, verification_id, status, error_message, received_at)
+       VALUES ($1, $2, $3, $4, $5, $6, NOW())
+[2026-04-20T09:26:03.853Z] DEBUG: 📝 SQL: SELECT * FROM verification_requests
+     WHERE api_status IN ('pending', 'processing')
+     ORDER BY created_at DESC
+     LIMIT 1
+[2026-04-20T09:26:03.854Z] INFO: [Webhook][idfy] Matched verification e37adcac-55ca-4f20-b640-186a94bd9904 (PAN)
+[2026-04-20T09:26:03.855Z] INFO: [Webhook][idfy] Processed — status=success, verified=false
+[2026-04-20T09:26:03.855Z] DEBUG: 📝 SQL: SELECT id FROM verification_results WHERE verification_id = $1
+[2026-04-20T09:26:03.856Z] DEBUG: 📝 SQL: INSERT INTO verification_results
+           (verification_id, result_data, verified, processed_at)
+         VALUES ($1, $2, $3, NOW())
+[2026-04-20T09:26:03.857Z] INFO: [Webhook][idfy] Inserted verification_results for e37adcac-55ca-4f20-b640-186a94bd9904
+[2026-04-20T09:26:03.858Z] DEBUG: 📝 SQL: UPDATE verification_requests
+       SET api_status = $1,
+           status     = $2
+       WHERE id = $3
+[2026-04-20T09:26:03.859Z] INFO: [Webhook][idfy] Updated verification_requests for e37adcac-55ca-4f20-b640-186a94bd9904
+[2026-04-20T09:26:03.859Z] DEBUG: 📝 SQL: INSERT INTO webhook_events
+         (vendor, event_type, payload, verification_id, status, error_message, received_at)
+       VALUES ($1, $2, $3, $4, $5, $6, NOW())
+[2026-04-20T09:26:03.861Z] INFO: POST /api/webhooks/idfy 200 - 10ms
+[2026-04-20T09:26:03.867Z] DEBUG: 📥 POST /api/auth/refresh [object Object]
+[2026-04-20T09:26:03.869Z] DEBUG: 📝 SQL: SELECT * FROM refresh_tokens WHERE token = $1
+[2026-04-20T09:26:03.870Z] DEBUG: 📝 SQL: UPDATE verification_requests
+     SET api_status       = 'failed',
+         status           = 'failed',
+         failure_reason   = $1,
+         last_api_attempt = NOW()
+     WHERE id = $2
+[2026-04-20T09:26:03.875Z] DEBUG: 📝 SQL: SELECT * FROM users WHERE id = $1
+[2026-04-20T09:26:03.877Z] INFO: POST /api/auth/refresh 200 - 9ms
+[2026-04-20T09:26:03.883Z] DEBUG: 📥 POST /api/auth/logout [object Object]
+[2026-04-20T09:26:03.883Z] DEBUG: 📝 SQL: DELETE FROM refresh_tokens WHERE token = $1
+[2026-04-20T09:26:03.885Z] INFO: POST /api/auth/logout 200 - 1ms
+[2026-04-20T09:26:03.889Z] DEBUG: 📥 POST /api/auth/refresh [object Object]
+[2026-04-20T09:26:03.889Z] DEBUG: 📝 SQL: SELECT * FROM refresh_tokens WHERE token = $1
+[2026-04-20T09:26:03.891Z] WARN: POST /api/auth/refresh 403 - 1ms
+[2026-04-20T09:34:11.131Z] INFO: GET /health 200 - 0ms
+[2026-04-20T09:34:11.277Z] DEBUG: 📥 POST /api/verifications/pan [object Object]
+[2026-04-20T09:34:11.278Z] WARN: POST /api/verifications/pan 403 - 1ms
+[2026-04-20T09:34:11.439Z] DEBUG: 📥 POST /api/auth/login [object Object]
+[2026-04-20T09:34:11.440Z] DEBUG: 📝 SQL: SELECT * FROM users WHERE email = $1
+[2026-04-20T09:34:11.466Z] INFO: ✅ Database pool: new client connected
+[2026-04-20T09:34:11.519Z] DEBUG: 📝 SQL: INSERT INTO refresh_tokens (user_id, token, expires_at)
+       VALUES ($1, $2, NOW() + INTERVAL '7 days')
+[2026-04-20T09:34:11.527Z] INFO: POST /api/auth/login 200 - 88ms
+[2026-04-20T09:34:11.655Z] DEBUG: 📥 POST /api/verifications/pan [object Object]
+[2026-04-20T09:34:11.656Z] WARN: POST /api/verifications/pan 401 - 0ms
+[2026-04-20T09:34:11.821Z] DEBUG: 📥 POST /api/verifications/pan [object Object]
+[2026-04-20T09:34:11.822Z] DEBUG: 🔒 Tenant isolation: 57cab5a9-3c1f-428e-9b80-34d3ca27ad3b
+[2026-04-20T09:34:11.823Z] DEBUG: 📝 SQL: INSERT INTO verification_requests
+         (document_type, document_number, full_name, dob, client_id, api_status)
+       VALUES ($1, $2, $3, $4, $5::uuid, 'pending')
+       RETURNING *
+[2026-04-20T09:34:11.830Z] DEBUG: 📝 SQL: UPDATE verification_requests
+     SET api_status       = 'processing',
+         last_api_attempt = NOW()
+     WHERE id = $1
+[2026-04-20T09:34:11.831Z] INFO: POST /api/verifications/pan 201 - 9ms
+[2026-04-20T09:34:12.022Z] DEBUG: 📥 POST /api/verifications/pan [object Object]
+[2026-04-20T09:34:12.023Z] DEBUG: 🔒 Tenant isolation: 57cab5a9-3c1f-428e-9b80-34d3ca27ad3b
+[2026-04-20T09:34:12.024Z] WARN: POST /api/verifications/pan 400 - 1ms
+[2026-04-20T09:34:12.027Z] DEBUG: 📥 POST /api/verifications/pan [object Object]
+[2026-04-20T09:34:12.028Z] DEBUG: 🔒 Tenant isolation: 57cab5a9-3c1f-428e-9b80-34d3ca27ad3b
+[2026-04-20T09:34:12.029Z] WARN: POST /api/verifications/pan 400 - 1ms
+[2026-04-20T09:34:12.030Z] DEBUG: 📥 POST /api/verifications/pan [object Object]
+[2026-04-20T09:34:12.031Z] DEBUG: 🔒 Tenant isolation: 57cab5a9-3c1f-428e-9b80-34d3ca27ad3b
+[2026-04-20T09:34:12.031Z] WARN: POST /api/verifications/pan 400 - 1ms
+[2026-04-20T09:34:12.117Z] DEBUG: 📝 SQL: UPDATE verification_requests
+     SET api_status       = 'failed',
+         status           = 'failed',
+         failure_reason   = $1,
+         last_api_attempt = NOW()
+     WHERE id = $2
+[2026-04-20T09:34:15.285Z] DEBUG: 📥 GET /api/verifications/dbda843f-b7ad-41e5-908f-1097e9c7b1a5 [object Object]
+[2026-04-20T09:34:15.287Z] DEBUG: 🔒 Tenant isolation: 57cab5a9-3c1f-428e-9b80-34d3ca27ad3b
+[2026-04-20T09:34:15.288Z] DEBUG: 📝 SQL: SELECT
+         vr.id,
+         vr.document_type,
+         vr.document_number,
+         vr.full_name,
+         vr.dob,
+         vr.business_name,
+         vr.client_id,
+         vr.api_status,
+       ...
+[2026-04-20T09:34:15.291Z] INFO: GET /api/verifications/dbda843f-b7ad-41e5-908f-1097e9c7b1a5 200 - 5ms
+[2026-04-20T09:34:15.403Z] DEBUG: 📥 GET /api/verifications/00000000-0000-0000-0000-000000000000 [object Object]
+[2026-04-20T09:34:15.404Z] DEBUG: 🔒 Tenant isolation: 57cab5a9-3c1f-428e-9b80-34d3ca27ad3b
+[2026-04-20T09:34:15.404Z] DEBUG: 📝 SQL: SELECT
+         vr.id,
+         vr.document_type,
+         vr.document_number,
+         vr.full_name,
+         vr.dob,
+         vr.business_name,
+         vr.client_id,
+         vr.api_status,
+       ...
+[2026-04-20T09:34:15.406Z] WARN: GET /api/verifications/00000000-0000-0000-0000-000000000000 404 - 2ms
+[2026-04-20T09:34:15.573Z] DEBUG: 📥 POST /api/verifications/aadhaar [object Object]
+[2026-04-20T09:34:15.574Z] DEBUG: 🔒 Tenant isolation: 57cab5a9-3c1f-428e-9b80-34d3ca27ad3b
+[2026-04-20T09:34:15.574Z] DEBUG: 📝 SQL: INSERT INTO verification_requests
+         (document_type, document_number, full_name, client_id, api_status)
+       VALUES ($1, $2, $3, $4::uuid, 'pending')
+       RETURNING *
+[2026-04-20T09:34:15.576Z] DEBUG: 📝 SQL: UPDATE verification_requests
+     SET api_status       = 'processing',
+         last_api_attempt = NOW()
+     WHERE id = $1
+[2026-04-20T09:34:15.577Z] INFO: POST /api/verifications/aadhaar 201 - 4ms
+[2026-04-20T09:34:15.648Z] DEBUG: 📝 SQL: UPDATE verification_requests
+     SET api_status       = 'failed',
+         status           = 'failed',
+         failure_reason   = $1,
+         last_api_attempt = NOW()
+     WHERE id = $2
+[2026-04-20T09:34:18.821Z] DEBUG: 📥 GET /api/verifications/4d93b599-d235-405a-9ec5-21514f3a6264 [object Object]
+[2026-04-20T09:34:18.822Z] DEBUG: 🔒 Tenant isolation: 57cab5a9-3c1f-428e-9b80-34d3ca27ad3b
+[2026-04-20T09:34:18.823Z] DEBUG: 📝 SQL: SELECT
+         vr.id,
+         vr.document_type,
+         vr.document_number,
+         vr.full_name,
+         vr.dob,
+         vr.business_name,
+         vr.client_id,
+         vr.api_status,
+       ...
+[2026-04-20T09:34:18.824Z] INFO: GET /api/verifications/4d93b599-d235-405a-9ec5-21514f3a6264 200 - 2ms
+[2026-04-20T09:34:18.983Z] DEBUG: 📥 POST /api/verifications/aadhaar [object Object]
+[2026-04-20T09:34:18.984Z] DEBUG: 🔒 Tenant isolation: 57cab5a9-3c1f-428e-9b80-34d3ca27ad3b
+[2026-04-20T09:34:18.986Z] WARN: POST /api/verifications/aadhaar 400 - 1ms
+[2026-04-20T09:34:19.056Z] DEBUG: 📥 POST /api/verifications/aadhaar [object Object]
+[2026-04-20T09:34:19.057Z] DEBUG: 🔒 Tenant isolation: 57cab5a9-3c1f-428e-9b80-34d3ca27ad3b
+[2026-04-20T09:34:19.058Z] WARN: POST /api/verifications/aadhaar 400 - 1ms
+[2026-04-20T09:34:19.121Z] DEBUG: 📥 POST /api/verifications/aadhaar [object Object]
+[2026-04-20T09:34:19.122Z] DEBUG: 🔒 Tenant isolation: 57cab5a9-3c1f-428e-9b80-34d3ca27ad3b
+[2026-04-20T09:34:19.122Z] WARN: POST /api/verifications/aadhaar 400 - 1ms
+[2026-04-20T09:34:19.300Z] DEBUG: 📥 POST /api/verifications/gstin [object Object]
+[2026-04-20T09:34:19.301Z] DEBUG: 🔒 Tenant isolation: 57cab5a9-3c1f-428e-9b80-34d3ca27ad3b
+[2026-04-20T09:34:19.301Z] DEBUG: 📝 SQL: INSERT INTO verification_requests
+         (document_type, document_number, business_name, client_id, api_status)
+       VALUES ($1, $2, $3, $4::uuid, 'pending')
+       RETURNING *
+[2026-04-20T09:34:19.303Z] DEBUG: 📝 SQL: UPDATE verification_requests
+     SET api_status       = 'processing',
+         last_api_attempt = NOW()
+     WHERE id = $1
+[2026-04-20T09:34:19.303Z] INFO: POST /api/verifications/gstin 201 - 3ms
+[2026-04-20T09:34:19.384Z] DEBUG: 📝 SQL: UPDATE verification_requests
+     SET api_status       = 'failed',
+         status           = 'failed',
+         failure_reason   = $1,
+         last_api_attempt = NOW()
+     WHERE id = $2
+[2026-04-20T09:34:22.585Z] DEBUG: 📥 GET /api/verifications/e860732c-f567-4c85-8a85-d9ed8005e66a [object Object]
+[2026-04-20T09:34:22.587Z] DEBUG: 🔒 Tenant isolation: 57cab5a9-3c1f-428e-9b80-34d3ca27ad3b
+[2026-04-20T09:34:22.588Z] DEBUG: 📝 SQL: SELECT
+         vr.id,
+         vr.document_type,
+         vr.document_number,
+         vr.full_name,
+         vr.dob,
+         vr.business_name,
+         vr.client_id,
+         vr.api_status,
+       ...
+[2026-04-20T09:34:22.589Z] INFO: GET /api/verifications/e860732c-f567-4c85-8a85-d9ed8005e66a 200 - 3ms
+[2026-04-20T09:34:22.721Z] DEBUG: 📥 POST /api/verifications/gstin [object Object]
+[2026-04-20T09:34:22.722Z] DEBUG: 🔒 Tenant isolation: 57cab5a9-3c1f-428e-9b80-34d3ca27ad3b
+[2026-04-20T09:34:22.723Z] WARN: POST /api/verifications/gstin 400 - 1ms
+[2026-04-20T09:34:22.798Z] DEBUG: 📥 POST /api/verifications/gstin [object Object]
+[2026-04-20T09:34:22.799Z] DEBUG: 🔒 Tenant isolation: 57cab5a9-3c1f-428e-9b80-34d3ca27ad3b
+[2026-04-20T09:34:22.800Z] WARN: POST /api/verifications/gstin 400 - 1ms
+[2026-04-20T09:34:22.854Z] DEBUG: 📥 POST /api/verifications/gstin [object Object]
+[2026-04-20T09:34:22.855Z] DEBUG: 🔒 Tenant isolation: 57cab5a9-3c1f-428e-9b80-34d3ca27ad3b
+[2026-04-20T09:34:22.855Z] WARN: POST /api/verifications/gstin 400 - 1ms
+[2026-04-20T09:34:22.972Z] DEBUG: 📥 POST /api/verifications/retry/dbda843f-b7ad-41e5-908f-1097e9c7b1a5 [object Object]
+[2026-04-20T09:34:22.973Z] DEBUG: 🔒 Tenant isolation: 57cab5a9-3c1f-428e-9b80-34d3ca27ad3b
+[2026-04-20T09:34:22.974Z] DEBUG: 📝 SQL: SELECT * FROM verification_requests WHERE id = $1
+[2026-04-20T09:34:22.974Z] DEBUG: 📝 SQL: UPDATE verification_requests
+       SET retry_count   = retry_count + 1,
+           last_retry_at = NOW(),
+           status        = 'retrying'
+       WHERE id = $1
+       RETURNING *
+[2026-04-20T09:34:22.975Z] DEBUG: 📝 SQL: INSERT INTO verification_retry_history
+         (verification_id, retry_number, retry_status, retry_reason)
+       VALUES ($1, $2, $3, $4)
+[2026-04-20T09:34:22.978Z] INFO: POST /api/verifications/retry/dbda843f-b7ad-41e5-908f-1097e9c7b1a5 200 - 4ms
+[2026-04-20T09:34:23.092Z] DEBUG: 📥 POST /api/verifications/retry/00000000-0000-0000-0000-000000000000 [object Object]
+[2026-04-20T09:34:23.093Z] DEBUG: 🔒 Tenant isolation: 57cab5a9-3c1f-428e-9b80-34d3ca27ad3b
+[2026-04-20T09:34:23.093Z] DEBUG: 📝 SQL: SELECT * FROM verification_requests WHERE id = $1
+[2026-04-20T09:34:23.094Z] WARN: POST /api/verifications/retry/00000000-0000-0000-0000-000000000000 404 - 2ms
+[2026-04-20T09:34:23.230Z] INFO: [Webhook] Inbound — vendor path: /idfy | IP: ::1 | Content-Type: application/json | Body size: 219 bytes
+[2026-04-20T09:34:23.230Z] WARN: [Webhook][IDfy] IDFY_WEBHOOK_SECRET not set — skipping signature validation. Set this in .env.development before going to production.
+[2026-04-20T09:34:23.231Z] INFO: [Webhook][idfy] Received — request_id: webhook-test-no-match-876465209
+[2026-04-20T09:34:23.231Z] DEBUG: 📝 SQL: INSERT INTO webhook_events
+         (vendor, event_type, payload, verification_id, status, error_message, received_at)
+       VALUES ($1, $2, $3, $4, $5, $6, NOW())
+[2026-04-20T09:34:23.240Z] DEBUG: 📝 SQL: SELECT * FROM verification_requests
+     WHERE api_status IN ('pending', 'processing')
+     ORDER BY created_at DESC
+     LIMIT 1
+[2026-04-20T09:34:23.241Z] INFO: [Webhook][idfy] Matched verification cc72ecf7-0ced-42d8-abf5-0445a270da10 (GSTIN)
+[2026-04-20T09:34:23.242Z] INFO: [Webhook][idfy] Processed — status=success, verified=false
+[2026-04-20T09:34:23.242Z] DEBUG: 📝 SQL: SELECT id FROM verification_results WHERE verification_id = $1
+[2026-04-20T09:34:23.243Z] DEBUG: 📝 SQL: INSERT INTO verification_results
+           (verification_id, result_data, verified, processed_at)
+         VALUES ($1, $2, $3, NOW())
+[2026-04-20T09:34:23.249Z] INFO: [Webhook][idfy] Inserted verification_results for cc72ecf7-0ced-42d8-abf5-0445a270da10
+[2026-04-20T09:34:23.249Z] DEBUG: 📝 SQL: UPDATE verification_requests
+       SET api_status = $1,
+           status     = $2
+       WHERE id = $3
+[2026-04-20T09:34:23.250Z] INFO: [Webhook][idfy] Updated verification_requests for cc72ecf7-0ced-42d8-abf5-0445a270da10
+[2026-04-20T09:34:23.250Z] DEBUG: 📝 SQL: INSERT INTO webhook_events
+         (vendor, event_type, payload, verification_id, status, error_message, received_at)
+       VALUES ($1, $2, $3, $4, $5, $6, NOW())
+[2026-04-20T09:34:23.251Z] INFO: POST /api/webhooks/idfy 200 - 21ms
+[2026-04-20T09:34:23.347Z] INFO: [Webhook] Inbound — vendor path: /idfy | IP: ::1 | Content-Type: application/json | Body size: 656 bytes
+[2026-04-20T09:34:23.347Z] WARN: [Webhook][IDfy] IDFY_WEBHOOK_SECRET not set — skipping signature validation. Set this in .env.development before going to production.
+[2026-04-20T09:34:23.347Z] INFO: [Webhook][idfy] Received — request_id: idfy-simulated-884745223
+[2026-04-20T09:34:23.348Z] DEBUG: 📝 SQL: INSERT INTO webhook_events
+         (vendor, event_type, payload, verification_id, status, error_message, received_at)
+       VALUES ($1, $2, $3, $4, $5, $6, NOW())
+[2026-04-20T09:34:23.349Z] DEBUG: 📝 SQL: SELECT * FROM verification_requests
+     WHERE api_status IN ('pending', 'processing')
+     ORDER BY created_at DESC
+     LIMIT 1
+[2026-04-20T09:34:23.350Z] INFO: [Webhook][idfy] Matched verification 49b77763-da37-4f93-adcf-7bc04a797edd (AADHAAR)
+[2026-04-20T09:34:23.351Z] INFO: [Webhook][idfy] Processed — status=success, verified=true
+[2026-04-20T09:34:23.351Z] DEBUG: 📝 SQL: SELECT id FROM verification_results WHERE verification_id = $1
+[2026-04-20T09:34:23.352Z] DEBUG: 📝 SQL: INSERT INTO verification_results
+           (verification_id, result_data, verified, processed_at)
+         VALUES ($1, $2, $3, NOW())
+[2026-04-20T09:34:23.353Z] INFO: [Webhook][idfy] Inserted verification_results for 49b77763-da37-4f93-adcf-7bc04a797edd
+[2026-04-20T09:34:23.353Z] DEBUG: 📝 SQL: UPDATE verification_requests
+       SET api_status = $1,
+           status     = $2
+       WHERE id = $3
+[2026-04-20T09:34:23.354Z] INFO: [Webhook][idfy] Updated verification_requests for 49b77763-da37-4f93-adcf-7bc04a797edd
+[2026-04-20T09:34:23.355Z] DEBUG: 📝 SQL: INSERT INTO webhook_events
+         (vendor, event_type, payload, verification_id, status, error_message, received_at)
+       VALUES ($1, $2, $3, $4, $5, $6, NOW())
+[2026-04-20T09:34:23.356Z] INFO: POST /api/webhooks/idfy 200 - 10ms
+[2026-04-20T09:34:23.441Z] INFO: [Webhook] Inbound — vendor path: /idfy | IP: ::1 | Content-Type: application/json | Body size: 153 bytes
+[2026-04-20T09:34:23.442Z] WARN: [Webhook][IDfy] IDFY_WEBHOOK_SECRET not set — skipping signature validation. Set this in .env.development before going to production.
+[2026-04-20T09:34:23.442Z] INFO: [Webhook][idfy] Received — request_id: dup-test-639344728
+[2026-04-20T09:34:23.443Z] DEBUG: 📝 SQL: INSERT INTO webhook_events
+         (vendor, event_type, payload, verification_id, status, error_message, received_at)
+       VALUES ($1, $2, $3, $4, $5, $6, NOW())
+[2026-04-20T09:34:23.444Z] DEBUG: 📝 SQL: SELECT * FROM verification_requests
+     WHERE api_status IN ('pending', 'processing')
+     ORDER BY created_at DESC
+     LIMIT 1
+[2026-04-20T09:34:23.445Z] INFO: [Webhook][idfy] Matched verification 38444c22-1544-45c0-900c-8cef114c4b28 (PAN)
+[2026-04-20T09:34:23.446Z] INFO: [Webhook][idfy] Processed — status=success, verified=false
+[2026-04-20T09:34:23.446Z] DEBUG: 📝 SQL: SELECT id FROM verification_results WHERE verification_id = $1
+[2026-04-20T09:34:23.447Z] DEBUG: 📝 SQL: INSERT INTO verification_results
+           (verification_id, result_data, verified, processed_at)
+         VALUES ($1, $2, $3, NOW())
+[2026-04-20T09:34:23.448Z] INFO: [Webhook][idfy] Inserted verification_results for 38444c22-1544-45c0-900c-8cef114c4b28
+[2026-04-20T09:34:23.448Z] DEBUG: 📝 SQL: UPDATE verification_requests
+       SET api_status = $1,
+           status     = $2
+       WHERE id = $3
+[2026-04-20T09:34:23.448Z] INFO: [Webhook][idfy] Updated verification_requests for 38444c22-1544-45c0-900c-8cef114c4b28
+[2026-04-20T09:34:23.449Z] DEBUG: 📝 SQL: INSERT INTO webhook_events
+         (vendor, event_type, payload, verification_id, status, error_message, received_at)
+       VALUES ($1, $2, $3, $4, $5, $6, NOW())
+[2026-04-20T09:34:23.450Z] INFO: POST /api/webhooks/idfy 200 - 9ms
+[2026-04-20T09:34:23.567Z] DEBUG: 📥 POST /api/auth/refresh [object Object]
+[2026-04-20T09:34:23.568Z] DEBUG: 📝 SQL: SELECT * FROM refresh_tokens WHERE token = $1
+[2026-04-20T09:34:23.570Z] DEBUG: 📝 SQL: SELECT * FROM users WHERE id = $1
+[2026-04-20T09:34:23.571Z] INFO: POST /api/auth/refresh 200 - 3ms
+[2026-04-20T09:34:23.689Z] DEBUG: 📥 POST /api/auth/logout [object Object]
+[2026-04-20T09:34:23.690Z] DEBUG: 📝 SQL: DELETE FROM refresh_tokens WHERE token = $1
+[2026-04-20T09:34:23.691Z] INFO: POST /api/auth/logout 200 - 2ms
+[2026-04-20T09:34:23.797Z] DEBUG: 📥 POST /api/auth/refresh [object Object]
+[2026-04-20T09:34:23.798Z] DEBUG: 📝 SQL: SELECT * FROM refresh_tokens WHERE token = $1
+[2026-04-20T09:34:23.799Z] WARN: POST /api/auth/refresh 403 - 1ms
+[2026-04-20T09:34:41.031Z] INFO: GET /health 200 - 1ms
+[2026-04-20T09:34:41.069Z] DEBUG: 📥 POST /api/verifications/pan [object Object]
+[2026-04-20T09:34:41.070Z] WARN: POST /api/verifications/pan 403 - 1ms
+[2026-04-20T09:34:41.091Z] DEBUG: 📥 POST /api/auth/login [object Object]
+[2026-04-20T09:34:41.092Z] DEBUG: 📝 SQL: SELECT * FROM users WHERE email = $1
+[2026-04-20T09:34:41.145Z] DEBUG: 📝 SQL: INSERT INTO refresh_tokens (user_id, token, expires_at)
+       VALUES ($1, $2, NOW() + INTERVAL '7 days')
+[2026-04-20T09:34:41.147Z] INFO: POST /api/auth/login 200 - 55ms
+[2026-04-20T09:34:41.153Z] DEBUG: 📥 POST /api/verifications/pan [object Object]
+[2026-04-20T09:34:41.154Z] WARN: POST /api/verifications/pan 401 - 0ms
+[2026-04-20T09:34:41.158Z] DEBUG: 📥 POST /api/verifications/pan [object Object]
+[2026-04-20T09:34:41.159Z] DEBUG: 🔒 Tenant isolation: 57cab5a9-3c1f-428e-9b80-34d3ca27ad3b
+[2026-04-20T09:34:41.159Z] DEBUG: 📝 SQL: INSERT INTO verification_requests
+         (document_type, document_number, full_name, dob, client_id, api_status)
+       VALUES ($1, $2, $3, $4, $5::uuid, 'pending')
+       RETURNING *
+[2026-04-20T09:34:41.161Z] DEBUG: 📝 SQL: UPDATE verification_requests
+     SET api_status       = 'processing',
+         last_api_attempt = NOW()
+     WHERE id = $1
+[2026-04-20T09:34:41.162Z] INFO: POST /api/verifications/pan 201 - 3ms
+[2026-04-20T09:34:41.175Z] DEBUG: 📥 POST /api/verifications/pan [object Object]
+[2026-04-20T09:34:41.176Z] DEBUG: 🔒 Tenant isolation: 57cab5a9-3c1f-428e-9b80-34d3ca27ad3b
+[2026-04-20T09:34:41.177Z] WARN: POST /api/verifications/pan 400 - 1ms
+[2026-04-20T09:34:41.181Z] DEBUG: 📥 POST /api/verifications/pan [object Object]
+[2026-04-20T09:34:41.182Z] DEBUG: 🔒 Tenant isolation: 57cab5a9-3c1f-428e-9b80-34d3ca27ad3b
+[2026-04-20T09:34:41.183Z] WARN: POST /api/verifications/pan 400 - 2ms
+[2026-04-20T09:34:41.185Z] DEBUG: 📥 POST /api/verifications/pan [object Object]
+[2026-04-20T09:34:41.185Z] DEBUG: 🔒 Tenant isolation: 57cab5a9-3c1f-428e-9b80-34d3ca27ad3b
+[2026-04-20T09:34:41.186Z] WARN: POST /api/verifications/pan 400 - 1ms
+[2026-04-20T09:34:41.452Z] DEBUG: 📝 SQL: UPDATE verification_requests
+     SET api_status       = 'failed',
+         status           = 'failed',
+         failure_reason   = $1,
+         last_api_attempt = NOW()
+     WHERE id = $2
+[2026-04-20T09:34:44.197Z] DEBUG: 📥 GET /api/verifications/effc1550-847f-4ca3-8a71-798df31a92a6 [object Object]
+[2026-04-20T09:34:44.198Z] DEBUG: 🔒 Tenant isolation: 57cab5a9-3c1f-428e-9b80-34d3ca27ad3b
+[2026-04-20T09:34:44.199Z] DEBUG: 📝 SQL: SELECT
+         vr.id,
+         vr.document_type,
+         vr.document_number,
+         vr.full_name,
+         vr.dob,
+         vr.business_name,
+         vr.client_id,
+         vr.api_status,
+       ...
+[2026-04-20T09:34:44.200Z] INFO: GET /api/verifications/effc1550-847f-4ca3-8a71-798df31a92a6 200 - 2ms
+[2026-04-20T09:34:44.206Z] DEBUG: 📥 GET /api/verifications/00000000-0000-0000-0000-000000000000 [object Object]
+[2026-04-20T09:34:44.207Z] DEBUG: 🔒 Tenant isolation: 57cab5a9-3c1f-428e-9b80-34d3ca27ad3b
+[2026-04-20T09:34:44.207Z] DEBUG: 📝 SQL: SELECT
+         vr.id,
+         vr.document_type,
+         vr.document_number,
+         vr.full_name,
+         vr.dob,
+         vr.business_name,
+         vr.client_id,
+         vr.api_status,
+       ...
+[2026-04-20T09:34:44.208Z] WARN: GET /api/verifications/00000000-0000-0000-0000-000000000000 404 - 1ms
+[2026-04-20T09:34:44.213Z] DEBUG: 📥 POST /api/verifications/aadhaar [object Object]
+[2026-04-20T09:34:44.214Z] DEBUG: 🔒 Tenant isolation: 57cab5a9-3c1f-428e-9b80-34d3ca27ad3b
+[2026-04-20T09:34:44.214Z] DEBUG: 📝 SQL: INSERT INTO verification_requests
+         (document_type, document_number, full_name, client_id, api_status)
+       VALUES ($1, $2, $3, $4::uuid, 'pending')
+       RETURNING *
+[2026-04-20T09:34:44.216Z] DEBUG: 📝 SQL: UPDATE verification_requests
+     SET api_status       = 'processing',
+         last_api_attempt = NOW()
+     WHERE id = $1
+[2026-04-20T09:34:44.217Z] INFO: POST /api/verifications/aadhaar 201 - 3ms
+[2026-04-20T09:34:44.267Z] DEBUG: 📝 SQL: UPDATE verification_requests
+     SET api_status       = 'failed',
+         status           = 'failed',
+         failure_reason   = $1,
+         last_api_attempt = NOW()
+     WHERE id = $2
+[2026-04-20T09:34:47.232Z] DEBUG: 📥 GET /api/verifications/4d593dd5-8fed-404e-aad4-18072d089711 [object Object]
+[2026-04-20T09:34:47.234Z] DEBUG: 🔒 Tenant isolation: 57cab5a9-3c1f-428e-9b80-34d3ca27ad3b
+[2026-04-20T09:34:47.235Z] DEBUG: 📝 SQL: SELECT
+         vr.id,
+         vr.document_type,
+         vr.document_number,
+         vr.full_name,
+         vr.dob,
+         vr.business_name,
+         vr.client_id,
+         vr.api_status,
+       ...
+[2026-04-20T09:34:47.237Z] INFO: GET /api/verifications/4d593dd5-8fed-404e-aad4-18072d089711 200 - 4ms
+[2026-04-20T09:34:47.247Z] DEBUG: 📥 POST /api/verifications/aadhaar [object Object]
+[2026-04-20T09:34:47.248Z] DEBUG: 🔒 Tenant isolation: 57cab5a9-3c1f-428e-9b80-34d3ca27ad3b
+[2026-04-20T09:34:47.249Z] WARN: POST /api/verifications/aadhaar 400 - 2ms
+[2026-04-20T09:34:47.252Z] DEBUG: 📥 POST /api/verifications/aadhaar [object Object]
+[2026-04-20T09:34:47.252Z] DEBUG: 🔒 Tenant isolation: 57cab5a9-3c1f-428e-9b80-34d3ca27ad3b
+[2026-04-20T09:34:47.253Z] WARN: POST /api/verifications/aadhaar 400 - 1ms
+[2026-04-20T09:34:47.256Z] DEBUG: 📥 POST /api/verifications/aadhaar [object Object]
+[2026-04-20T09:34:47.256Z] DEBUG: 🔒 Tenant isolation: 57cab5a9-3c1f-428e-9b80-34d3ca27ad3b
+[2026-04-20T09:34:47.257Z] WARN: POST /api/verifications/aadhaar 400 - 1ms
+[2026-04-20T09:34:47.261Z] DEBUG: 📥 POST /api/verifications/gstin [object Object]
+[2026-04-20T09:34:47.262Z] DEBUG: 🔒 Tenant isolation: 57cab5a9-3c1f-428e-9b80-34d3ca27ad3b
+[2026-04-20T09:34:47.262Z] DEBUG: 📝 SQL: INSERT INTO verification_requests
+         (document_type, document_number, business_name, client_id, api_status)
+       VALUES ($1, $2, $3, $4::uuid, 'pending')
+       RETURNING *
+[2026-04-20T09:34:47.270Z] DEBUG: 📝 SQL: UPDATE verification_requests
+     SET api_status       = 'processing',
+         last_api_attempt = NOW()
+     WHERE id = $1
+[2026-04-20T09:34:47.271Z] INFO: POST /api/verifications/gstin 201 - 10ms
+[2026-04-20T09:34:47.341Z] DEBUG: 📝 SQL: UPDATE verification_requests
+     SET api_status       = 'failed',
+         status           = 'failed',
+         failure_reason   = $1,
+         last_api_attempt = NOW()
+     WHERE id = $2
+[2026-04-20T09:34:50.294Z] DEBUG: 📥 GET /api/verifications/252277db-bcc7-41e9-88e5-dccf89f79822 [object Object]
+[2026-04-20T09:34:50.296Z] DEBUG: 🔒 Tenant isolation: 57cab5a9-3c1f-428e-9b80-34d3ca27ad3b
+[2026-04-20T09:34:50.297Z] DEBUG: 📝 SQL: SELECT
+         vr.id,
+         vr.document_type,
+         vr.document_number,
+         vr.full_name,
+         vr.dob,
+         vr.business_name,
+         vr.client_id,
+         vr.api_status,
+       ...
+[2026-04-20T09:34:50.298Z] INFO: GET /api/verifications/252277db-bcc7-41e9-88e5-dccf89f79822 200 - 3ms
+[2026-04-20T09:34:50.305Z] DEBUG: 📥 POST /api/verifications/gstin [object Object]
+[2026-04-20T09:34:50.306Z] DEBUG: 🔒 Tenant isolation: 57cab5a9-3c1f-428e-9b80-34d3ca27ad3b
+[2026-04-20T09:34:50.307Z] WARN: POST /api/verifications/gstin 400 - 1ms
+[2026-04-20T09:34:50.309Z] DEBUG: 📥 POST /api/verifications/gstin [object Object]
+[2026-04-20T09:34:50.310Z] DEBUG: 🔒 Tenant isolation: 57cab5a9-3c1f-428e-9b80-34d3ca27ad3b
+[2026-04-20T09:34:50.310Z] WARN: POST /api/verifications/gstin 400 - 1ms
+[2026-04-20T09:34:50.314Z] DEBUG: 📥 POST /api/verifications/gstin [object Object]
+[2026-04-20T09:34:50.315Z] DEBUG: 🔒 Tenant isolation: 57cab5a9-3c1f-428e-9b80-34d3ca27ad3b
+[2026-04-20T09:34:50.315Z] WARN: POST /api/verifications/gstin 400 - 1ms
+[2026-04-20T09:34:50.322Z] DEBUG: 📥 POST /api/verifications/retry/effc1550-847f-4ca3-8a71-798df31a92a6 [object Object]
+[2026-04-20T09:34:50.323Z] DEBUG: 🔒 Tenant isolation: 57cab5a9-3c1f-428e-9b80-34d3ca27ad3b
+[2026-04-20T09:34:50.323Z] DEBUG: 📝 SQL: SELECT * FROM verification_requests WHERE id = $1
+[2026-04-20T09:34:50.324Z] DEBUG: 📝 SQL: UPDATE verification_requests
+       SET retry_count   = retry_count + 1,
+           last_retry_at = NOW(),
+           status        = 'retrying'
+       WHERE id = $1
+       RETURNING *
+[2026-04-20T09:34:50.332Z] DEBUG: 📝 SQL: INSERT INTO verification_retry_history
+         (verification_id, retry_number, retry_status, retry_reason)
+       VALUES ($1, $2, $3, $4)
+[2026-04-20T09:34:50.333Z] INFO: POST /api/verifications/retry/effc1550-847f-4ca3-8a71-798df31a92a6 200 - 11ms
+[2026-04-20T09:34:50.340Z] DEBUG: 📥 POST /api/verifications/retry/00000000-0000-0000-0000-000000000000 [object Object]
+[2026-04-20T09:34:50.341Z] DEBUG: 🔒 Tenant isolation: 57cab5a9-3c1f-428e-9b80-34d3ca27ad3b
+[2026-04-20T09:34:50.341Z] DEBUG: 📝 SQL: SELECT * FROM verification_requests WHERE id = $1
+[2026-04-20T09:34:50.342Z] WARN: POST /api/verifications/retry/00000000-0000-0000-0000-000000000000 404 - 2ms
+[2026-04-20T09:34:50.348Z] INFO: [Webhook] Inbound — vendor path: /idfy | IP: ::1 | Content-Type: application/json | Body size: 220 bytes
+[2026-04-20T09:34:50.348Z] WARN: [Webhook][IDfy] IDFY_WEBHOOK_SECRET not set — skipping signature validation. Set this in .env.development before going to production.
+[2026-04-20T09:34:50.349Z] INFO: [Webhook][idfy] Received — request_id: webhook-test-no-match-1926960577
+[2026-04-20T09:34:50.349Z] DEBUG: 📝 SQL: INSERT INTO webhook_events
+         (vendor, event_type, payload, verification_id, status, error_message, received_at)
+       VALUES ($1, $2, $3, $4, $5, $6, NOW())
+[2026-04-20T09:34:50.350Z] DEBUG: 📝 SQL: SELECT * FROM verification_requests
+     WHERE api_status IN ('pending', 'processing')
+     ORDER BY created_at DESC
+     LIMIT 1
+[2026-04-20T09:34:50.351Z] INFO: [Webhook][idfy] Matched verification 4437f186-a9da-450e-a07f-5e7533edaf2c (GSTIN)
+[2026-04-20T09:34:50.352Z] INFO: [Webhook][idfy] Processed — status=success, verified=false
+[2026-04-20T09:34:50.352Z] DEBUG: 📝 SQL: SELECT id FROM verification_results WHERE verification_id = $1
+[2026-04-20T09:34:50.353Z] DEBUG: 📝 SQL: INSERT INTO verification_results
+           (verification_id, result_data, verified, processed_at)
+         VALUES ($1, $2, $3, NOW())
+[2026-04-20T09:34:50.354Z] INFO: [Webhook][idfy] Inserted verification_results for 4437f186-a9da-450e-a07f-5e7533edaf2c
+[2026-04-20T09:34:50.354Z] DEBUG: 📝 SQL: UPDATE verification_requests
+       SET api_status = $1,
+           status     = $2
+       WHERE id = $3
+[2026-04-20T09:34:50.355Z] INFO: [Webhook][idfy] Updated verification_requests for 4437f186-a9da-450e-a07f-5e7533edaf2c
+[2026-04-20T09:34:50.355Z] DEBUG: 📝 SQL: INSERT INTO webhook_events
+         (vendor, event_type, payload, verification_id, status, error_message, received_at)
+       VALUES ($1, $2, $3, $4, $5, $6, NOW())
+[2026-04-20T09:34:50.356Z] INFO: POST /api/webhooks/idfy 200 - 8ms
+[2026-04-20T09:34:50.361Z] INFO: [Webhook] Inbound — vendor path: /idfy | IP: ::1 | Content-Type: application/json | Body size: 655 bytes
+[2026-04-20T09:34:50.361Z] WARN: [Webhook][IDfy] IDFY_WEBHOOK_SECRET not set — skipping signature validation. Set this in .env.development before going to production.
+[2026-04-20T09:34:50.361Z] INFO: [Webhook][idfy] Received — request_id: idfy-simulated-76025877
+[2026-04-20T09:34:50.361Z] DEBUG: 📝 SQL: INSERT INTO webhook_events
+         (vendor, event_type, payload, verification_id, status, error_message, received_at)
+       VALUES ($1, $2, $3, $4, $5, $6, NOW())
+[2026-04-20T09:34:50.363Z] DEBUG: 📝 SQL: SELECT * FROM verification_requests
+     WHERE api_status IN ('pending', 'processing')
+     ORDER BY created_at DESC
+     LIMIT 1
+[2026-04-20T09:34:50.364Z] INFO: [Webhook][idfy] Matched verification 1cc7d3a1-70bf-414c-bb7c-83aca62c9def (AADHAAR)
+[2026-04-20T09:34:50.365Z] INFO: [Webhook][idfy] Processed — status=success, verified=true
+[2026-04-20T09:34:50.365Z] DEBUG: 📝 SQL: SELECT id FROM verification_results WHERE verification_id = $1
+[2026-04-20T09:34:50.366Z] DEBUG: 📝 SQL: INSERT INTO verification_results
+           (verification_id, result_data, verified, processed_at)
+         VALUES ($1, $2, $3, NOW())
+[2026-04-20T09:34:50.367Z] INFO: [Webhook][idfy] Inserted verification_results for 1cc7d3a1-70bf-414c-bb7c-83aca62c9def
+[2026-04-20T09:34:50.367Z] DEBUG: 📝 SQL: UPDATE verification_requests
+       SET api_status = $1,
+           status     = $2
+       WHERE id = $3
+[2026-04-20T09:34:50.368Z] INFO: [Webhook][idfy] Updated verification_requests for 1cc7d3a1-70bf-414c-bb7c-83aca62c9def
+[2026-04-20T09:34:50.368Z] DEBUG: 📝 SQL: INSERT INTO webhook_events
+         (vendor, event_type, payload, verification_id, status, error_message, received_at)
+       VALUES ($1, $2, $3, $4, $5, $6, NOW())
+[2026-04-20T09:34:50.370Z] INFO: POST /api/webhooks/idfy 200 - 9ms
+[2026-04-20T09:34:50.375Z] INFO: [Webhook] Inbound — vendor path: /idfy | IP: ::1 | Content-Type: application/json | Body size: 153 bytes
+[2026-04-20T09:34:50.375Z] WARN: [Webhook][IDfy] IDFY_WEBHOOK_SECRET not set — skipping signature validation. Set this in .env.development before going to production.
+[2026-04-20T09:34:50.375Z] INFO: [Webhook][idfy] Received — request_id: dup-test-990791363
+[2026-04-20T09:34:50.376Z] DEBUG: 📝 SQL: INSERT INTO webhook_events
+         (vendor, event_type, payload, verification_id, status, error_message, received_at)
+       VALUES ($1, $2, $3, $4, $5, $6, NOW())
+[2026-04-20T09:34:50.377Z] DEBUG: 📝 SQL: SELECT * FROM verification_requests
+     WHERE api_status IN ('pending', 'processing')
+     ORDER BY created_at DESC
+     LIMIT 1
+[2026-04-20T09:34:50.378Z] INFO: [Webhook][idfy] Matched verification 46c5b4aa-a3d5-48cb-a005-4fad02b2e4ab (PAN)
+[2026-04-20T09:34:50.378Z] INFO: [Webhook][idfy] Processed — status=success, verified=false
+[2026-04-20T09:34:50.378Z] DEBUG: 📝 SQL: SELECT id FROM verification_results WHERE verification_id = $1
+[2026-04-20T09:34:50.379Z] DEBUG: 📝 SQL: INSERT INTO verification_results
+           (verification_id, result_data, verified, processed_at)
+         VALUES ($1, $2, $3, NOW())
+[2026-04-20T09:34:50.381Z] INFO: [Webhook][idfy] Inserted verification_results for 46c5b4aa-a3d5-48cb-a005-4fad02b2e4ab
+[2026-04-20T09:34:50.381Z] DEBUG: 📝 SQL: UPDATE verification_requests
+       SET api_status = $1,
+           status     = $2
+       WHERE id = $3
+[2026-04-20T09:34:50.382Z] INFO: [Webhook][idfy] Updated verification_requests for 46c5b4aa-a3d5-48cb-a005-4fad02b2e4ab
+[2026-04-20T09:34:50.382Z] DEBUG: 📝 SQL: INSERT INTO webhook_events
+         (vendor, event_type, payload, verification_id, status, error_message, received_at)
+       VALUES ($1, $2, $3, $4, $5, $6, NOW())
+[2026-04-20T09:34:50.383Z] INFO: POST /api/webhooks/idfy 200 - 9ms
+[2026-04-20T09:34:50.400Z] DEBUG: 📥 POST /api/auth/refresh [object Object]
+[2026-04-20T09:34:50.401Z] DEBUG: 📝 SQL: SELECT * FROM refresh_tokens WHERE token = $1
+[2026-04-20T09:34:50.402Z] DEBUG: 📝 SQL: SELECT * FROM users WHERE id = $1
+[2026-04-20T09:34:50.403Z] INFO: POST /api/auth/refresh 200 - 3ms
+[2026-04-20T09:34:50.409Z] DEBUG: 📥 POST /api/auth/logout [object Object]
+[2026-04-20T09:34:50.410Z] DEBUG: 📝 SQL: DELETE FROM refresh_tokens WHERE token = $1
+[2026-04-20T09:34:50.413Z] INFO: POST /api/auth/logout 200 - 3ms
+[2026-04-20T09:34:50.417Z] DEBUG: 📥 POST /api/auth/refresh [object Object]
+[2026-04-20T09:34:50.418Z] DEBUG: 📝 SQL: SELECT * FROM refresh_tokens WHERE token = $1
+[2026-04-20T09:34:50.419Z] WARN: POST /api/auth/refresh 403 - 2ms

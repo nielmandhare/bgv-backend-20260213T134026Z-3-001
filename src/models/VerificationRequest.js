@@ -6,6 +6,16 @@ class VerificationRequest extends BaseModel {
     super('verification_requests');
   }
 
+  async create(data) {
+    const { tenant_id, requested_by, verification_type, input_data } = data;
+    const result = await db.query(
+      `INSERT INTO verification_requests (id, tenant_id, requested_by, verification_type, status, input_data)
+       VALUES (gen_random_uuid(), $1, $2, $3, 'pending', $4) RETURNING *`,
+      [tenant_id, requested_by, verification_type, input_data]
+    );
+    return result.rows[0];
+  }
+
   async findByTenant(tenantId, filters = {}) {
     let query = 'SELECT * FROM verification_requests WHERE tenant_id = $1';
     const params = [tenantId];
@@ -24,7 +34,7 @@ class VerificationRequest extends BaseModel {
     }
 
     query += ' ORDER BY created_at DESC';
-    
+
     const result = await db.query(query, params);
     return result.rows;
   }

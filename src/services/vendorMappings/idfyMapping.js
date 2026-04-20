@@ -11,7 +11,7 @@
  *   fields           — dot-notation paths into the raw IDfy response
  *   required         — fields that must be present for verified=true
  *   successIndicator — path + value that confirms the document was found
- *   transform        — optional post-extract cleanup
+ *   transform        — optional post-extract cleanup (boolean coercions, etc.)
  *
  * ─── IDfy v3 sync response shape — PAN ───────────────────────────────────────
  * {
@@ -33,25 +33,20 @@
  *   result: {
  *     source_output: {
  *       status:        "id_found" | "id_not_found" | "source_down",
- *       name:          "RAHUL SHARMA",   ← name as per UIDAI
+ *       name:          "RAHUL SHARMA",
  *       year_of_birth: "1998",
  *       gender:        "M" | "F" | "T",
  *       area:          "Locality/District",
- *       state:         "KA"              ← state code
+ *       state:         "KA"
  *     },
- *     name_match_result: {
- *       match_result: "yes" | "no",
- *       match_score:  95
- *     }
+ *     name_match_result: { match_result: "yes" | "no", match_score: 95 }
  *   }
  * }
  *
  * UIDAI COMPLIANCE:
- *   - We NEVER store the full Aadhaar number anywhere in the mapped fields.
- *   - IDfy does not return the full Aadhaar number in the response either
- *     (only metadata like name, year_of_birth, gender, state).
- *   - The raw_response is stored in DB for audit, but it also never contains
- *     the full number — IDfy masks it at the source.
+ *   - We NEVER store the full Aadhaar number in any mapped field.
+ *   - IDfy does not return the full number either — only metadata.
+ *   - The raw_response stored in DB also never contains the full number.
  *
  * ─── IDfy v3 sync response shape — GSTIN (ind_gstin) ────────────────────────
  * {
@@ -75,39 +70,65 @@
  *   }
  * }
  *
- * NOTE: IDfy's ind_gstin does NOT support name_match_result in the response
- * (unlike PAN and Aadhaar). If you need to verify business_name against the
- * returned legal_name / trade_name, do that comparison in your own controller
- * logic after the result is stored.
+ * NOTE: IDfy's ind_gstin does NOT support name_match_result (unlike PAN/Aadhaar).
+ * Compare business_name against legal_name / trade_name yourself if needed.
  */
 
 const idfyMapping = {
 
   // ─── PAN ──────────────────────────────────────────────────────────────────
+  //
+  // IDfy endpoint: POST /v3/tasks/sync/verify_with_source/ind_pan
+  //
+  // BE-9: transform() coerces:
+  //   aadhaar_seeding_status "Y"/"N"  → aadhaar_linked true/false
+  //   name_match_result      "yes"/"no" → name_matched true/false
+  // Both booleans make frontend consumption straightforward.
+  // ─────────────────────────────────────────────────────────────────────────
 
   pan: {
     fields: {
-      lookup_status:          'result.source_output.status',
-      pan_number:             'result.source_output.pan_number',
-      name_as_per_nsdl:       'result.source_output.name',
-      pan_status:             'result.source_output.pan_status',
-      last_updated:           'result.source_output.last_updated',
-      aadhaar_seeding_status: 'result.source_output.aadhaar_seeding_status',
-      name_match_result:      'result.name_match_result.match_result',
-      name_match_score:       'result.name_match_result.match_score',
+      lookup_status:          "result.source_output.status",
+      pan_number:             "result.source_output.pan_number",
+      name_as_per_nsdl:       "result.source_output.name",
+      pan_status:             "result.source_output.pan_status",
+      last_updated:           "result.source_output.last_updated",
+      aadhaar_seeding_status: "result.source_output.aadhaar_seeding_status",
+      name_match_result:      "result.name_match_result.match_result",
+      name_match_score:       "result.name_match_result.match_score",
     },
 
+    // No required fields — successIndicator alone determines verified.
+    // id_not_found legitimately has all source_output fields populated (name = null, etc.)
     required: [],
 
     successIndicator: {
-      path:  'result.source_output.status',
-      value: 'id_found',
+      path:  "result.source_output.status",
+      value: "id_found",
     },
 
+    /**
+     * PAN transform:
+     *   aadhaar_seeding_status "Y" → aadhaar_linked: true  (mirrors Aadhaar pattern)
+     *   name_match_result "yes"/"no" → name_matched: true/false/null
+     *   Attaches request_id and task_id for full audit traceability.
+     */
     transform(extracted, raw) {
       return {
         ...extracted,
-        aadhaar_linked: extracted.aadhaar_seeding_status === 'Y',
+
+        // Boolean: is Aadhaar seeded to this PAN?
+        // IDfy returns "Y" | "N" — we normalise to boolean.
+        aadhaar_linked: extracted.aadhaar_seeding_status === "Y",
+
+        // Boolean: did the submitted name match the name in NSDL?
+        // IDfy returns "yes" | "no" — we normalise to boolean.
+        // null when name matching was not performed.
+        name_matched: extracted.name_match_result != null
+          ? extracted.name_match_result === "yes"
+          : null,
+
+        // Audit traceability — always attach for every document type
         request_id: raw.request_id ?? null,
         task_id:    raw.task_id    ?? null,
       };
@@ -119,15 +140,15 @@ const idfyMapping = {
   // IDfy endpoint: POST /v3/tasks/sync/verify_with_source/ind_aadhaar
   //
   // What this returns when id_found:
-  //   name          — name as per UIDAI records (for name match validation)
+  //   name          — name as per UIDAI records
   //   year_of_birth — year only (UIDAI never exposes full DOB via this API)
   //   gender        — "M" | "F" | "T"
   //   area          — locality/district
   //   state         — 2-letter state code
   //
-  // What this does NOT return (by UIDAI design):
-  //   - Full Aadhaar number (only last 4 were sent, nothing is echoed back)
-  //   - Full date of birth (year only)
+  // What this does NOT return (UIDAI design):
+  //   - Full Aadhaar number
+  //   - Full date of birth (year only, by UIDAI design)
   //   - Full address
   //
   // ⚠️  Account activation required — contact eve.support@idfy.com
@@ -136,48 +157,51 @@ const idfyMapping = {
   aadhaar: {
     fields: {
       // Core lookup result
-      lookup_status:     'result.source_output.status',
+      lookup_status:     "result.source_output.status",
 
-      // Identity fields returned by UIDAI (via IDfy)
+      // UIDAI identity fields
       // Note: IDfy returns 'name' (not 'full_name') for Aadhaar
-      name_as_per_uidai: 'result.source_output.name',
+      name_as_per_uidai: "result.source_output.name",
 
-      // UIDAI only provides year of birth, not full DOB — by design
-      year_of_birth:     'result.source_output.year_of_birth',
+      // UIDAI provides year only — full DOB not available via this API
+      year_of_birth:     "result.source_output.year_of_birth",
 
-      // Gender code: "M" | "F" | "T"
-      gender:            'result.source_output.gender',
+      // Gender code
+      gender:            "result.source_output.gender",
 
-      // Location metadata (not sensitive — state/area level only)
-      area:              'result.source_output.area',
-      state:             'result.source_output.state',
+      // Location metadata (state/area level only — not a full address)
+      area:              "result.source_output.area",
+      state:             "result.source_output.state",
 
       // Name match — populated when full_name was sent in the request
-      name_match_result: 'result.name_match_result.match_result',
-      name_match_score:  'result.name_match_result.match_score',
+      name_match_result: "result.name_match_result.match_result",
+      name_match_score:  "result.name_match_result.match_score",
     },
 
-    // No required fields — id_not_found legitimately has all source_output
-    // fields as null. verified is determined entirely by successIndicator.
+    // No required fields — successIndicator determines verified.
     required: [],
 
     successIndicator: {
-      path:  'result.source_output.status',
-      value: 'id_found',
+      path:  "result.source_output.status",
+      value: "id_found",
     },
 
+    /**
+     * Aadhaar transform:
+     *   name_match_result "yes"/"no" → name_matched: true/false/null
+     *   Attaches request_id and task_id for audit traceability.
+     */
     transform(extracted, raw) {
       return {
         ...extracted,
 
-        // Normalise name_match_result to boolean for easier frontend consumption.
-        // IDfy returns "yes" | "no" as a string — we map to true/false.
-        // null if name match was not performed (e.g. full_name not sent).
+        // Boolean: did submitted name match UIDAI records?
+        // null if name match was not performed (full_name not sent).
         name_matched: extracted.name_match_result != null
-          ? extracted.name_match_result === 'yes'
+          ? extracted.name_match_result === "yes"
           : null,
 
-        // Audit fields — always attach for traceability
+        // Audit traceability
         request_id: raw.request_id ?? null,
         task_id:    raw.task_id    ?? null,
       };
@@ -189,73 +213,70 @@ const idfyMapping = {
   // IDfy endpoint: POST /v3/tasks/sync/verify_with_source/ind_gstin
   //
   // What this returns when id_found:
-  //   legal_name                  — registered legal name of the entity
-  //   trade_name                  — trade name (may differ from legal_name)
-  //   gstin_status                — "Active" | "Cancelled" | "Suspended"
-  //   registration_date           — when GST registration was granted
-  //   last_updated                — last update in the GST portal
-  //   business_type               — "Regular" | "Composition" | etc.
-  //   principal_place_of_business — address string
-  //   state_jurisdiction          — state where registered
-  //   center_jurisdiction         — central tax jurisdiction
-  //   taxpayer_type               — "Regular" | "Composition" | etc.
+  //   legal_name, trade_name, gstin_status, registration_date,
+  //   last_updated, business_type, principal_place_of_business,
+  //   state_jurisdiction, center_jurisdiction, taxpayer_type
   //
   // What this does NOT return:
   //   - name_match_result (IDfy ind_gstin has no server-side name matching)
-  //     Compare business_name against legal_name / trade_name yourself if needed.
+  //     Compare business_name against legal_name / trade_name yourself.
   //
   // ⚠️  Account activation required — contact eve.support@idfy.com
   // ─────────────────────────────────────────────────────────────────────────
 
   gst: {
     fields: {
-      // Core lookup result — same pattern as PAN and Aadhaar
-      lookup_status: 'result.source_output.status',
+      // Core lookup result
+      lookup_status: "result.source_output.status",
 
       // GSTIN echoed back for confirmation
-      gstin: 'result.source_output.gstin',
+      gstin: "result.source_output.gstin",
 
       // Business identity
-      legal_name: 'result.source_output.legal_name',
-      trade_name: 'result.source_output.trade_name',
+      legal_name: "result.source_output.legal_name",
+      trade_name: "result.source_output.trade_name",
 
-      // Registration status — "Active" | "Cancelled" | "Suspended"
-      // Use gstin_active (from transform) for boolean checks
-      gstin_status: 'result.source_output.gstin_status',
+      // Registration status
+      // Use gstin_active (boolean from transform) for programmatic checks
+      gstin_status: "result.source_output.gstin_status",
 
       // Timeline
-      registration_date: 'result.source_output.registration_date',
-      last_updated:      'result.source_output.last_updated',
+      registration_date: "result.source_output.registration_date",
+      last_updated:      "result.source_output.last_updated",
 
       // Business classification
-      business_type:  'result.source_output.business_type',
-      taxpayer_type:  'result.source_output.taxpayer_type',
+      business_type: "result.source_output.business_type",
+      taxpayer_type: "result.source_output.taxpayer_type",
 
       // Location / jurisdiction
-      principal_place_of_business: 'result.source_output.principal_place_of_business',
-      state_jurisdiction:          'result.source_output.state_jurisdiction',
-      center_jurisdiction:         'result.source_output.center_jurisdiction',
+      principal_place_of_business: "result.source_output.principal_place_of_business",
+      state_jurisdiction:          "result.source_output.state_jurisdiction",
+      center_jurisdiction:         "result.source_output.center_jurisdiction",
     },
 
-    // No required fields — id_not_found will have nulls for all source_output
-    // fields. verified is determined entirely by successIndicator.
+    // No required fields — successIndicator determines verified.
     required: [],
 
     successIndicator: {
-      path:  'result.source_output.status',
-      value: 'id_found',
+      path:  "result.source_output.status",
+      value: "id_found",
     },
 
+    /**
+     * GSTIN transform:
+     *   gstin_status "Active"/"Cancelled"/"Suspended" → gstin_active: boolean
+     *   Same boolean-coercion pattern as aadhaar_linked on PAN.
+     *   Attaches request_id and task_id for audit traceability.
+     */
     transform(extracted, raw) {
       return {
         ...extracted,
 
-        // Normalise gstin_status to a boolean for easy frontend consumption.
-        // "Active" → true, anything else (Cancelled, Suspended, null) → false.
-        // Same pattern as aadhaar_linked on PAN.
-        gstin_active: extracted.gstin_status?.toLowerCase() === 'active',
+        // Boolean: is the GSTIN currently active?
+        // "Active" → true, "Cancelled" / "Suspended" / null → false
+        gstin_active: extracted.gstin_status?.toLowerCase() === "active",
 
-        // Audit fields — always attach for traceability
+        // Audit traceability
         request_id: raw.request_id ?? null,
         task_id:    raw.task_id    ?? null,
       };

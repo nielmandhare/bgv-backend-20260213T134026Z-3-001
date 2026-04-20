@@ -1,0 +1,81 @@
+[2026-04-16T11:17:17.821Z] INFO: 🚀 Server running on http://localhost:5001
+[2026-04-16T11:17:17.822Z] INFO: 📦 Environment: development
+[2026-04-16T11:17:17.823Z] INFO: 📝 API Docs:    http://localhost:5001/api
+[2026-04-16T11:17:17.823Z] INFO: 💾 Database:    bgv_platform
+[2026-04-16T11:17:17.824Z] INFO: 👤 DB User:     postgres
+[2026-04-16T11:17:26.172Z] DEBUG: 📥 POST /api/auth/login [object Object]
+[2026-04-16T11:17:26.178Z] DEBUG: 📝 SQL: SELECT * FROM users WHERE email = $1
+[2026-04-16T11:17:26.337Z] INFO: ✅ Database pool: new client connected
+[2026-04-16T11:17:26.422Z] DEBUG: 📝 SQL: INSERT INTO refresh_tokens (user_id, token, expires_at)
+       VALUES ($1, $2, NOW() + INTERVAL '7 days')
+[2026-04-16T11:17:26.441Z] INFO: POST /api/auth/login 200 - 269ms
+[2026-04-16T11:17:26.465Z] DEBUG: 📥 POST /api/verifications/pan [object Object]
+[2026-04-16T11:17:26.467Z] DEBUG: 🔒 Tenant isolation: 57cab5a9-3c1f-428e-9b80-34d3ca27ad3b
+[2026-04-16T11:17:26.468Z] DEBUG: 📝 SQL: INSERT INTO verification_requests
+         (document_type, document_number, full_name, dob, client_id, api_status)
+       VALUES ($1, $2, $3, $4, $5::uuid, 'pending')
+       RETURNING *
+[2026-04-16T11:17:26.481Z] DEBUG: 📝 SQL: UPDATE verification_requests
+     SET api_status       = 'processing',
+         last_api_attempt = NOW()
+     WHERE id = $1
+[2026-04-16T11:17:26.482Z] INFO: POST /api/verifications/pan 201 - 16ms
+[2026-04-16T11:17:26.772Z] DEBUG: 📝 SQL: UPDATE verification_requests
+     SET api_status       = 'failed',
+         status           = 'failed',
+         failure_reason   = $1,
+         last_api_attempt = NOW()
+     WHERE id = $2
+[2026-04-16T11:17:29.508Z] DEBUG: 📥 POST /api/verifications/aadhaar [object Object]
+[2026-04-16T11:17:29.509Z] DEBUG: 🔒 Tenant isolation: 57cab5a9-3c1f-428e-9b80-34d3ca27ad3b
+[2026-04-16T11:17:29.510Z] DEBUG: 📝 SQL: INSERT INTO verification_requests
+         (document_type, document_number, full_name, client_id, api_status)
+       VALUES ($1, $2, $3, $4::uuid, 'pending')
+       RETURNING *
+[2026-04-16T11:17:29.513Z] DEBUG: 📝 SQL: UPDATE verification_requests
+     SET api_status       = 'processing',
+         last_api_attempt = NOW()
+     WHERE id = $1
+[2026-04-16T11:17:29.514Z] INFO: POST /api/verifications/aadhaar 201 - 5ms
+[2026-04-16T11:17:29.518Z] DEBUG: 📥 POST /api/verifications/gstin [object Object]
+[2026-04-16T11:17:29.518Z] DEBUG: 🔒 Tenant isolation: 57cab5a9-3c1f-428e-9b80-34d3ca27ad3b
+[2026-04-16T11:17:29.519Z] DEBUG: 📝 SQL: INSERT INTO verification_requests
+         (document_type, document_number, business_name, client_id, api_status)
+       VALUES ($1, $2, $3, $4::uuid, 'pending')
+       RETURNING *
+[2026-04-16T11:17:29.520Z] DEBUG: 📝 SQL: UPDATE verification_requests
+     SET api_status       = 'processing',
+         last_api_attempt = NOW()
+     WHERE id = $1
+[2026-04-16T11:17:29.521Z] INFO: POST /api/verifications/gstin 201 - 3ms
+[2026-04-16T11:17:29.525Z] DEBUG: 📥 POST /api/verifications/retry/44aa3f42-eb68-4d52-ad5d-f2b1dfd59af2 [object Object]
+[2026-04-16T11:17:29.526Z] DEBUG: 🔒 Tenant isolation: 57cab5a9-3c1f-428e-9b80-34d3ca27ad3b
+[2026-04-16T11:17:29.526Z] DEBUG: 📝 SQL: SELECT * FROM verification_requests WHERE id = $1
+[2026-04-16T11:17:29.527Z] DEBUG: 📝 SQL: UPDATE verification_requests
+       SET retry_count   = retry_count + 1,
+           last_retry_at = NOW(),
+           status        = 'retrying'
+       WHERE id = $1
+       RETURNING *
+[2026-04-16T11:17:29.528Z] DEBUG: 📝 SQL: INSERT INTO verification_retry_history
+         (verification_id, retry_number, retry_status, retry_reason)
+       VALUES ($1, $2, $3, $4)
+[2026-04-16T11:17:29.531Z] INFO: POST /api/verifications/retry/44aa3f42-eb68-4d52-ad5d-f2b1dfd59af2 200 - 6ms
+[2026-04-16T11:17:29.534Z] DEBUG: 📥 POST /api/auth/logout [object Object]
+[2026-04-16T11:17:29.535Z] DEBUG: 📝 SQL: DELETE FROM refresh_tokens WHERE token = $1
+[2026-04-16T11:17:29.539Z] INFO: POST /api/auth/logout 200 - 3ms
+[2026-04-16T11:17:29.541Z] DEBUG: 📥 POST /api/auth/refresh [object Object]
+[2026-04-16T11:17:29.542Z] DEBUG: 📝 SQL: SELECT * FROM refresh_tokens WHERE token = $1
+[2026-04-16T11:17:29.543Z] WARN: POST /api/auth/refresh 403 - 2ms
+[2026-04-16T11:17:29.581Z] DEBUG: 📝 SQL: UPDATE verification_requests
+     SET api_status       = 'failed',
+         status           = 'failed',
+         failure_reason   = $1,
+         last_api_attempt = NOW()
+     WHERE id = $2
+[2026-04-16T11:17:29.685Z] DEBUG: 📝 SQL: UPDATE verification_requests
+     SET api_status       = 'failed',
+         status           = 'failed',
+         failure_reason   = $1,
+         last_api_attempt = NOW()
+     WHERE id = $2
