@@ -1,0 +1,217 @@
+# BGV — PDF Report Generation Test (BE-2)
+# Run standalone: .\test_pdf_report.ps1
+# Requires: server running at BASE_URL, valid admin credentials
+
+param(
+    [string]$BASE_URL  = "http://localhost:5001",
+    [string]$API_KEY   = "bgv_secure_api_key_2026",
+    [string]$CLIENT_ID = "57cab5a9-3c1f-428e-9b80-34d3ca27ad3b"
+)
+
+$PASS = 0
+$FAIL = 0
+
+function Pass($msg) {
+    Write-Host "  ✅ PASS — $msg" -ForegroundColor Green
+    $script:PASS++
+}
+function Fail($msg) {
+    Write-Host "  ❌ FAIL — $msg" -ForegroundColor Red
+    $script:FAIL++
+}
+function Info($msg) {
+    Write-Host "  ℹ️  $msg" -ForegroundColor Yellow
+}
+function Section($title) {
+    Write-Host "`n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━" -ForegroundColor Magenta
+    Write-Host "  $title" -ForegroundColor Cyan
+    Write-Host "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━" -ForegroundColor Magenta
+}
+
+$headers = @{ "x-api-key" = $API_KEY; "Content-Type" = "application/json" }
+
+# ── Login ──────────────────────────────────────────────────────────────────
+Section "SETUP — Login"
+
+$ACCESS_TOKEN    = $null
+$VERIFICATION_ID = $null
+
+try {
+    $loginResp = Invoke-RestMethod -Uri "$BASE_URL/api/auth/login" -Method POST `
+        -Headers $headers `
+        -Body (@{ email = "admin@test.com"; password = "password123" } | ConvertTo-Json)
+
+    $ACCESS_TOKEN = $loginResp.accessToken
+    if ($ACCESS_TOKEN) { Pass "Logged in — access token received" }
+    else               { Fail "No access token in login response" }
+} catch {
+    Fail "Login failed: $_"
+    Write-Host "`n  Cannot continue without auth token — aborting." -ForegroundColor Red
+    exit 1
+}
+
+$authHeaders = @{
+    "x-api-key"     = $API_KEY
+    "Content-Type"  = "application/json"
+    "Authorization" = "Bearer $ACCESS_TOKEN"
+}
+
+# ── Create a PAN verification so we have a real ID to report on ─────────────
+Section "SETUP — Create PAN Verification"
+
+try {
+    $panResp = Invoke-RestMethod -Uri "$BASE_URL/api/verifications/pan" -Method POST `
+        -Headers $authHeaders `
+        -Body (@{
+            pan_number = "ABCDE1234F"
+            full_name  = "Rahul Sharma"
+            dob        = "1998-05-10"
+            client_id  = $CLIENT_ID
+        } | ConvertTo-Json)
+
+    $VERIFICATION_ID = $panResp.data.id
+    if ($VERIFICATION_ID) { Pass "PAN verification created — ID: $VERIFICATION_ID" }
+    else                  { Fail "No verification ID returned" }
+} catch {
+    Fail "PAN creation failed: $_"
+    Write-Host "`n  Cannot continue without a verification ID — aborting." -ForegroundColor Red
+    exit 1
+}
+
+# Wait for IDfy to respond (api_status leaves 'pending')
+Write-Host "  ⏳ Waiting up to 15s for IDfy async result..." -ForegroundColor DarkGray
+$elapsed = 0
+while ($elapsed -lt 15) {
+    Start-Sleep -Seconds 3
+    $elapsed += 3
+    try {
+        $check = Invoke-RestMethod -Uri "$BASE_URL/api/verifications/$VERIFICATION_ID" `
+            -Method GET -Headers $authHeaders
+        if ($check.data.api_status -notin @("pending","processing")) {
+            Info "api_status resolved to '$($check.data.api_status)' after ${elapsed}s"
+            break
+        }
+    } catch {}
+}
+
+# ══════════════════════════════════════════════════════════════════════════════
+# 17. PDF REPORT GENERATION
+# ══════════════════════════════════════════════════════════════════════════════
+Section "17. PDF REPORT GENERATION"
+
+try {
+    $pdfPath = "$env:TEMP\bgv-report-test-$VERIFICATION_ID.pdf"
+
+    $pdfResponse = Invoke-WebRequest `
+        -Uri "$BASE_URL/api/reports/$VERIFICATION_ID" `
+        -Method GET `
+        -Headers $authHeaders `
+        -OutFile $pdfPath `
+        -PassThru
+
+    # 1. HTTP 200
+    if ($pdfResponse.StatusCode -eq 200) {
+        Pass "Report endpoint returned HTTP 200"
+    } else {
+        Fail "Expected 200, got $($pdfResponse.StatusCode)"
+    }
+
+    # 2. Content-Type
+    $ct = $pdfResponse.Headers["Content-Type"]
+    if ($ct -like "*application/pdf*") {
+        Pass "Content-Type is application/pdf"
+    } else {
+        Fail "Expected application/pdf, got '$ct'"
+    }
+
+    # 3. Content-Disposition
+    $cd = $pdfResponse.Headers["Content-Disposition"]
+    if ($cd -like "*attachment*" -and $cd -like "*.pdf*") {
+        Pass "Content-Disposition sets PDF download filename"
+        Info "Header: $cd"
+    } else {
+        Fail "Content-Disposition missing or incorrect: '$cd'"
+    }
+
+    # 4. File size > 5KB
+    if (Test-Path $pdfPath) {
+        $sizeKB = [math]::Round((Get-Item $pdfPath).Length / 1KB, 1)
+        if ($sizeKB -gt 5) {
+            Pass "PDF file written — size ${sizeKB}KB"
+        } else {
+            Fail "PDF too small (${sizeKB}KB) — may be empty or an error response"
+        }
+        Info "Saved to: $pdfPath"
+    } else {
+        Fail "PDF file not written to disk"
+    }
+
+    # 5. Magic bytes — valid PDF starts with %PDF
+    $bytes = [System.IO.File]::ReadAllBytes($pdfPath)
+    $magic = [System.Text.Encoding]::ASCII.GetString($bytes[0..3])
+    if ($magic -eq "%PDF") {
+        Pass "PDF magic bytes valid (%PDF)"
+    } else {
+        Fail "File does not start with %PDF (got '$magic') — not a real PDF"
+    }
+
+} catch {
+    Fail "PDF report request threw: $_"
+}
+
+# ══════════════════════════════════════════════════════════════════════════════
+# 17b. PDF REPORT — NON-EXISTENT ID
+# ══════════════════════════════════════════════════════════════════════════════
+Section "17b. PDF REPORT — NON-EXISTENT ID"
+
+try {
+    Invoke-RestMethod `
+        -Uri "$BASE_URL/api/reports/00000000-0000-0000-0000-000000000000" `
+        -Method GET -Headers $authHeaders -ErrorAction Stop
+    Fail "Should have returned 404 for non-existent verification"
+} catch {
+    if ($_.Exception.Response.StatusCode.value__ -eq 404) {
+        Pass "Non-existent report ID correctly returns 404"
+    } else {
+        Fail "Expected 404, got $($_.Exception.Response.StatusCode.value__)"
+    }
+}
+
+# ══════════════════════════════════════════════════════════════════════════════
+# 17c. PDF REPORT — NO AUTH (must be rejected)
+# ══════════════════════════════════════════════════════════════════════════════
+Section "17c. PDF REPORT — AUTH PROTECTION"
+
+try {
+    Invoke-RestMethod `
+        -Uri "$BASE_URL/api/reports/$VERIFICATION_ID" `
+        -Method GET `
+        -Headers @{ "Content-Type" = "application/json" } `
+        -ErrorAction Stop
+    Fail "Should have been rejected without API key + JWT"
+} catch {
+    $sc = $_.Exception.Response.StatusCode.value__
+    if ($sc -in @(401, 403)) {
+        Pass "Report endpoint correctly rejects unauthenticated requests ($sc)"
+    } else {
+        Fail "Expected 401/403, got $sc"
+    }
+}
+
+# ══════════════════════════════════════════════════════════════════════════════
+# SUMMARY
+# ══════════════════════════════════════════════════════════════════════════════
+$TOTAL = $PASS + $FAIL
+Write-Host "`n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━" -ForegroundColor Magenta
+Write-Host "  TEST SUMMARY" -ForegroundColor Cyan
+Write-Host "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━" -ForegroundColor Magenta
+Write-Host "  Total : $TOTAL"
+Write-Host "  Pass  : $PASS" -ForegroundColor Green
+Write-Host "  Fail  : $FAIL" -ForegroundColor $(if ($FAIL -eq 0) { "Green" } else { "Red" })
+Write-Host "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━" -ForegroundColor Magenta
+
+if ($FAIL -eq 0) {
+    Write-Host "`n  🎉 All PDF report tests passed!" -ForegroundColor Green
+} else {
+    Write-Host "`n  ⚠️  $FAIL test(s) failed — check output above" -ForegroundColor Red
+}
